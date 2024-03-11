@@ -1,0 +1,11 @@
+D:\Yomentor2\Hub.Business.Entities\bin\Debug\net8.0\Core.Business.Entities.deps.json
+D:\Yomentor2\Hub.Business.Entities\bin\Debug\net8.0\Core.Business.Entities.dll
+D:\Yomentor2\Hub.Business.Entities\bin\Debug\net8.0\Core.Business.Entities.pdb
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\Core.Business.Entities.GeneratedMSBuildEditorConfig.editorconfig
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\Core.Business.Entities.AssemblyInfoInputs.cache
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\Core.Business.Entities.AssemblyInfo.cs
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\Core.Business.Entities.csproj.CoreCompileInputs.cache
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\Core.Business.Entities.dll
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\refint\Core.Business.Entities.dll
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\Core.Business.Entities.pdb
+D:\Yomentor2\Hub.Business.Entities\obj\Debug\net8.0\ref\Core.Business.Entities.dll
