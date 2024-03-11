@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Business.Entities", "H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Youmentor.Web.Api", "Youmentor\Youmentor.Web.Api.csproj", "{CE553241-F7F6-4019-B6A7-3D3DCD72608C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoMentor.Api", "YoMentor.Api\YoMentor.Api.csproj", "{B6C6E347-10DF-49BA-8844-8F07049C33DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{CE553241-F7F6-4019-B6A7-3D3DCD72608C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE553241-F7F6-4019-B6A7-3D3DCD72608C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE553241-F7F6-4019-B6A7-3D3DCD72608C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
