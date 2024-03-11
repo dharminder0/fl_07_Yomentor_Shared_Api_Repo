@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Business", "Hub.Busine
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Business.Entities", "Hub.Business.Entities\Core.Business.Entities.csproj", "{E29A2804-B83E-4999-A763-674659B91CB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Youmentor.Web.Api", "Youmentor\Youmentor.Web.Api.csproj", "{CE553241-F7F6-4019-B6A7-3D3DCD72608C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoMentor.Api", "YoMentor.Api\YoMentor.Api.csproj", "{B6C6E347-10DF-49BA-8844-8F07049C33DC}"
 EndProject
 Global
@@ -37,10 +35,6 @@ Global
 		{E29A2804-B83E-4999-A763-674659B91CB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E29A2804-B83E-4999-A763-674659B91CB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E29A2804-B83E-4999-A763-674659B91CB1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE553241-F7F6-4019-B6A7-3D3DCD72608C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE553241-F7F6-4019-B6A7-3D3DCD72608C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE553241-F7F6-4019-B6A7-3D3DCD72608C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE553241-F7F6-4019-B6A7-3D3DCD72608C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
