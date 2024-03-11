@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Yomentor2\\Hub.Business\\Core.Business.csproj": {}
+    "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business\\Core.Business.csproj": {}
   },
   "projects": {
-    "D:\\Yomentor2\\Core.Common\\Core.Common.csproj": {
+    "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Yomentor2\\Core.Common\\Core.Common.csproj",
+        "projectUniqueName": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj",
         "projectName": "Core.Common",
-        "projectPath": "D:\\Yomentor2\\Core.Common\\Core.Common.csproj",
+        "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj",
         "packagesPath": "C:\\Users\\Fleek\\.nuget\\packages\\",
-        "outputPath": "D:\\Yomentor2\\Core.Common\\obj\\",
+        "outputPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -107,14 +107,14 @@
         }
       }
     },
-    "D:\\Yomentor2\\Core.Data\\Core.Data.csproj": {
+    "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\Core.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Yomentor2\\Core.Data\\Core.Data.csproj",
+        "projectUniqueName": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\Core.Data.csproj",
         "projectName": "Core.Data",
-        "projectPath": "D:\\Yomentor2\\Core.Data\\Core.Data.csproj",
+        "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\Core.Data.csproj",
         "packagesPath": "C:\\Users\\Fleek\\.nuget\\packages\\",
-        "outputPath": "D:\\Yomentor2\\Core.Data\\obj\\",
+        "outputPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -136,11 +136,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Yomentor2\\Core.Common\\Core.Common.csproj": {
-                "projectPath": "D:\\Yomentor2\\Core.Common\\Core.Common.csproj"
+              "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj": {
+                "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj"
               },
-              "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
-                "projectPath": "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj"
+              "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
+                "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj"
               }
             }
           }
@@ -179,14 +179,14 @@
         }
       }
     },
-    "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
+    "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj",
+        "projectUniqueName": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj",
         "projectName": "Core.Business.Entities",
-        "projectPath": "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj",
+        "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj",
         "packagesPath": "C:\\Users\\Fleek\\.nuget\\packages\\",
-        "outputPath": "D:\\Yomentor2\\Hub.Business.Entities\\obj\\",
+        "outputPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -207,7 +207,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj": {
+                "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -244,14 +248,14 @@
         }
       }
     },
-    "D:\\Yomentor2\\Hub.Business\\Core.Business.csproj": {
+    "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business\\Core.Business.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Yomentor2\\Hub.Business\\Core.Business.csproj",
+        "projectUniqueName": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business\\Core.Business.csproj",
         "projectName": "Core.Business",
-        "projectPath": "D:\\Yomentor2\\Hub.Business\\Core.Business.csproj",
+        "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business\\Core.Business.csproj",
         "packagesPath": "C:\\Users\\Fleek\\.nuget\\packages\\",
-        "outputPath": "D:\\Yomentor2\\Hub.Business\\obj\\",
+        "outputPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -273,14 +277,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Yomentor2\\Core.Common\\Core.Common.csproj": {
-                "projectPath": "D:\\Yomentor2\\Core.Common\\Core.Common.csproj"
+              "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj": {
+                "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj"
               },
-              "D:\\Yomentor2\\Core.Data\\Core.Data.csproj": {
-                "projectPath": "D:\\Yomentor2\\Core.Data\\Core.Data.csproj"
+              "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\Core.Data.csproj": {
+                "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\Core.Data.csproj"
               },
-              "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
-                "projectPath": "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj"
+              "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
+                "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj"
               }
             }
           }

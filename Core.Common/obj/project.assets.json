@@ -3616,11 +3616,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Yomentor2\\Core.Common\\Core.Common.csproj",
+      "projectUniqueName": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj",
       "projectName": "Core.Common",
-      "projectPath": "D:\\Yomentor2\\Core.Common\\Core.Common.csproj",
+      "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj",
       "packagesPath": "C:\\Users\\Fleek\\.nuget\\packages\\",
-      "outputPath": "D:\\Yomentor2\\Core.Common\\obj\\",
+      "outputPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

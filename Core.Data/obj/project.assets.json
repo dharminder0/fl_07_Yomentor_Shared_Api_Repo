@@ -1137,6 +1137,9 @@
       "Core.Business.Entities/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Core.Common": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Core.Business.Entities.dll": {}
         },
@@ -3650,11 +3653,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Yomentor2\\Core.Data\\Core.Data.csproj",
+      "projectUniqueName": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\Core.Data.csproj",
       "projectName": "Core.Data",
-      "projectPath": "D:\\Yomentor2\\Core.Data\\Core.Data.csproj",
+      "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\Core.Data.csproj",
       "packagesPath": "C:\\Users\\Fleek\\.nuget\\packages\\",
-      "outputPath": "D:\\Yomentor2\\Core.Data\\obj\\",
+      "outputPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3676,11 +3679,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Yomentor2\\Core.Common\\Core.Common.csproj": {
-              "projectPath": "D:\\Yomentor2\\Core.Common\\Core.Common.csproj"
+            "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj": {
+              "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Core.Common\\Core.Common.csproj"
             },
-            "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
-              "projectPath": "D:\\Yomentor2\\Hub.Business.Entities\\Core.Business.Entities.csproj"
+            "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj": {
+              "projectPath": "D:\\JrProject\\fl_07_Yomentor_Shared_Api_Repo\\Hub.Business.Entities\\Core.Business.Entities.csproj"
             }
           }
         }
