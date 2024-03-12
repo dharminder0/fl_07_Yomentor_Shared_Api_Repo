@@ -24,5 +24,12 @@ namespace Core.Business.Entities.DTOs
             Parent=2,
             Student=3
         }
+        public enum Status
+        {
+            Open=1,
+            Active=2,
+            Close=3,
+            Aborted=4
+        }
     }
 }
