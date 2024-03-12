@@ -133,6 +133,12 @@ namespace Hub.Common.Settings {
         public static IEnumerable<string> WhatsappTempRedirectionTo => GetListValues("Whatsapp.TempRedirectTo");
         public static bool IsMappingWithParentClientcode => GetBool("IsMappingWithParentClientcode");
         public static bool IsEnabledPickListLabel => GetBool("IsEnabledPickListLabel");
+
+        public static bool IsUserTokenEncryptionEnabled => GetBool("UserTokenEncryptionEnabled");
+        public static string BlobSymmetricSecretKey = GetString("BlobSymmetricSecretKey");
+        public static string JwtIssuer { get; set; }
+        public static string JwtAudience { get; set; }
+
         public static string GetKeyValues(string key) {
             return !string.IsNullOrWhiteSpace(_appSettings[key]) ? _appSettings[key] : null;
         }

@@ -14,6 +14,7 @@
     <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
     <ProjectReference Include="..\Hub.Business.Entities\Core.Business.Entities.csproj" />
+    <ProjectReference Include="..\Yomentor.Security\Yomentor.Security.csproj" />
   </ItemGroup>
 
 </Project>
