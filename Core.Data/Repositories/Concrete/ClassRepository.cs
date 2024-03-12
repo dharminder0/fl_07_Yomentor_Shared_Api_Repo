@@ -15,5 +15,11 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @"select * from Users ";
             return QueryFirst<Users>(sql);    
         }
+
+        public Users GetTeacherById(int id) {
+            var Sql = $@"Select * from dbo.Users where Id=@id and Type='1'";
+            var res = Query<Users>(Sql, new { id });
+            return (Users)res;
+        }
     }
 }

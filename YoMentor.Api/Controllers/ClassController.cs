@@ -18,12 +18,24 @@ namespace Youmentor.Web.Api.Controllers {
         }
         // GET: api/<ClassController>
         [HttpGet]
-   public IActionResult GetClass() {
-          var response=   _classService.GetUsers();   
+         public IActionResult GetClass()
+        {
+            var response=   _classService.GetUsers();   
             return Ok(response);    
+        }
 
-
-
+        [HttpGet]
+        [Route("Teacher/{Id}")]
+        public IActionResult GetTeacherById (int Id)
+        {
+            try
+            {
+                var response = _classService.GetTeacherById(Id);
+                return JsonExt(response);
+            }
+            catch (Exception ex) { 
+            return BadRequest(ex.Message);
+            }
         }
     }
 }
