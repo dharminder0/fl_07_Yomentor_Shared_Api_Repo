@@ -21,5 +21,6 @@ namespace Core.Data.Repositories.Concrete {
             var res = Query<Users>(Sql, new { id });
             return (Users)res;
         }
+      
     }
 }
