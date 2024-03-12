@@ -18,11 +18,12 @@ namespace Core.Business.Entities.DataModels
         public DateTime UpdateDate { get; set; }
         public DateTime StartDate { get; set; }
         public TimeSpan TuitionTime { get; set; }
-        public string Rate { get; set; }
-        public int RateType { get; set; }
+        public string Fee { get; set; }
+        public int FeeType { get; set; }
         public int StudentCount { get; set; }
         public string Days { get; set; } 
-        public bool IsDeleted { get; set; }
+       // public bool IsDeleted { get; set; }
+        public int Status { get; set; }
 
     }
    
