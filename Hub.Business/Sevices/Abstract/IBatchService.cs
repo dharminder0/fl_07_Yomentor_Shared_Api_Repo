@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Core.Business.Sevices.Abstract
 {
     public interface IBatchService
     {
-        List<Batch> BatchDetailsByTeacherId(int TeacherId);
+        List<BatchDto> BatchDetailsByTeacherId(int TeacherId);
     }
 }
