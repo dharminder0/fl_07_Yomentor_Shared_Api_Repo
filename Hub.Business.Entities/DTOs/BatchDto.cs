@@ -13,21 +13,12 @@ namespace Core.Business.Entities.DTOs
         public DateTime UpdateDate { get; set; }
         public DateTime StartDate { get; set; }
         public TimeSpan TuitionTime { get; set; }
-        public string Rate { get; set; }
-        public int RateType { get; set; }
+        public string Fee { get; set; }
+        public int FeeType { get; set; }
         public int StudentCount { get; set; }
         public string Days { get; set; }
-        public bool IsDeleted { get; set; }
+       // public bool IsDeleted { get; set; }
+        public string Status { get; set; }
     }
 
-    public enum Days
-    {
-        Monday = 1,
-        Tuesday = 2,
-        Wednesday = 3,
-        Thursday = 4,
-        Friday = 5,
-        Saturday = 6,
-        Sunday = 7
-    }
 }
