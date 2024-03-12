@@ -31,5 +31,11 @@ namespace Core.Business.Entities.DTOs
             Close=3,
             Aborted=4
         }
+        public enum FeeType
+        {
+            Weekly=1,
+            Monthly=2,
+            Yearly=3
+        }
     }
 }

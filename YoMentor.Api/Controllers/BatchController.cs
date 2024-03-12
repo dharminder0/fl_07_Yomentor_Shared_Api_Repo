@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace YoMentor.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class BatchController : BaseApiController
     {
@@ -16,7 +16,7 @@ namespace YoMentor.Api.Controllers
         }
 
         [HttpGet]
-        [Route("BatchbyId")]
+        [Route("OpenBatchbyTeacherId")]
         public IActionResult GetBatchDetails(int teacherId)
         {
             var response = _batchService.BatchDetailsByTeacherId(teacherId);
