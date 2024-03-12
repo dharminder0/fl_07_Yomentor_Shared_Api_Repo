@@ -14,11 +14,11 @@ namespace Core.Business.Entities.DTOs
         public DateTime StartDate { get; set; }
         public TimeSpan TuitionTime { get; set; }
         public string Fee { get; set; }
-        public Enum.FeeType FeeType { get; set; }
+        public string FeeType { get; set; }
         public int StudentCount { get; set; }
         public List<string> Days { get; set; }
        // public bool IsDeleted { get; set; }
-        public Enum.Status Status { get; set; }
+        public string Status { get; set; }
 
     }
 

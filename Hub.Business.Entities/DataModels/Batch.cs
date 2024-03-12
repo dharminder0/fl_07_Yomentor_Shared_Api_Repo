@@ -12,7 +12,7 @@ namespace Core.Business.Entities.DataModels
         public string Name { get; set; }
         public string Description { get; set; }
         public int TeacherId { get; set; }
-        public int ClassId { get; set; } 
+        public int GradeId { get; set; } 
         public int SubjectId {get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
