@@ -91,7 +91,6 @@ namespace Core.Business.Sevices.Concrete
             }
             catch (Exception ex)
             {
-                // Handle the exception appropriately
                 return null;
             }
         }
