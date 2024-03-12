@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Business.Sevices.Abstract {
-    public interface IclassService {
-        Users GetUsers();
-        Users GetTeacherById(int id);
+namespace Core.Data.Repositories.Abstract
+{
+    public interface IBatchRepository
+    {
+       List<Batch> GetBatchDetailsbyId(int TeacherId);
     }
 }

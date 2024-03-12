@@ -23,3 +23,16 @@ D:\JrProject\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Co
 D:\JrProject\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\refint\Core.Common.dll
 D:\JrProject\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.pdb
 D:\JrProject\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\ref\Core.Common.dll
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\bin\Debug\net8.0\Core.Common.deps.json
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\bin\Debug\net8.0\Core.Common.dll
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\bin\Debug\net8.0\Core.Common.pdb
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.csproj.AssemblyReference.cache
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.AssemblyInfoInputs.cache
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.AssemblyInfo.cs
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.csproj.CoreCompileInputs.cache
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.sourcelink.json
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.dll
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\refint\Core.Common.dll
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\Core.Common.pdb
+D:\Projects\fl_07_Yomentor_Shared_Api_Repo\Core.Common\obj\Debug\net8.0\ref\Core.Common.dll

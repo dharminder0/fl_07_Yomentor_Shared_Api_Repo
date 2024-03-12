@@ -8,6 +8,7 @@ namespace Core.Business.Entities.DataModels {
     public class Users {
         public int id { get; set; }
         public string  firstname { get; set; }
+        public string lastname { get; set; }    
         public string  phone { get; set;}
         public string  email { get; set;} 
         public DateTime createdate { get; set;}

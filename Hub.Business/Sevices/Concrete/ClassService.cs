@@ -13,5 +13,21 @@ namespace Core.Business.Sevices.Concrete {
             return _classRepository.GetUsers();    
             
         }
+
+        public Users GetTeacherById(int id)
+        {
+            if(id <= 0)
+            {
+                throw new ArgumentException("Id cannot be zero and null");
+            }
+            try
+            {
+                return _classRepository.GetTeacherById(id);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
