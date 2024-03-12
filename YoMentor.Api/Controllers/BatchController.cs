@@ -12,15 +12,21 @@ namespace YoMentor.Api.Controllers
         private readonly IBatchService _batchService;
         public BatchController(IBatchService batchService)
         {
-         _batchService = batchService;  
+            _batchService = batchService;
         }
 
         [HttpGet]
         [Route("OpenBatchbyTeacherId")]
         public IActionResult GetBatchDetails(int teacherId)
         {
-            var response = _batchService.BatchDetailsByTeacherId(teacherId);
-            return JsonExt(response);
+            try
+            {
+                var response = _batchService.BatchDetailsByTeacherId(teacherId);
+                return JsonExt(response);
+            }
+            catch (Exception ex) { 
+                return BadRequest(ex.Message);  
+            }
         }
 
     }

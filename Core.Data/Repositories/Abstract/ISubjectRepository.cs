@@ -9,5 +9,6 @@ using System.Threading.Tasks;
 namespace Core.Data.Repositories.Abstract {
     public interface ISubjectRepository : IDataRepository<Subject> {
         Task<IEnumerable<Subject>> GetAllSubjects(int gradeId);
+        string GetSubjectName(int subjectId);
     }
 }

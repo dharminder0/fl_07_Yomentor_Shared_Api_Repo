@@ -9,6 +9,6 @@ namespace Core.Data.Repositories.Abstract
 {
     public interface IBatchRepository
     {
-       List<Batch> GetBatchDetailsbyId(int TeacherId);
+        List<Batch> GetBatchDetailsbyId(int teacherId);
     }
 }
