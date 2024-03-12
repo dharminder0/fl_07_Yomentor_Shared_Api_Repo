@@ -10,5 +10,6 @@ namespace Core.Data.Repositories.Abstract {
     public interface IClassRepository : IDataRepository<Users> {
 
         Users GetUsers();
+        Users GetTeacherById(int id);
     }
 }
