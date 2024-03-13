@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Common.Data;
 
-namespace Core.Business.Entities.DataModels
-{
+namespace Core.Business.Entities.DataModels {
+    [Alias(Name = "Batch")]
     public class Batch
     {
+        public Batch() { }
+        [Key(AutoNumber = true)]
         public int Id { get; set; } 
         public string Name { get; set; }
         public string Description { get; set; }
