@@ -9,8 +9,8 @@ namespace YoMentor.Api.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class AssessmentsController : BaseApiController {
-        public AssessmentsController(IAssessmentsService service)
         private readonly IAssessmentsService _service;
+        public AssessmentsController(IAssessmentsService service)
         {
             _service=service;   
         }
