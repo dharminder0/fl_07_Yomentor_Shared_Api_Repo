@@ -15,9 +15,10 @@ namespace Core.Data.Repositories.Abstract {
         Task<IEnumerable<Users>> UserInfoVerification(string phone, string userToken);
         
         int VerifyUserByUsername(string userName);
- 
-     
-       
+        IEnumerable<Users> GetStudentUser(List<int> studentId);
+
+
+
         }
  
 }

@@ -136,10 +136,15 @@ END
             var sql = $@"select  * from  Users    where phone = @phone and Token = @userToken  ";
             return await QueryAsync<Users>(sql, new { phone, userToken });
         }
+        public IEnumerable<Users> GetStudentUser(List<int> studentId)
+        {
+            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds AND type = '3'";
+            return Query<Users>(sql, new { StudentIds = studentId });
+        }
 
-   
 
-    
+
+
     }
 }
 

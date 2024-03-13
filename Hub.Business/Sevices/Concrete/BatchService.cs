@@ -1,4 +1,6 @@
-﻿using Core.Business.Entities.DTOs;
+﻿using Autofac.Features.Scanning;
+using Core.Business.Entities.DataModels;
+using Core.Business.Entities.DTOs;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
@@ -14,12 +16,16 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IClassRepository _classRepository;
         private readonly IGradeRepository _gradeRepository; 
         private readonly ISubjectRepository _subjectRepository;
-        public BatchService(IBatchRepository batchRepository, IClassRepository classRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository)
+        private readonly IBatchStudentsRepository _batchStudentsRepository;
+        private readonly IUserRepository _userRepository;
+        public BatchService(IBatchRepository batchRepository, IClassRepository classRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository)
         {
             _batchRepository = batchRepository;
             _classRepository = classRepository;
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
+            _batchStudentsRepository = batchStudentsRepository;
+            _userRepository = userRepository;
         }
         public List<BatchDto> BatchDetailsByTeacherId(int teacherId)
         {
@@ -127,6 +133,42 @@ namespace Core.Business.Sevices.Concrete {
             }
             return days;
         }
+        public List<BatchStudentDetailsDto> GetStudentDetailsbyBatchId(int batchId)
+        {
+            List<BatchStudentDetailsDto> listBatchStudentDetails = new List<BatchStudentDetailsDto>();
+
+            var batchDetails = _batchRepository.GetBatchDetailsbybatchId(batchId);
+
+            foreach (var batchItem in batchDetails)
+            {
+                var batchStudents = _batchStudentsRepository.GetBatchStudentsbybatchId(batchId);
+
+                foreach (var batchStudent in batchStudents)
+                {
+                    var userDetails = _userRepository.GetStudentUser(new List<int> { batchStudent.StudentId });
+
+                    foreach (var user in userDetails)
+                    {
+                        BatchStudentDetailsDto batchStudentDetailsDto = new BatchStudentDetailsDto();
+                        batchStudentDetailsDto.BatchId = batchId;
+                        batchStudentDetailsDto.SubjectName = batchItem.Name;
+                        batchStudentDetailsDto.BatchId = batchItem.Id;
+                        batchStudentDetailsDto.EnrollmentStatus = System.Enum.GetName(typeof(Enrollmentstatus), batchStudent.Enrollmentstatus);
+                        batchStudentDetailsDto.enrollmentstatus = batchStudent.Enrollmentstatus;
+                        batchStudentDetailsDto.StudentId = user.Id;
+                        batchStudentDetailsDto.Address = user.Address;
+                        batchStudentDetailsDto.Phone = user.Phone;
+                        batchStudentDetailsDto.Name = user.Firstname.Replace(" ", "") + ' ' + user.Lastname.Replace(" ", "");
+                        batchStudentDetailsDto.Email = user.Email == null ? null : user.Email.ToLower();
+
+                        listBatchStudentDetails.Add(batchStudentDetailsDto);
+                    }
+                }
+            }
+
+            return listBatchStudentDetails;
+        }
+
     }
 
 }

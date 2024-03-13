@@ -18,6 +18,11 @@ namespace Core.Data.Repositories.Concrete
             var res=  Query<Batch>(sql, new {teacherId});
             return (List<Batch>)res;    
         }
+        public IEnumerable<Batch> GetBatchDetailsbybatchId(int batchId)
+        {
+            var sql = $"Select * from dbo.Batch where Id=@batchId and isdeleted=0";
+            return Query<Batch>(sql, new { batchId });
+        }
         public async Task<int> InsertBatchDetails(BatchDetailRequest batchDetailRequest) {
            
             var sql = $@"IF NOT EXISTS (SELECT 1 FROM batch WHERE Name = @Name)
