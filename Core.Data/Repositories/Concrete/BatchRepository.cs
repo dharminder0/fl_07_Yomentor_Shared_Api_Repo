@@ -26,8 +26,8 @@ namespace Core.Data.Repositories.Concrete
         public async Task<int> InsertBatchDetails(BatchDetailRequest batchDetailRequest) {
            
             var sql = $@"IF NOT EXISTS (SELECT 1 FROM batch WHERE Name = @Name)
-BEGIN
-    INSERT INTO batch
+            BEGIN
+             INSERT INTO batch
            (
             
               Name
