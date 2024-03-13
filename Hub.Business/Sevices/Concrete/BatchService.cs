@@ -44,6 +44,7 @@ namespace Core.Business.Sevices.Concrete {
                     string subjectName = _subjectRepository.GetSubjectName(row.SubjectId);
                     if (row.Days == null) {
                         obj = new BatchDto();
+                        obj.BatchName=row.Name;
                         obj.StartDate = row.StartDate;
                         obj.UpdateDate = row.UpdateDate;
                         obj.CreateDate = row.CreateDate;
@@ -67,6 +68,7 @@ namespace Core.Business.Sevices.Concrete {
                             ob.Add(day.ToString());
                         }
                         obj = new BatchDto();
+                        obj.BatchName = row.Name;
                         obj.StartDate = row.StartDate;
                         obj.UpdateDate = row.UpdateDate;
                         obj.CreateDate = row.CreateDate;
@@ -111,7 +113,7 @@ namespace Core.Business.Sevices.Concrete {
                int Batchid= await _batchRepository.UpdateBatchDetails(obj);
                 return new ActionMassegeResponse { Content = Batchid, Message = "Batch_Details_Updated successfully ", Response = true };
             }
-
+            
             int id = await _batchRepository.InsertBatchDetails(obj);
             return new ActionMassegeResponse { Content = id, Message = "Btach_Created", Response = true };
         }
