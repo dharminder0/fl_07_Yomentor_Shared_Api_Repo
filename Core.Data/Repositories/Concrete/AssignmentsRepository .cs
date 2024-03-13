@@ -3,6 +3,7 @@ using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,6 +72,18 @@ namespace Core.Data.Repositories.Concrete {
     ";
 
             return await ExecuteScalarAsync<int>(sql, assignment);
+        }
+
+        public IEnumerable<Assignments> GetAssignments(int id)
+        {
+            var sql = $@"Select * from Assignments where Id=@id";
+            return Query<Assignments>(sql,new {id});
+        }
+
+        public async Task<List<Assignments>> GetAllAssignments()
+        {
+            var sql = $@"Select * from Assignments";
+            return (List<Assignments>)await QueryAsync<Assignments>(sql);
         }
 
     }

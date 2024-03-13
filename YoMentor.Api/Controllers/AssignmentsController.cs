@@ -20,10 +20,28 @@ namespace YoMentor.Api.Controllers {
         /// <param name="assignmentsRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/Upsert")]
+        [Route("Upsert")]
         public async Task<IActionResult> UpsertAssignments(AssignmentsRequest assignmentsRequest) {
             var response=await _assignmentsService.InsertOrUpdateAssignments(assignmentsRequest); 
             return JsonExt(response);   
+        }
+
+        [HttpGet]
+        [Route("GetAssignment/{id}")]
+
+        public IActionResult GetAssignment(int id)
+        {
+            var response= _assignmentsService.GetAssignment(id);
+            return JsonExt(response);
+        }
+
+        [HttpGet]
+        [Route("GetAssignmentList")]
+
+        public async Task<IActionResult> GetAssignmentList()
+        {
+            var response = await _assignmentsService.GetAllAssignments();
+            return JsonExt(response);
         }
     }
 }
