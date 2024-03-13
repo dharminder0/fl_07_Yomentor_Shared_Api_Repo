@@ -41,6 +41,7 @@ BEGIN
              ,StudentCount
              ,Days 
              ,isdeleted
+             ,status
        
             )
      VALUES
@@ -57,6 +58,7 @@ BEGIN
             ,@NumberOfStudents
             ,@Days
             ,0
+            ,1
         
     
             );
