@@ -3,7 +3,7 @@ namespace Core.Business.Entities.DTOs {
     public class BatchDto {
         public int Id { get; set; }
         public string Description { get; set; }
-       
+        public string BatchName { get; set; }
         public string ClassName { get; set; }
         public string SubjectName { get; set; }
         public DateTime CreateDate { get; set; }
