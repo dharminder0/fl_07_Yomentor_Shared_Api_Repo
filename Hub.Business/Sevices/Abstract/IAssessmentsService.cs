@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace Core.Business.Sevices.Abstract {
     public interface IAssessmentsService {
         Task<ActionMessageResponse> InsertOrUpdateAssessments(AssessmentsRequest assessmentsRequest);
-        List<Assessments> GetAssessmentsList(int id);
+        IEnumerable<Assessments> GetAssessmentsList(int id);
+        Task<List<Assessments>> GetAssessmentsAllList();
     }
 }

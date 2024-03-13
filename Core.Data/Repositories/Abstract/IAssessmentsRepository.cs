@@ -5,6 +5,7 @@ namespace Core.Data.Repositories.Abstract {
     public interface IAssessmentsRepository : IDataRepository<Assessments>{
         Task<int> InsertAssessments(Assessments assignment);
         Task<int> UpdateAssessments(Assessments assignment);
-        List<Assessments> GetAssessmentsList(int id);
+        IEnumerable<Assessments> GetAssessmentsList(int id);
+        Task<List<Assessments>> GetAssessmentsAllList();
     }
 }
