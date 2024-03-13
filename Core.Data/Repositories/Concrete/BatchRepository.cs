@@ -35,10 +35,7 @@ BEGIN
              ,FeeType
              ,StudentCount
              ,Days 
-             ,isdeleted
-              ,status
-        
-            
+       
             )
      VALUES
            (
@@ -53,10 +50,8 @@ BEGIN
             ,@FeeType
             ,@NumberOfStudents
             ,@Days
-            ,0
-             ,1
-            
-          
+        
+    
             );
 
     SELECT SCOPE_IDENTITY() 
@@ -68,7 +63,37 @@ END ;";
 
             return  await ExecuteScalarAsync<int>(sql, batchDetailRequest);
         }
+        public async Task<int> UpdateBatchDetails(BatchDetailRequest batchDetailRequest) {
+
+            var sql = @"
+        IF EXISTS (SELECT 1 FROM batch WHERE Id = @Id)
+        BEGIN
+            UPDATE batch
+            SET
+                Description = @Description,
+                TeacherId = @TeacherId,
+                GradeId = @GradeId,
+                SubjectId = @SubjectId,
+                TuitionTime = @ClassTime,
+                Fee = @Fee,
+                FeeType = @FeeType,
+                StudentCount = @NumberOfStudents,
+                Days = @Days
+            WHERE
+                Id = @Id;
+
+            SELECT Id FROM batch WHERE Id = @Id;
+        END
+        ELSE
+        BEGIN
         
+            SELECT -1;
+        END;";
+
+            return await ExecuteScalarAsync<int>(sql, batchDetailRequest);
+        }
+
+
 
     }
 }
