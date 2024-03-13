@@ -10,7 +10,10 @@ namespace Core.Data.Repositories.Abstract
 {
     public interface IBatchRepository
     {
-       List<Batch> GetBatchDetailsbyId(int TeacherId);
+
         Task<int> InsertBatchDetails(BatchDetailRequest batchDetailRequest);
+
+        List<Batch> GetBatchDetailsbyId(int teacherId);
+
     }
 }
