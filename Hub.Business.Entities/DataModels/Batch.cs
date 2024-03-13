@@ -1,12 +1,6 @@
 ﻿using Core.Common.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Core.Business.Entities.DataModels
-{
+namespace Core.Business.Entities.DataModels {
     [Alias(Name = "Batch")]
     public class Batch
     {
