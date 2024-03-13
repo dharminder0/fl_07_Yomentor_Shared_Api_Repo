@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Business.Entities.DTOs {
-    public class Enum {
-        public enum Days {
+namespace Core.Business.Entities.DTOs
+{
+    public class Enum
+    {
+        public enum Days
+        {
             S = 0,
             M = 1,
             T = 2,
@@ -26,11 +29,19 @@ namespace Core.Business.Entities.DTOs {
             Close = 3,
             Aborted = 4
         }
-        public enum FeeType {
-            Hour = 0,
+        public enum FeeType
+        {
+            Hour=0,
             Day = 1,
             Week = 2,
             Month = 3
+        }
+        public enum Enrollmentstatus
+        {
+             Pending=1,
+             Accepted=2,
+             Rejected=3,
+             Abandoned=4
         }
     }
 }

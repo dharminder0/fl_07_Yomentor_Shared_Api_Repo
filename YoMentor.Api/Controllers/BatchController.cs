@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace YoMentor.Api.Controllers
 {
-    [Route("api/")]
+    [Route("api/Batch")]
     [ApiController]
     public class BatchController : BaseApiController
     {
@@ -31,6 +31,19 @@ namespace YoMentor.Api.Controllers
         [Route("Add")]
         public async Task<IActionResult> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest) {
             var response=  await _batchService.AddBatchDetails(batchDetailRequest);   
+            return JsonExt(response);
+        }
+
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="batchDetailRequest"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("StudentList/{batchId}")]
+        public IActionResult GetStudentDetailsbyBatchId(int batchId)
+        {
+            var response = _batchService.GetStudentDetailsbyBatchId(batchId);
             return JsonExt(response);
         }
     }
