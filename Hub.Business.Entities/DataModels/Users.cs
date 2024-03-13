@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Common.Data;
 
 namespace Core.Business.Entities.DataModels {
+    [Alias(Name = "Users")]
     public class Users {
+        public Users() { }
+        [Key(AutoNumber = true)]
         public int Id { get; set; }
         public string  Firstname { get; set; }
         public string  Lastname  { get; set; }
