@@ -32,7 +32,7 @@ namespace Core.Business.Sevices.Concrete {
             BatchDto obj = new BatchDto(); 
             if (teacherId <= 0)
             {
-                throw new Exception("Teacher Id is blank!!");
+                throw new Exception("Teacher Id is blank!!!");
             }
 
             try {
@@ -86,7 +86,6 @@ namespace Core.Business.Sevices.Concrete {
                         batchDtos.Add(obj);
                     }
                 }
-
                 return batchDtos;
             } catch (Exception ex) {
                 return null;
