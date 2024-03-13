@@ -38,8 +38,15 @@ namespace YoMentor.Api.Controllers
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest) {
-            var response=  await _batchService.AddBatchDetails(batchDetailRequest);   
-            return JsonExt(response);
+            try
+            {
+                var response = await _batchService.AddBatchDetails(batchDetailRequest);
+                return JsonExt(response);
+            }
+            catch (Exception ex)
+            {
+                return JsonExt(ex);
+            }
         }
 
         /// <summary>
