@@ -6,6 +6,8 @@ using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Globalization;
 using System.Runtime.InteropServices.Marshalling;
 using static Core.Business.Entities.DTOs.Enum;
 
@@ -92,30 +94,33 @@ namespace Core.Business.Sevices.Concrete {
             }
         }
 
-        public async Task<ActionMassegeResponse> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest) {
+        public async Task<ActionMassegeResponse> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest)
+        {
             BatchDetailRequest obj = new BatchDetailRequest();
             obj.SubjectId = batchDetailRequest.SubjectId;
             obj.TeacherId = batchDetailRequest.TeacherId;
             obj.GradeId = batchDetailRequest.GradeId;
             obj.Days = JsonConvert.SerializeObject(batchDetailRequest.Days);
-
-
-            obj.Date = DateTime.Now;
+            obj.Date = batchDetailRequest.Date;
+            obj.CreateDate = DateTime.Now;
             obj.Fee = batchDetailRequest.Fee;
             obj.FeeType = batchDetailRequest.FeeType;
             obj.Description = batchDetailRequest.Description;
             obj.Name = batchDetailRequest.Name;
             obj.NumberOfStudents = batchDetailRequest.NumberOfStudents;
             obj.ClassTime = batchDetailRequest.ClassTime;
-            obj.Id= batchDetailRequest.Id;  
-            if(batchDetailRequest.Id > 0) {
-               int Batchid= await _batchRepository.UpdateBatchDetails(obj);
+            obj.Id = batchDetailRequest.Id;
+
+            if (batchDetailRequest.Id > 0)
+            {
+                int Batchid = await _batchRepository.UpdateBatchDetails(obj);
                 return new ActionMassegeResponse { Content = Batchid, Message = "Batch_Details_Updated successfully ", Response = true };
             }
-            
+
             int id = await _batchRepository.InsertBatchDetails(obj);
-            return new ActionMassegeResponse { Content = id, Message = "Btach_Created", Response = true };
+            return new ActionMassegeResponse { Content = id, Message = "Batch_Created", Response = true };
         }
+
 
 
 

@@ -37,6 +37,8 @@ BEGIN
              ,SubjectId
              ,TuitionTime
              ,Fee
+               ,CreateDate
+              ,StartDate
              ,FeeType
              ,StudentCount
              ,Days 
@@ -54,6 +56,8 @@ BEGIN
             ,@SubjectId
             ,@ClassTime
             ,@Fee
+            ,@CreateDate
+            ,@Date
             ,@FeeType
             ,@NumberOfStudents
             ,@Days
