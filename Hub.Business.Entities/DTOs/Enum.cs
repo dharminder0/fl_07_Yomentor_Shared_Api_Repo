@@ -10,13 +10,13 @@ namespace Core.Business.Entities.DTOs
     {
         public enum Days
         {
-            Sunday = 0,
-            Monday = 1,
-            Tuesday = 2,
-            Wednesday = 3,
-            Thursday = 4,
-            Friday = 5,
-            Saturday = 6
+            S = 0,
+            M = 1,
+            T = 2,
+            W = 3,
+            Th = 4,
+            F = 5,
+            Sa = 6
         }
         public enum UserType
         {
@@ -33,10 +33,10 @@ namespace Core.Business.Entities.DTOs
         }
         public enum FeeType
         {
-            daily=0,
-            Weekly=1,
-            Monthly=2,
-            Yearly=3
+            Hour=0,
+            Day = 1,
+            Week = 2,
+            Month = 3
         }
     }
 }
