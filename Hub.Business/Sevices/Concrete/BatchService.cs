@@ -1,20 +1,12 @@
-﻿using Core.Business.Entities.DataModels;
-using Core.Business.Entities.DTOs;
+﻿using Core.Business.Entities.DTOs;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
+using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using static Core.Business.Entities.DTOs.Enum;
 
-namespace Core.Business.Sevices.Concrete
-{
+namespace Core.Business.Sevices.Concrete {
     public class BatchService : IBatchService
     {
         private readonly IBatchRepository _batchRepository;
@@ -95,9 +87,34 @@ namespace Core.Business.Sevices.Concrete
             }
         }
 
+        public async Task<ActionMassegeResponse> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest) {
+            BatchDetailRequest obj = new BatchDetailRequest();
+            obj.SubjectId = batchDetailRequest.SubjectId;
+            obj.TeacherId = batchDetailRequest.TeacherId;
+            obj.GradeId = batchDetailRequest.GradeId;
+            obj.Days = JsonConvert.SerializeObject(batchDetailRequest.Days);
+
+
+            obj.Date = DateTime.Now;
+            obj.Fee = batchDetailRequest.Fee;
+            obj.FeeType = batchDetailRequest.FeeType;
+            obj.Description = batchDetailRequest.Description;
+            obj.Name = batchDetailRequest.Name;
+            obj.NumberOfStudents = batchDetailRequest.NumberOfStudents;
+            obj.ClassTime = batchDetailRequest.ClassTime;
+
+
+            int id = await _batchRepository.InsertBatchDetails(obj);
+            return new ActionMassegeResponse { Content = id, Message = "Btach Created", Response = true };
+        }
+
+
+
         private List<Days> ConvertToDays(string response)
         {
+          
             string[] numbers = response.Split(',');
+            
             List<Days> days = new List<Days>();
             foreach (string num in numbers)
             {
@@ -111,6 +128,7 @@ namespace Core.Business.Sevices.Concrete
                 }
             }
             return days;
+
         }
     }
 

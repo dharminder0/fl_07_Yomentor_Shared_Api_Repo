@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace Core.Data.Repositories.Abstract
 {
     public interface IBatchRepository
     {
+
+        Task<int> InsertBatchDetails(BatchDetailRequest batchDetailRequest);
+
         List<Batch> GetBatchDetailsbyId(int teacherId);
+
     }
 }
