@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Slapper.AutoMapper;
 
 namespace Core.Business.Sevices.Concrete {
     public class AssignmentsService :IAssignmentsService{
@@ -36,7 +37,34 @@ namespace Core.Business.Sevices.Concrete {
             }
             int id=await _assignmentsRepo.UpdateAssignment(assignments);   
             return new ActionMassegeResponse { Content = id, Message = "Assignment_Updated", Response = true };
+        }
 
+        public IEnumerable<Assignments> GetAssignment(int id)
+        {
+            if(id<=0) return Enumerable.Empty<Assignments>();
+            try
+            {
+                var res = _assignmentsRepo.GetAssignments(id);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return Enumerable.Empty<Assignments>();
+            }
+
+        }
+
+        public async Task<List<Assignments>> GetAllAssignments()
+        {
+            try
+            {
+                var res = await _assignmentsRepo.GetAllAssignments();
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }
