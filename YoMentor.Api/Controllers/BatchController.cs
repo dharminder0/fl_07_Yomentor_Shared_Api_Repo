@@ -1,9 +1,10 @@
 ﻿using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
+using Hub.Web.Api.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+  
 namespace YoMentor.Api.Controllers
 {
     [Route("api/Batch")]
@@ -18,6 +19,7 @@ namespace YoMentor.Api.Controllers
 
         [HttpGet]
         [Route("OpenBatchbyTeacherId")]
+       
         public IActionResult GetBatchDetails(int teacherId) {
             try
             {
