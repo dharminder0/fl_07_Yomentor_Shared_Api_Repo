@@ -14,6 +14,6 @@ namespace Core.Data.Repositories.Abstract
         Task<int> InsertBatchDetails(BatchDetailRequest batchDetailRequest);
 
         List<Batch> GetBatchDetailsbyId(int teacherId);
-
+        Task<int> UpdateBatchDetails(BatchDetailRequest batchDetailRequest);
     }
 }

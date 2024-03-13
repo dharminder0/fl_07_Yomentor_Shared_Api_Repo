@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Business.Entities.RequestModels {
     public  class BatchDetailRequest {
+        public int Id { get; set; }
         public int  GradeId { get; set; }
         public DateTime ClassTime { get; set; }
         public DateTime Date { get; set; }
@@ -19,6 +20,7 @@ namespace Core.Business.Entities.RequestModels {
         public int TeacherId { get; set; }
     }
     public class BatchDetailRequestV2 {
+        public int Id { get; set; }
         public int GradeId { get; set; }
         public DateTime ClassTime { get; set; }
         public DateTime Date { get; set; }

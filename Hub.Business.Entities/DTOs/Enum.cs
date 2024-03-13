@@ -18,18 +18,16 @@ namespace Core.Business.Entities.DTOs
             F = 5,
             Sa = 6
         }
-        public enum UserType
-        {
-            Teacher=1,
-            Parent=2,
-            Student=3
+        public enum UserType {
+            Teacher = 1,
+            Parent = 2,
+            Student = 3
         }
-        public enum Status
-        {
-            Open=1,
-            Active=2,
-            Close=3,
-            Aborted=4
+        public enum Status {
+            Open = 1,
+            Active = 2,
+            Close = 3,
+            Aborted = 4
         }
         public enum FeeType
         {
