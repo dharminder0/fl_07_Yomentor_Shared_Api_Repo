@@ -41,7 +41,7 @@ BEGIN
              ,StudentCount
              ,Days 
              ,isdeleted
-             ,status
+             ,[status]
        
             )
      VALUES
@@ -57,11 +57,8 @@ BEGIN
             ,@FeeType
             ,@NumberOfStudents
             ,@Days
-            ,0
-            ,1
-        
-    
-            );
+            ,'0'
+            ,'1');
 
     SELECT SCOPE_IDENTITY() 
 END
