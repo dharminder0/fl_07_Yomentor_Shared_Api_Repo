@@ -40,6 +40,7 @@ BEGIN
              ,FeeType
              ,StudentCount
              ,Days 
+             ,isdeleted
        
             )
      VALUES
@@ -55,6 +56,7 @@ BEGIN
             ,@FeeType
             ,@NumberOfStudents
             ,@Days
+            ,0
         
     
             );
