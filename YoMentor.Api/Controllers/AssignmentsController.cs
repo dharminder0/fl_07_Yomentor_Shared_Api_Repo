@@ -36,7 +36,7 @@ namespace YoMentor.Api.Controllers {
         }
 
         [HttpGet]
-        [Route("GetAssignmentList")]
+        [Route("GetAssignmentsList")]
 
         public async Task<IActionResult> GetAssignmentList()
         {
