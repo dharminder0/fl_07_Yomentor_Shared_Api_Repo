@@ -29,7 +29,7 @@ namespace Hub.Web.Api.Filters {
             }
             context.HttpContext.Items.Add("RequestId", Guid.NewGuid().ToString());
             //var defaultAuthorizationValue = ConfigurationManager.AppSettings["AuthorizationBearer"];
-            var defaultAuthorizationValue = GlobalSettings.AuthorizationBearer;
+            var defaultAuthorizationValue = GlobalSettings.AuthorizationBearers;
             var bearerAutorizeKeys = !string.IsNullOrWhiteSpace(BearerKey) ? BearerKey.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries) : null;
             var bearerAuthorizeValues = new List<string>();
             if (bearerAutorizeKeys != null && bearerAutorizeKeys.Any()) {

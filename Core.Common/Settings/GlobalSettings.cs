@@ -52,6 +52,7 @@ namespace Hub.Common.Settings {
         public static string RefApiUrl => GetString("JobRock.RefApi.url");
         public static string RefApiAuthorization => GetString("JobRock.RefApi.Authorization");
         public static string ExternalQueueActions => GetString("JobRock.External.ExternalQueueActions");
+        public static string AuthorizationBearers => GetString("AuthorizationBearer");
 
 
 
