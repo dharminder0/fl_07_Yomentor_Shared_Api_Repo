@@ -75,7 +75,7 @@ namespace Core.Web.API.Controllers {
         /// <param name="obj"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Upsert")]
+        [Route("api/User/Upsert")]
 
         public async Task<IActionResult> AddUser(UserRequest obj) {
             try {
