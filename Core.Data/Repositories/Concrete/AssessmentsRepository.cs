@@ -3,6 +3,7 @@ using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,5 +81,10 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<int>(sql, assignment);
         }
 
+        public List<Assessments> GetAssessmentsList(int id)
+        {
+            var sql = @"select * from [dbo].[assessments] where id=@id";
+            return Query<Assessments>(sql, new { id }).ToList();
+        }
     }
 }

@@ -42,5 +42,22 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMessageResponse { Content = id, Message = "Assignment_Updated", Success = true };
         }
 
+        public List<Assessments> GetAssessmentsList(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentOutOfRangeException("id is null or blank");
+            }
+            try
+            {
+                var res = _assessmentsRepository.GetAssessmentsList(id);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }
