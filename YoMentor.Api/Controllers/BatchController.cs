@@ -19,8 +19,14 @@ namespace YoMentor.Api.Controllers
         [HttpGet]
         [Route("OpenBatchbyTeacherId")]
         public IActionResult GetBatchDetails(int teacherId) {
-            var response = _batchService.BatchDetailsByTeacherId(teacherId);
-            return JsonExt(response);
+            try
+            {
+                var response = _batchService.BatchDetailsByTeacherId(teacherId);
+                return JsonExt(response);
+            }
+            catch (Exception ex) { 
+            return JsonExt(ex);
+            }
         }
         /// <summary>
         /// /
