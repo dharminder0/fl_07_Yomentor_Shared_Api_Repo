@@ -42,5 +42,34 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMessageResponse { Content = id, Message = "Assignment_Updated", Success = true };
         }
 
+        public IEnumerable<Assessments> GetAssessmentsList(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentOutOfRangeException("id is null or blank");
+            }
+            try
+            {
+                var res = _assessmentsRepository.GetAssessmentsList(id);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public async Task<List<Assessments>> GetAssessmentsAllList()
+        {
+            try
+            {
+                var res = await _assessmentsRepository.GetAssessmentsAllList();
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }
