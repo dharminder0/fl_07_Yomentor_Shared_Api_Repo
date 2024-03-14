@@ -18,7 +18,7 @@ namespace YoMentor.Api.Controllers
         }
 
         [HttpPost]
-        [Route("BatchListbyTeacherId")]
+        [Route("BatchListbyUserid")]
        
         public async Task<IActionResult> GetBatchDetails(BatchRequest request ) {
             try
