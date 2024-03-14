@@ -80,10 +80,11 @@ namespace Core.Data.Repositories.Concrete {
             return Query<Assignments>(sql,new {id});
         }
 
-        public async Task<List<Assignments>> GetAllAssignments()
+        public async Task<List<Assignments>> GetAllAssignments( int teacherid)
         {
-            var sql = $@"Select * from Assignments";
-            return (List<Assignments>)await QueryAsync<Assignments>(sql);
+
+            var sql = $@"Select * from Assignments where  teacherid=@teacherid ";
+            return (List<Assignments>)await QueryAsync<Assignments>(sql,new {teacherid});
         }
 
     }
