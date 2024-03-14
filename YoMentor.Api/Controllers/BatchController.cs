@@ -18,7 +18,7 @@ namespace YoMentor.Api.Controllers
         }
 
         [HttpGet]
-        [Route("OpenBatchbyTeacherId")]
+        [Route("OpenBatchListbyTeacherId")]
        
         public IActionResult GetBatchDetails(int teacherId,int statusId) {
             try

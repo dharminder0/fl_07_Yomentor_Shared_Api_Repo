@@ -37,7 +37,7 @@ namespace Core.Business.Sevices.Concrete {
             try
             {
                 var res = statusId <= 0 ? _batchRepository.GetBatchDetailsbyId(teacherId) : _batchRepository.GetBatchDetails(teacherId, statusId);
-                if (res.Count==0) throw new Exception("Data is empty with this params");
+                if (res.Count == 0) throw new Exception("Data is empty with this params");
                 return res.Select(row => new BatchDto
                 {
                     BatchName = row.Name,
@@ -59,7 +59,7 @@ namespace Core.Business.Sevices.Concrete {
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return null;
             }
         }
 
