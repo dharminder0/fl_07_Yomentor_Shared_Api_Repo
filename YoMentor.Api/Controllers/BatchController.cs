@@ -17,13 +17,13 @@ namespace YoMentor.Api.Controllers
          _batchService = batchService;  
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("BatchListbyTeacherId")]
        
-        public IActionResult GetBatchDetails(int teacherId,int statusId) {
+        public async Task<IActionResult> GetBatchDetails(BatchRequest request ) {
             try
             {
-                var response = _batchService.BatchDetails(teacherId,statusId);
+                var response =await  _batchService.BatchDetails(request);
                 return JsonExt(response);
             }
             catch (Exception ex) { 
@@ -61,5 +61,6 @@ namespace YoMentor.Api.Controllers
             var response = _batchService.GetStudentDetailsbyBatchId(batchId);
             return JsonExt(response);
         }
+     
     }
 }

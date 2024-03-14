@@ -141,7 +141,10 @@ END
             var sql = "SELECT * FROM Users WHERE Id IN @StudentIds AND type = '3'";
             return Query<Users>(sql, new { StudentIds = studentId });
         }
-
+        public async Task<Users> GetUser(int Id) {
+            var sql = @" select * from users where id=@Id";
+            return await QueryFirstAsync<Users>(sql, new { Id });
+        }
 
 
 

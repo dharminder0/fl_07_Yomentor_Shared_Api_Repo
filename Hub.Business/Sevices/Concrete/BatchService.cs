@@ -5,6 +5,7 @@ using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
+using Core.Data.Repositories.Concrete;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
@@ -29,15 +30,15 @@ namespace Core.Business.Sevices.Concrete {
             _batchStudentsRepository = batchStudentsRepository;
             _userRepository = userRepository;
         }
-        public List<BatchDto> BatchDetails(int teacherId, int statusId)
+        public async Task<List<BatchDto>> BatchDetails(BatchRequest request)
         {
-            if (teacherId <= 0)
+            if (request.Userid <= 0)
                 throw new Exception("Teacher Id is blank!!!");
 
             try
             {
-                var res = statusId <= 0 ? _batchRepository.GetBatchDetailsbyId(teacherId) : _batchRepository.GetBatchDetails(teacherId, statusId);
-                if (res.Count == 0) throw new Exception("Data is empty with this params");
+                var res = await _batchRepository.GetBatchDetailsbyId(request);
+                if (res ==null) throw new Exception("Data is empty with this params");
                 BatchDto batch = new BatchDto();
                 List<BatchDto> batchDtos = new List<BatchDto>();    
                 foreach(var row in res) {
@@ -61,7 +62,19 @@ namespace Core.Business.Sevices.Concrete {
                 batch.Id = row.Id;
                 batch.StatusId = row.Status;
                 batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
-                batchDtos.Add(batch);
+                    TeacherInformation teacher = new TeacherInformation();
+                    if (request.UserType == 3) {
+                        var teacherdetails = await _userRepository.GetUser(row.TeacherId);
+                        teacher.Id = teacherdetails.Id;
+                        teacher.FirstName = teacherdetails.Firstname;
+                        teacher.LastName = teacherdetails.Lastname;
+                        teacher.Phone = teacherdetails.Phone;
+                        batch.TeacherInformation = teacher;
+                    }
+                  
+                    batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
+                    batchDtos.Add(batch);
+                   
                 }
 
                 return batchDtos;
@@ -153,7 +166,7 @@ namespace Core.Business.Sevices.Concrete {
 
             return listBatchStudentDetails;
         }
-
+     
     }
 
 }
