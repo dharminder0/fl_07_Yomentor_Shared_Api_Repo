@@ -38,8 +38,12 @@ namespace Core.Business.Sevices.Concrete {
             {
                 var res = statusId <= 0 ? _batchRepository.GetBatchDetailsbyId(teacherId) : _batchRepository.GetBatchDetails(teacherId, statusId);
                 if (res.Count == 0) throw new Exception("Data is empty with this params");
+                int BatchId = res.Select(item => item.Id).FirstOrDefault();
+                IEnumerable<int> count =_batchRepository.CounterStudent(BatchId);
+                int noofstudents = count.ElementAt(0);
                 return res.Select(row => new BatchDto
-                {
+                {  
+                    ActualStudents= noofstudents,
                     BatchName = row.Name,
                     StartDate = row.StartDate,
                     UpdateDate = row.UpdateDate,

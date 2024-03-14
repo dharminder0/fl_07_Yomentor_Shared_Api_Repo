@@ -20,6 +20,12 @@ namespace Core.Data.Repositories.Concrete
             return (List<Batch>)res;
         }
 
+        public IEnumerable<int> CounterStudent(int batchId)
+        {
+            var sql = $"select Count(studentid) from batch_students where batchId=@batchId";
+            var res = Query<int>(sql, new {batchId});   
+            return (IEnumerable<int>)res;
+        }
         public List<Batch> GetBatchDetails(int teacherId, int statusId)
         {
             var sql = $"Select * from dbo.Batch where teacherid=@teacherId and status=@statusId and isdeleted=0";
