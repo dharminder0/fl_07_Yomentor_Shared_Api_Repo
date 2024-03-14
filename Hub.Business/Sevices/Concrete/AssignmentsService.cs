@@ -29,7 +29,7 @@ namespace Core.Business.Sevices.Concrete {
             assignments.Teacherid = assignmentsRequest.Teacherid;   
             assignments.Isdeleted = assignmentsRequest.Isdeleted;
             assignments.Subjectid = assignmentsRequest.Subjectid;
-            assignments.GradeId = assignments.GradeId;
+            assignments.GradeId = assignmentsRequest.GradeId;
             assignments.Isfavorite = assignmentsRequest.Isfavorite; 
             if (assignmentsRequest.Id == 0) {
               int InsertedId= await  _assignmentsRepo.InsertAssignment(assignments);
