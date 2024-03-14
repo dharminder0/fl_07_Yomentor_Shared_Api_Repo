@@ -14,7 +14,7 @@ namespace Core.Business.Entities.DTOs {
         public string FeeType { get; set; }
         public int StudentCount { get; set; }
         public List<string> Days { get; set; }
-        
+        public int ActualStudents { get; set; }
         public string Status { get; set; }
         public int StatusId { get; set; }
 
