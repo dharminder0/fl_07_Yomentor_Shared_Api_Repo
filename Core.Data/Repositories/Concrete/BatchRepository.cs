@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Data.Repositories.Concrete
 {
@@ -16,7 +17,14 @@ namespace Core.Data.Repositories.Concrete
         {
             var sql =$"Select * from dbo.Batch where teacherid=@teacherId and isdeleted=0";
             var res=  Query<Batch>(sql, new {teacherId});
-            return (List<Batch>)res;    
+            return (List<Batch>)res;
+        }
+
+        public List<Batch> GetBatchDetails(int teacherId, int statusId)
+        {
+            var sql = $"Select * from dbo.Batch where teacherid=@teacherId and status=@statusId and isdeleted=0";
+            var res = Query<Batch>(sql, new { teacherId ,statusId});
+            return (List<Batch>)res;
         }
         public IEnumerable<Batch> GetBatchDetailsbybatchId(int batchId)
         {

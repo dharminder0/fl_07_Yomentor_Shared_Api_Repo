@@ -29,70 +29,40 @@ namespace Core.Business.Sevices.Concrete {
             _batchStudentsRepository = batchStudentsRepository;
             _userRepository = userRepository;
         }
-        public List<BatchDto> BatchDetailsByTeacherId(int teacherId)
+        public List<BatchDto> BatchDetails(int teacherId, int statusId)
         {
-            BatchDto obj = new BatchDto(); 
             if (teacherId <= 0)
-            {
                 throw new Exception("Teacher Id is blank!!!");
+
+            try
+            {
+                var res = statusId <= 0 ? _batchRepository.GetBatchDetailsbyId(teacherId) : _batchRepository.GetBatchDetails(teacherId, statusId);
+                if (res.Count==0) throw new Exception("Data is empty with this params");
+                return res.Select(row => new BatchDto
+                {
+                    BatchName = row.Name,
+                    StartDate = row.StartDate,
+                    UpdateDate = row.UpdateDate,
+                    CreateDate = row.CreateDate,
+                    Description = row.Description,
+                    TuitionTime = row.TuitionTime,
+                    ClassName = _gradeRepository.GetGradeName(row.GradeId),
+                    SubjectName = _subjectRepository.GetSubjectName(row.SubjectId),
+                    Fee = row.Fee,
+                    StudentCount = row.StudentCount,
+                    Status = System.Enum.GetName(typeof(Status), row.Status),
+                    FeeType = System.Enum.GetName(typeof(FeeType), row.FeeType),
+                    Id = row.Id,
+                    StatusId = row.Status,
+                    Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null
+                }).ToList();
             }
-
-            try {
-                var res = _batchRepository.GetBatchDetailsbyId(teacherId);
-
-                List<BatchDto> batchDtos = new List<BatchDto>();
-                foreach (var row in res) {
-                    string className = _gradeRepository.GetGradeName(row.GradeId);
-                    string subjectName = _subjectRepository.GetSubjectName(row.SubjectId);
-                    if (row.Days == null) {
-                        obj = new BatchDto();
-                        obj.BatchName=row.Name;
-                        obj.StartDate = row.StartDate;
-                        obj.UpdateDate = row.UpdateDate;
-                        obj.CreateDate = row.CreateDate;
-                        obj.Description = row.Description;
-                        obj.TuitionTime = row.TuitionTime;
-                        obj.ClassName = className;
-                        obj.SubjectName = subjectName;
-                        obj.Fee = row.Fee;
-                        obj.StudentCount = row.StudentCount;
-                        obj.Id = row.Id;
-                        obj.Status = System.Enum.GetName(typeof(Status), row.Status);
-                        obj.FeeType = System.Enum.GetName(typeof(FeeType), row.FeeType);
-                        obj.StatusId = row.Status;
-                        batchDtos.Add(obj);
-                    }
-                    else {
-
-                        List<Days> days = ConvertToDays(row.Days);
-                        List<string> ob = new List<string>();
-                        foreach (var day in days) {
-                            ob.Add(day.ToString());
-                        }
-                        obj = new BatchDto();
-                        obj.BatchName = row.Name;
-                        obj.StartDate = row.StartDate;
-                        obj.UpdateDate = row.UpdateDate;
-                        obj.CreateDate = row.CreateDate;
-                        obj.Description = row.Description;
-                        obj.TuitionTime = row.TuitionTime;
-                        obj.ClassName = className;
-                        obj.SubjectName = subjectName;
-                        obj.Fee = row.Fee;
-                        obj.StudentCount = row.StudentCount;
-                        obj.Status = System.Enum.GetName(typeof(Status), row.Status);
-                        obj.FeeType = System.Enum.GetName(typeof(FeeType), row.FeeType);
-                        obj.Id = row.Id;
-                        obj.Days = ob;
-                        obj.StatusId = row.Status;
-                        batchDtos.Add(obj);
-                    }
-                }
-                return batchDtos;
-            } catch (Exception ex) {
-                return null;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
+
 
         public async Task<ActionMassegeResponse> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest)
         {
