@@ -54,11 +54,11 @@ namespace Core.Business.Sevices.Concrete {
 
         }
 
-        public async Task<List<Assignments>> GetAllAssignments()
+        public async Task<List<Assignments>> GetAllAssignments(int teacherid)
         {
             try
             {
-                var res = await _assignmentsRepo.GetAllAssignments();
+                var res = await _assignmentsRepo.GetAllAssignments(teacherid);
                 return res;
             }
             catch (Exception ex)

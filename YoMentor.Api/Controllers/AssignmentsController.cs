@@ -34,13 +34,17 @@ namespace YoMentor.Api.Controllers {
             var response= _assignmentsService.GetAssignment(id);
             return JsonExt(response);
         }
-
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="teacherid"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("GetAssignmentsList")]
+        [Route("GetAssignmentsList/teacherid")]
 
-        public async Task<IActionResult> GetAssignmentList()
+        public async Task<IActionResult> GetAssignmentList(int teacherid)
         {
-            var response = await _assignmentsService.GetAllAssignments();
+            var response = await _assignmentsService.GetAllAssignments(teacherid);
             return JsonExt(response);
         }
     }

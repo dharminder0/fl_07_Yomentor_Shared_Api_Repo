@@ -58,11 +58,11 @@ namespace Core.Business.Sevices.Concrete {
                 return null;
             }
         }
-        public async Task<List<Assessments>> GetAssessmentsAllList()
+        public async Task<List<Assessments>> GetAssessmentsAllList(int teacherid)
         {
             try
             {
-                var res = await _assessmentsRepository.GetAssessmentsAllList();
+                var res = await _assessmentsRepository.GetAssessmentsAllList(teacherid);
                 return res;
             }
             catch (Exception ex)
