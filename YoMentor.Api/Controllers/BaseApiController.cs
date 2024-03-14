@@ -1,9 +1,4 @@
 ﻿
-
-
-
-
-
 using Hub.Common.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
