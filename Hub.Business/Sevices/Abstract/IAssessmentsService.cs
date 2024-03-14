@@ -1,6 +1,7 @@
 ﻿using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
+using Core.Common.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace Core.Business.Sevices.Abstract {
         Task<ActionMessageResponse> InsertOrUpdateAssessments(AssessmentsRequest assessmentsRequest);
         IEnumerable<Assessments> GetAssessmentsList(int id);
         Task<List<Assessments>> GetAssessmentsAllList(int teacherid);
+        Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequest request);
+        Task<List<AssessmentResponse>> GetAssessmentByBatch(int batchId);
     }
 }

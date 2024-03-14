@@ -7,5 +7,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> UpdateAssessments(Assessments assignment);
         IEnumerable<Assessments> GetAssessmentsList(int id);
         Task<List<Assessments>> GetAssessmentsAllList(int teacherid);
+        Task<IEnumerable<Assessments>> GetAssignmentsByBatch(int batchId);
     }
 }

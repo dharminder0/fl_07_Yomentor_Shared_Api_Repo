@@ -1,6 +1,7 @@
 ﻿using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
+using Core.Business.Sevices.Concrete;
 using Hub.Web.Api.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,29 @@ namespace YoMentor.Api.Controllers {
         public async Task<IActionResult> GetAssessmentsAllList(int teacherid)
         {
             var response = await _service.GetAssessmentsAllList(teacherid);
+            return JsonExt(response);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Route("AssignStudentAssessments")]
+        [HttpPost]
+
+        public async Task<IActionResult> AssignStudentAssessments(StudentAssessmentRequest request) {
+            var response = await _service.AssignStudentAssessment(request);
+            return JsonExt(response);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="batchId"></param>
+        /// <returns></returns>
+        [Route("GetAssessmentsList/batchId")]
+        [HttpPost]
+        public async Task<IActionResult> GetAssessmentByBatch(int batchId) {
+            var response = await _service.GetAssessmentByBatch(batchId);
             return JsonExt(response);
         }
     }

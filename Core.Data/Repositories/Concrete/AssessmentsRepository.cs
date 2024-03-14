@@ -92,5 +92,11 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid";
             return (List<Assessments>)await QueryAsync<Assessments>(sql,new { teacherid });
         }
+        public async Task<IEnumerable<Assessments>> GetAssignmentsByBatch(int batchId) {
+
+            var sql = $@" select  A.*  from Assessments A join  student_assessments SA on A.id=SA.assessmentid where SA.batchid=@batchId ";
+            return await QueryAsync<Assessments>(sql, new { batchId });
+          
+        }
     }
 }
