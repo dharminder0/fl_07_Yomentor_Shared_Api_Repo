@@ -11,7 +11,7 @@ namespace Core.Business.Entities.RequestModels {
         public string UserToken { get; set; }
     }
     public class ChangePasswordRequest {
-        public string phone { get; set; }
+        public string Phone { get; set; }
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
     }
