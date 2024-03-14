@@ -87,10 +87,10 @@ namespace Core.Data.Repositories.Concrete {
             return Query<Assessments>(sql, new { id }).ToList();
         }
 
-        public async Task<List<Assessments>> GetAssessmentsAllList()
+        public async Task<List<Assessments>> GetAssessmentsAllList(int teacherid)
         {
-            var sql = @"select * from [dbo].[assessments]";
-            return (List<Assessments>)await QueryAsync<Assessments>(sql);
+            var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid";
+            return (List<Assessments>)await QueryAsync<Assessments>(sql,new { teacherid });
         }
     }
 }

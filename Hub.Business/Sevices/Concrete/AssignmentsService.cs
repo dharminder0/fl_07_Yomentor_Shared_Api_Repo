@@ -29,7 +29,7 @@ namespace Core.Business.Sevices.Concrete {
             assignments.Teacherid = assignmentsRequest.Teacherid;   
             assignments.Isdeleted = assignmentsRequest.Isdeleted;
             assignments.Subjectid = assignmentsRequest.Subjectid;
-            assignments.GradeId = assignments.GradeId;
+            assignments.GradeId = assignmentsRequest.GradeId;
             assignments.Isfavorite = assignmentsRequest.Isfavorite; 
             if (assignmentsRequest.Id == 0) {
               int InsertedId= await  _assignmentsRepo.InsertAssignment(assignments);
@@ -54,11 +54,11 @@ namespace Core.Business.Sevices.Concrete {
 
         }
 
-        public async Task<List<Assignments>> GetAllAssignments()
+        public async Task<List<Assignments>> GetAllAssignments(int teacherid)
         {
             try
             {
-                var res = await _assignmentsRepo.GetAllAssignments();
+                var res = await _assignmentsRepo.GetAllAssignments(teacherid);
                 return res;
             }
             catch (Exception ex)

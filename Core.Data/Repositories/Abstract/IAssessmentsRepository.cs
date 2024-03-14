@@ -6,6 +6,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> InsertAssessments(Assessments assignment);
         Task<int> UpdateAssessments(Assessments assignment);
         IEnumerable<Assessments> GetAssessmentsList(int id);
-        Task<List<Assessments>> GetAssessmentsAllList();
+        Task<List<Assessments>> GetAssessmentsAllList(int teacherid);
     }
 }

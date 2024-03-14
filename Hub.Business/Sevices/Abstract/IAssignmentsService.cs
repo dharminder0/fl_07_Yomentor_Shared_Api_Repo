@@ -11,6 +11,6 @@ namespace Core.Business.Sevices.Abstract {
     public interface IAssignmentsService {
         Task<ActionMassegeResponse> InsertOrUpdateAssignments(AssignmentsRequest assignmentsRequest);
         IEnumerable<Assignments> GetAssignment(int id);
-        Task<List<Assignments>> GetAllAssignments();
+        Task<List<Assignments>> GetAllAssignments(int teacherid);
     }
 }
