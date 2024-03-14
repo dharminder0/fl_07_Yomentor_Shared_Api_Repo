@@ -13,11 +13,25 @@ namespace Core.Data.Repositories.Concrete
 {
     public class BatchRepository : DataRepository<Batch>, IBatchRepository
     {
-        public List<Batch> GetBatchDetailsbyId(int teacherId)
+        public async Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequest request)
         {
-            var sql =$"Select * from dbo.Batch where teacherid=@teacherId and isdeleted=0";
-            var res=  Query<Batch>(sql, new {teacherId});
-            return (List<Batch>)res;
+            var sql = @" select B.* from Batch B  ";
+            if (request.UserType == 3) {
+                sql += $@" join  batch_students BS on B.id=BS.batchid  where BS.studentId= @userId ";
+            }
+            if (request.UserType == 1) {
+                sql += $@" where B.teacherId= @userId ";
+            }
+
+            if (request.StatusId!= null) {
+                sql += $@" and B.status in @StatusId ";
+            }
+            if(request.PageIndex  > 0 && request.PageIndex > 0) {
+                sql += $@" ORDER BY B.status DESC
+                 OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
+
+            }
+            return  await QueryAsync<Batch>(sql, request);
         }
 
         public IEnumerable<int> CounterStudent(int batchId)
@@ -118,6 +132,15 @@ END ;";
         }
 
 
-        
+        public async Task<IEnumerable<Batch>> GetBatchDetailsbyStudentId(int studentId) {
+            var sql = $"select  B. *, BS.studentid from Batch B join batch_students BS on B.id=BS.batchid  where BS.studentid=@studentId  and B.isdeleted=0";
+            return  await QueryAsync<Batch>(sql , new {studentId});    
+            
+        }
+        public  async Task<List<Batch>> GetBatchDetailsV2(int teacherId, int statusId) {
+            var sql = $"Select * from dbo.Batch where teacherid=@teacherId and status=@statusId and isdeleted=0";
+            var res =await  QueryAsync<Batch>(sql, new { teacherId, statusId });
+            return (List<Batch>)res;
+        }
     }
 }

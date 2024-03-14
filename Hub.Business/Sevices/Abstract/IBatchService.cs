@@ -20,7 +20,8 @@ namespace Core.Business.Sevices.Abstract
         Task<ActionMassegeResponse> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest);
 
         List<BatchStudentDetailsDto> GetStudentDetailsbyBatchId(int batchId);
-        List<BatchDto> BatchDetails(int teacherId, int statusId);
+        Task<List<BatchDto>> BatchDetails(BatchRequest request);
+        
 
     }
 }
