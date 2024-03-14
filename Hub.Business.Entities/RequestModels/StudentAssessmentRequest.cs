@@ -9,7 +9,7 @@ namespace Core.Business.Entities.RequestModels {
         public int StudentId { get; set; }
         public int BatchId { get; set; }
         public int AssessmentId { get; set; }
-        public string Status { get; set; }
+        public string? Status { get; set; }
         public double Marks { get; set; }
     }
 }

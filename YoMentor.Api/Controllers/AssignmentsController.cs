@@ -65,7 +65,7 @@ namespace YoMentor.Api.Controllers {
         /// <param name="batchId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("list/batchId")]
+        [Route("GetAssignmentsList/batchId")]
         public async Task<IActionResult> GetAssignmentsByBatch(int batchId) {
             var response=await _assignmentsService.GetAssignmentsByBatch(batchId);  
             return JsonExt(response);   

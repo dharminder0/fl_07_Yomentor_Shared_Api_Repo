@@ -17,7 +17,15 @@ namespace Core.Business.Entities.DTOs {
         public int ActualStudents { get; set; }
         public string Status { get; set; }
         public int StatusId { get; set; }
+        public TeacherInformation TeacherInformation { get; set; }
+
 
     }
 
+    public class TeacherInformation {
+        public int Id { get; set; }
+        public string  FirstName { get; set; }
+        public string  LastName { get; set; }
+        public string  Phone { get; set; }
+    }
 }

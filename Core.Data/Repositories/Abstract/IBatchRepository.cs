@@ -13,10 +13,12 @@ namespace Core.Data.Repositories.Abstract
 
         Task<int> InsertBatchDetails(BatchDetailRequest batchDetailRequest);
 
-        List<Batch> GetBatchDetailsbyId(int teacherId);
+        Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequest request);
         Task<int> UpdateBatchDetails(BatchDetailRequest batchDetailRequest);
         IEnumerable<Batch> GetBatchDetailsbybatchId(int batchId);
         List<Batch> GetBatchDetails(int teacherId, int statusId);
         IEnumerable<int> CounterStudent(int batchId);
+        Task<IEnumerable<Batch>> GetBatchDetailsbyStudentId(int studentId);
+         Task<List<Batch>> GetBatchDetailsV2(int teacherId, int statusId);
     }
 }
