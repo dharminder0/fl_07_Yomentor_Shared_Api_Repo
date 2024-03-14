@@ -90,11 +90,11 @@ namespace Core.Business.Services.Concrete {
         }
         public async Task<ActionMessageResponse> ChangePassword(ChangePasswordRequest model) {
             try {
-                if (model == null && string.IsNullOrWhiteSpace(model.phone) && string.IsNullOrWhiteSpace(model.CurrentPassword) && string.IsNullOrWhiteSpace(model.NewPassword)) {
+                if (model == null && string.IsNullOrWhiteSpace(model.Phone) && string.IsNullOrWhiteSpace(model.CurrentPassword) && string.IsNullOrWhiteSpace(model.NewPassword)) {
                     return new ActionMessageResponse { Success = false, Message = "Required Parameter missing" };
                 }
 
-                var user = _userRepository.GetUsersInfoByUserName(model.phone).FirstOrDefault();
+                var user = _userRepository.GetUsersInfoByUserName(model.Phone).FirstOrDefault();
                 if (user != null) {
                     var saltBytes = user.PasswordSalt;
                     var oldHashedPassword = Hasher.HashPassword(saltBytes, model.CurrentPassword);

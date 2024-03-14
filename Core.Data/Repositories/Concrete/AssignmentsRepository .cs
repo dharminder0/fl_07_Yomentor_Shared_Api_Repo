@@ -22,6 +22,8 @@ namespace Core.Data.Repositories.Concrete {
                 GradeId,
                 Subjectid,
                 Isfavorite,
+                createdate,
+                updatedate,
                 Isdeleted
 
             )
@@ -33,6 +35,8 @@ namespace Core.Data.Repositories.Concrete {
                 @GradeId,
                 @Subjectid,
                 @Isfavorite,
+                getutcdate(),
+                getutcdate(),
                 @Isdeleted
             );
 
@@ -85,6 +89,11 @@ namespace Core.Data.Repositories.Concrete {
 
             var sql = $@"Select * from Assignments where  teacherid=@teacherid ";
             return (List<Assignments>)await QueryAsync<Assignments>(sql,new {teacherid});
+        }
+        public async Task<IEnumerable<Assignments>> GetAssignmentsByBatch(int batchId) {
+
+            var sql = $@"select  A.*  from Assignments A join  student_assignments SA on A.id=SA.assignmentid where SA.batchid=@batchId ";
+            return (List<Assignments>)await QueryAsync<Assignments>(sql, new { batchId });
         }
 
     }

@@ -47,5 +47,28 @@ namespace YoMentor.Api.Controllers {
             var response = await _assignmentsService.GetAllAssignments(teacherid);
             return JsonExt(response);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+       
+        [Route("AssignStudentAssignments")]
+        [HttpPost]
+
+        public async Task<IActionResult> AssignStudentAssignments(StudentAssignmentsRequest request) {
+            var response = await _assignmentsService.AssignStudentAssignments(request);
+            return JsonExt(response);
+        }/// <summary>
+        /// 
+        /// </summary>
+        /// <param name="batchId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("list/batchId")]
+        public async Task<IActionResult> GetAssignmentsByBatch(int batchId) {
+            var response=await _assignmentsService.GetAssignmentsByBatch(batchId);  
+            return JsonExt(response);   
+        }
     }
 }
