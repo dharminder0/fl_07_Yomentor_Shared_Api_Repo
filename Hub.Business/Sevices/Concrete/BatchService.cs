@@ -38,28 +38,33 @@ namespace Core.Business.Sevices.Concrete {
             {
                 var res = statusId <= 0 ? _batchRepository.GetBatchDetailsbyId(teacherId) : _batchRepository.GetBatchDetails(teacherId, statusId);
                 if (res.Count == 0) throw new Exception("Data is empty with this params");
-                int BatchId = res.Select(item => item.Id).FirstOrDefault();
-                IEnumerable<int> count =_batchRepository.CounterStudent(BatchId);
+                BatchDto batch = new BatchDto();
+                List<BatchDto> batchDtos = new List<BatchDto>();    
+                foreach(var row in res) {
+                batch = new BatchDto();
+                int BatchId = row.Id;
+                IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
                 int noofstudents = count.ElementAt(0);
-                return res.Select(row => new BatchDto
-                {  
-                    ActualStudents= noofstudents,
-                    BatchName = row.Name,
-                    StartDate = row.StartDate,
-                    UpdateDate = row.UpdateDate,
-                    CreateDate = row.CreateDate,
-                    Description = row.Description,
-                    TuitionTime = row.TuitionTime,
-                    ClassName = _gradeRepository.GetGradeName(row.GradeId),
-                    SubjectName = _subjectRepository.GetSubjectName(row.SubjectId),
-                    Fee = row.Fee,
-                    StudentCount = row.StudentCount,
-                    Status = System.Enum.GetName(typeof(Status), row.Status),
-                    FeeType = System.Enum.GetName(typeof(FeeType), row.FeeType),
-                    Id = row.Id,
-                    StatusId = row.Status,
-                    Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null
-                }).ToList();
+                batch.ActualStudents = noofstudents;
+                batch.BatchName = row.Name;
+                batch.StartDate = row.StartDate;
+                batch.UpdateDate = row.UpdateDate;
+                batch.CreateDate = row.CreateDate;
+                batch.Description = row.Description;
+                batch.TuitionTime = row.TuitionTime;
+                batch.ClassName = _gradeRepository.GetGradeName(row.GradeId);
+                batch.SubjectName = _subjectRepository.GetSubjectName(row.SubjectId);
+                batch.Fee = row.Fee;
+                batch.StudentCount = row.StudentCount;
+                batch.Status = System.Enum.GetName(typeof(Status), row.Status);
+                batch.FeeType = System.Enum.GetName(typeof(FeeType), row.FeeType);
+                batch.Id = row.Id;
+                batch.StatusId = row.Status;
+                batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
+                batchDtos.Add(batch);
+                }
+
+                return batchDtos;
             }
             catch (Exception ex)
             {
