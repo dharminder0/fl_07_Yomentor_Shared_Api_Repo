@@ -56,9 +56,9 @@ namespace Core.Business.Sevices.Concrete {
 
         }
 
-        public async Task<List<Assignments>> GetAllAssignments(int teacherid) {
+        public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequest request) {
             try {
-                var res = await _assignmentsRepo.GetAllAssignments(teacherid);
+                var res = await _assignmentsRepo.GetAllAssignments(request);
                 return res;
             } catch (Exception ex) {
                 return null;

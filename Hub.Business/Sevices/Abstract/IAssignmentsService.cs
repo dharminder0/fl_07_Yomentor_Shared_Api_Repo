@@ -12,7 +12,7 @@ namespace Core.Business.Sevices.Abstract {
     public interface IAssignmentsService {
         Task<ActionMassegeResponse> InsertOrUpdateAssignments(AssignmentsRequest assignmentsRequest);
         IEnumerable<Assignments> GetAssignment(int id);
-        Task<List<Assignments>> GetAllAssignments(int teacherid);
+        Task<List<Assignments>> GetAllAssignments(StudentProgressRequest request);
         Task<ActionMassegeResponse> AssignStudentAssignments(StudentAssignmentsRequest request);
         Task<List<AssignmentsResponse>> GetAssignmentsByBatch(ListRequest request);
     }

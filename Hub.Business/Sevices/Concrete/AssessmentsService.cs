@@ -64,11 +64,11 @@ namespace Core.Business.Sevices.Concrete {
                 return null;
             }
         }
-        public async Task<List<Assessments>> GetAssessmentsAllList(int teacherid)
+        public async Task<List<Assessments>> GetAssessmentsAllList(StudentProgressRequest request)
         {
             try
             {
-                var res = await _assessmentsRepository.GetAssessmentsAllList(teacherid);
+                var res = await _assessmentsRepository.GetAssessmentsAllList(request);
                 return res;
             }
             catch (Exception ex)

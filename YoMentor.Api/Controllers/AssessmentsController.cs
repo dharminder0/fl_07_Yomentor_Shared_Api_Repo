@@ -45,11 +45,11 @@ namespace YoMentor.Api.Controllers {
      /// </summary>
      /// <param name="teacherid"></param>
      /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Route("GetAssessmentsList/teacherid")]
-        public async Task<IActionResult> GetAssessmentsAllList(int teacherid)
+        public async Task<IActionResult> GetAssessmentsAllList(StudentProgressRequest request )
         {
-            var response = await _service.GetAssessmentsAllList(teacherid);
+            var response = await _service.GetAssessmentsAllList(request);
             return JsonExt(response);
         }
         /// <summary>
