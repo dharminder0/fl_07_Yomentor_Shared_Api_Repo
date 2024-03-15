@@ -21,5 +21,6 @@ namespace Core.Business.Entities.DataModels {
         public string  Description { get; set; }
         public DateTime Createdate { get; set; }
         public DateTime Updatedate { get; set; }
+        public DateTime AssignedDate { get; set; }
     }
 }

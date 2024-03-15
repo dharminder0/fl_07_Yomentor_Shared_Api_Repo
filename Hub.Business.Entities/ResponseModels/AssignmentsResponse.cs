@@ -16,5 +16,9 @@ namespace Core.Business.Entities.ResponseModels {
         public bool Isdeleted { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        public string  GradeName { get; set; }
+        public string  SubjectName { get; set; }
+        public DateTime AssignedDate { get; set; }
     }
+
 }

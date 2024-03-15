@@ -1,4 +1,5 @@
 ﻿using Core.Common.Data;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace Core.Business.Entities.DataModels {
         public int AssessmentId { get; set; }
         public string Status { get; set; }
         public double Marks { get; set; }
+        public DateTime AssignedDate { get; set; }
     }
 }

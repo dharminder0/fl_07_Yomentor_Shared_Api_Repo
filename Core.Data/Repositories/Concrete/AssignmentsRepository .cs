@@ -85,8 +85,7 @@ namespace Core.Data.Repositories.Concrete {
             return Query<Assignments>(sql,new {id});
         }
 
-        public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequest request)
-        {
+        public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequest request) {
 
             var sql = $@"Select * from Assignments where  teacherid=@TeacherId ";
             if (request.PageIndex > 0 && request.PageIndex > 0) {
@@ -94,19 +93,27 @@ namespace Core.Data.Repositories.Concrete {
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
             }
-            return (List<Assignments>)await QueryAsync<Assignments>(sql,request);
+            return (List<Assignments>)await QueryAsync<Assignments>(sql, request);
         }
-        public async Task<IEnumerable<Assignments>> GetAssignmentsByBatch(ListRequest request) {
+            public async Task<IEnumerable<Assignments>> GetAssignmentsByBatch(ListRequest request) {
 
-            var sql = $@"select  A.*  from Assignments A join  student_assignments SA on A.id=SA.assignmentid where SA.batchid=@batchId ";
-            if (request.PageIndex > 0 && request.PageIndex > 0) {
-                sql += $@" ORDER BY A.Id DESC
+                var sql = $@"SELECT A.*,DistinctAssignments.AssignedDate
+FROM (
+    SELECT DISTINCT SA.AssignmentId, SA.AssignedDate
+    FROM Assignments A
+    JOIN student_assignments SA ON A.id = SA.assignmentid
+    WHERE SA.batchid = @batchId
+) AS DistinctAssignments
+JOIN Assignments A ON A.id = DistinctAssignments.AssignmentId
+ ";
+                if (request.PageIndex > 0 && request.PageIndex > 0) {
+                    sql += $@" ORDER BY A.Id DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
+                }
+
+                return (List<Assignments>)await QueryAsync<Assignments>(sql, request);
             }
 
-            return (List<Assignments>)await QueryAsync<Assignments>(sql,request);
         }
-
-    }
 }

@@ -98,9 +98,17 @@ namespace Core.Data.Repositories.Concrete {
             }
             return (List<Assessments>)await QueryAsync<Assessments>(sql, request);
         }
-        public async Task<IEnumerable<Assessments>> GetAssignmentsByBatch(ListRequest request) {
+        public async Task<IEnumerable<Assessments>> GetAssessmentsByBatch(ListRequest request) {
 
-            var sql = $@" select  A.*  from Assessments A join  student_assessments SA on A.id=SA.assessmentid where SA.batchid=@batchId ";
+            var sql = $@" SELECT A.*, DistinctAssessments.AssignedDate
+FROM (
+    SELECT DISTINCT SA.AssessmentId, SA.AssignedDate
+    FROM Assessments A
+    JOIN student_assessments SA ON A.id = SA.assessmentid
+    WHERE SA.batchid = @batchId
+) AS DistinctAssessments
+JOIN Assessments A ON A.id = DistinctAssessments.AssessmentId
+ ";
             if (request.PageIndex > 0 && request.PageIndex > 0) {
                 sql += $@" ORDER BY A.Id DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";

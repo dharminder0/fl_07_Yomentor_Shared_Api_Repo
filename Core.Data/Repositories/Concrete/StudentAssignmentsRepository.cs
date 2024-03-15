@@ -18,14 +18,16 @@ namespace Core.Data.Repositories.Concrete {
                 StudentId,
                 BatchId,
                 AssignmentId,
-                status
+                status,
+                AssignedDate
             )
             VALUES
             (
                 @StudentId,
                 @BatchId,
                 @AssignmentId,
-                @Status
+                @Status,
+                GetUtcDate()
             );
 
             SELECT SCOPE_IDENTITY();

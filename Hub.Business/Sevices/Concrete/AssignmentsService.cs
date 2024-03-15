@@ -4,6 +4,7 @@ using Core.Business.Entities.ResponseModels;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
+using Core.Data.Repositories.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,15 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IStudentAssignmentsRepository _studentAssignmentsRepo;
         private readonly IBatchRepository _batchRepository;
         private readonly IBatchStudentsRepository _batchStudentsRepository;
-        public AssignmentsService(IAssignmentsRepository assignmentsRepo, IStudentAssignmentsRepository studentAssignmentsRepo, IBatchRepository batchRepository, IBatchStudentsRepository batchStudentsRepository) {
+        private readonly IGradeRepository _gradeRepository;
+        public  readonly  ISubjectRepository _subjectRepository; 
+        public AssignmentsService(IAssignmentsRepository assignmentsRepo, IStudentAssignmentsRepository studentAssignmentsRepo, IBatchRepository batchRepository, IBatchStudentsRepository batchStudentsRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) {
             _assignmentsRepo = assignmentsRepo;
             _studentAssignmentsRepo = studentAssignmentsRepo;
             _batchRepository = batchRepository;
             _batchStudentsRepository = batchStudentsRepository;
-
+            _gradeRepository = gradeRepository;
+            _subjectRepository = subjectRepository;
         }
         public async Task<ActionMassegeResponse> InsertOrUpdateAssignments(AssignmentsRequest assignmentsRequest) {
             if (assignmentsRequest == null) {
@@ -56,9 +60,31 @@ namespace Core.Business.Sevices.Concrete {
 
         }
 
-        public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequest request) {
+        public async Task<List<AssignmentsResponse>> GetAllAssignments(StudentProgressRequest request) {
             try {
-                var res = await _assignmentsRepo.GetAllAssignments(request);
+                var response = await _assignmentsRepo.GetAllAssignments(request);
+                List <AssignmentsResponse> res = new List<AssignmentsResponse>();  
+
+
+                foreach (var item in response) {
+                    AssignmentsResponse obj = new AssignmentsResponse();
+
+                    obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+                    obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
+                    obj.Subjectid = item.Subjectid;
+                    obj.Teacherid = item.Teacherid;
+                    obj.Title = item.Title;
+                    obj.Description = item.Description;
+                    obj.Isfavorite = item.Isfavorite;
+                    obj.GradeId = item.GradeId;
+                    obj.Id = item.Id;
+                    obj.CreateDate = item.CreateDate;
+                    obj.UpdateDate = item.UpdateDate;
+                 
+                    res.Add(obj);
+
+                }
+
                 return res;
             } catch (Exception ex) {
                 return null;
@@ -96,6 +122,8 @@ namespace Core.Business.Sevices.Concrete {
           var response=await   _assignmentsRepo.GetAssignmentsByBatch(request);
             foreach (var item in response) {
                 AssignmentsResponse obj = new AssignmentsResponse();
+                obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+                obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
                 obj.Subjectid = item.Subjectid; 
                 obj.Teacherid=item.Teacherid;   
                 obj.Title = item.Title; 
@@ -103,8 +131,8 @@ namespace Core.Business.Sevices.Concrete {
                 obj.Isfavorite  = item.Isfavorite;
                 obj.GradeId = item.GradeId;
                 obj.Id= item.Id;  
-                obj.CreateDate= item.CreateDate;    
-                obj.UpdateDate= item.UpdateDate;    
+                obj.AssignedDate= item.AssignedDate;    
+                    
                 res.Add(obj);   
 
             }

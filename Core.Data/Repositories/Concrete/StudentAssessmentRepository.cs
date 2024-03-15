@@ -18,7 +18,8 @@ namespace Core.Data.Repositories.Abstract {
             BatchId,
             AssessmentId,
             Status,
-            Marks
+            Marks,
+            AssignedDate
         )
         VALUES
         (
@@ -26,7 +27,8 @@ namespace Core.Data.Repositories.Abstract {
             @BatchId,
             @AssessmentId,
             @Status,
-            @Marks
+            @Marks,
+            GetUtcdate()
         );
 
         SELECT SCOPE_IDENTITY();

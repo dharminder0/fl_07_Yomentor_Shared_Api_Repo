@@ -15,5 +15,6 @@ namespace Core.Business.Entities.DataModels {
         public int BatchId { get; set; }
         public int AssignmentId { get; set; }
         public int Status { get; set; }
+        public DateTime AssignedDate { get; set; }
     }
 }

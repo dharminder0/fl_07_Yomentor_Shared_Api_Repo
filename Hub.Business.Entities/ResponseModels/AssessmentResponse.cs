@@ -17,5 +17,8 @@ namespace Core.Business.Entities.ResponseModels {
         public string Description { get; set; }
         public DateTime Createdate { get; set; }
         public DateTime Updatedate { get; set; }
+        public  string GradeName { get; set; }
+        public string SubjectName { get; set; }
+        public DateTime AssignedDate { get; set; }
     }
 }
