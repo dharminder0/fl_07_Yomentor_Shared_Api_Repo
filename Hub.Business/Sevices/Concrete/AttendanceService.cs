@@ -50,6 +50,9 @@ namespace Core.Business.Sevices.Concrete
                 attendance.UpdateDate = item.UpdateDate;    
                 attendance.CreateDate = item.CreateDate;
                 attendance.BatchId = item.BatchId;
+                attendance.FirstName=item.FirstName;    
+                attendance.LastName=item.LastName;  
+                attendance.Phone=item.Phone;    
                 obj.Add(attendance);
 
             }

@@ -17,6 +17,9 @@ namespace Core.Business.Entities.DataModels
         public DateTime Date { get; set; }
         public int Status {  get; set; }    
         public DateTime CreateDate { get; set; }=DateTime.Now;
-        public DateTime UpdateDate { get; set; }   
+        public DateTime UpdateDate { get; set; }
+        public string   FirstName { get; set; }
+        public string  LastName { get; set; }
+        public string  Phone { get; set; }
     }
 }

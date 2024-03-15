@@ -89,6 +89,7 @@ namespace Core.Business.Sevices.Concrete {
                     obj.Id = item.Id;
                     obj.Createdate = item.Createdate;
                     obj.Updatedate = item.Updatedate;
+                    obj.Maxmark= item.Maxmark;  
                     res.Add(obj);
 
                 }

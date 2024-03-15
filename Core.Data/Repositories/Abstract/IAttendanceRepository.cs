@@ -13,6 +13,6 @@ namespace Core.Data.Repositories.Abstract
 
         Task<int> InsertAttendance(Attendance attendance);
         Task<int> UpdateAttendance(Attendance attendance);
-        Task<IEnumerable<Attendance>> GetStudentsAttendance(AttendanceRequest attendanceRequest);
+        Task<IEnumerable<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest attendanceRequest);
     }
 }
