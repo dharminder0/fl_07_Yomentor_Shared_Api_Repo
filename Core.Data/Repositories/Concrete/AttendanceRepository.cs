@@ -67,5 +67,8 @@ END ;";
 
             return await ExecuteScalarAsync<int>(sql, attendance);
         }
+
+
+       
     }
 }

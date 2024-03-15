@@ -101,12 +101,12 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMassegeResponse { Message = "Assigned_Successfully", Response = true };
         }
 
-        public async Task<List<AssessmentResponse>> GetAssessmentByBatch(int batchId) {
-            if (batchId == 0) {
+        public async Task<List<AssessmentResponse>> GetAssessmentByBatch(ListRequest request) {
+            if (request.BatchId == 0) {
                 return new List<AssessmentResponse> { };
             }
             List<AssessmentResponse> res = new List<AssessmentResponse>();
-            var response = await _assessmentsRepository.GetAssignmentsByBatch(batchId);
+            var response = await _assessmentsRepository.GetAssignmentsByBatch(request);
             foreach (var item in response) {
                 AssessmentResponse obj = new AssessmentResponse();
                 obj.Id = item.Id;

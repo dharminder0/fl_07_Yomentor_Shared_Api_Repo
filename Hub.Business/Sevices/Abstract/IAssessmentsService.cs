@@ -14,6 +14,6 @@ namespace Core.Business.Sevices.Abstract {
         IEnumerable<Assessments> GetAssessmentsList(int id);
         Task<List<Assessments>> GetAssessmentsAllList(int teacherid);
         Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequest request);
-        Task<List<AssessmentResponse>> GetAssessmentByBatch(int batchId);
+        Task<List<AssessmentResponse>> GetAssessmentByBatch(ListRequest request);
     }
 }

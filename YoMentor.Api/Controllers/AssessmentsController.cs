@@ -71,8 +71,8 @@ namespace YoMentor.Api.Controllers {
         /// <returns></returns>
         [Route("GetAssessmentsList/batchId")]
         [HttpPost]
-        public async Task<IActionResult> GetAssessmentByBatch(int batchId) {
-            var response = await _service.GetAssessmentByBatch(batchId);
+        public async Task<IActionResult> GetAssessmentByBatch(ListRequest request) {
+            var response = await _service.GetAssessmentByBatch(request);
             return JsonExt(response);
         }
     }
