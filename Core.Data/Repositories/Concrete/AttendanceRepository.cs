@@ -68,7 +68,24 @@ END ;";
             return await ExecuteScalarAsync<int>(sql, attendance);
         }
 
+        public  async Task<IEnumerable<Attendance>> GetStudentsAttendance(AttendanceRequest attendanceRequest) {
+            var sql = @" select * from attendance where batchid=@batchid ";
+            if(attendanceRequest.StudentId > 0) {
+                sql += " and StudentId=@StudentId ";
+            }
+            if (!string.IsNullOrWhiteSpace(attendanceRequest.fromDate) && !string.IsNullOrWhiteSpace(attendanceRequest.fromDate)) {
 
-       
+                sql += $@" and  Date between '{attendanceRequest.fromDate}' and '{attendanceRequest.ToDate}' ";
+                
+            }
+            if (attendanceRequest.PageIndex > 0 && attendanceRequest.PageSize > 0) {
+                sql += $@" ORDER BY id  DESC
+                 OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
+
+            }
+            return await QueryAsync<Attendance>(sql,attendanceRequest);
+        }
+
+
     }
 }

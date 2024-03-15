@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Core.Data.Repositories.Abstract
 
         Task<int> InsertAttendance(Attendance attendance);
         Task<int> UpdateAttendance(Attendance attendance);
+        Task<IEnumerable<Attendance>> GetStudentsAttendance(AttendanceRequest attendanceRequest);
     }
 }

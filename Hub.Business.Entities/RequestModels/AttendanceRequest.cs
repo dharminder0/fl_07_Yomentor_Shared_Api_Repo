@@ -11,6 +11,6 @@ namespace Core.Business.Entities.RequestModels {
         public string  fromDate { get; set; }
         public string  ToDate { get; set; }
         public int PageSize { get; set; } = 10;
-        public int PazeIndex { get; set; } = 1;
+        public int PageIndex { get; set; } = 1;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,11 @@ namespace YoMentor.Api.Controllers
         {
             _attendanceServices = attendanceServices;   
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attendance"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> InsertAttendance(Attendance attendance)
@@ -28,6 +34,12 @@ namespace YoMentor.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpPost]
+        [Route("StudentsAttendance")]
+        public async Task<IActionResult> GetStudentsAttendance(AttendanceRequest request) {
+            var response=await _attendanceServices.GetStudentsAttendance(request); 
+            return JsonExt(response);   
         }
     }
 }
