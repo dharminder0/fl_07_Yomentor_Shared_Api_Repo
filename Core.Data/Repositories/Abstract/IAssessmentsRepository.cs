@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 
 namespace Core.Data.Repositories.Abstract {
@@ -7,6 +8,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> UpdateAssessments(Assessments assignment);
         IEnumerable<Assessments> GetAssessmentsList(int id);
         Task<List<Assessments>> GetAssessmentsAllList(int teacherid);
-        Task<IEnumerable<Assessments>> GetAssignmentsByBatch(int batchId);
+        Task<IEnumerable<Assessments>> GetAssignmentsByBatch(ListRequest listRequest );
     }
 }

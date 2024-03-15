@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
@@ -92,10 +93,15 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid";
             return (List<Assessments>)await QueryAsync<Assessments>(sql,new { teacherid });
         }
-        public async Task<IEnumerable<Assessments>> GetAssignmentsByBatch(int batchId) {
+        public async Task<IEnumerable<Assessments>> GetAssignmentsByBatch(ListRequest request) {
 
             var sql = $@" select  A.*  from Assessments A join  student_assessments SA on A.id=SA.assessmentid where SA.batchid=@batchId ";
-            return await QueryAsync<Assessments>(sql, new { batchId });
+            if (request.PageIndex > 0 && request.PageIndex > 0) {
+                sql += $@" ORDER BY A.Id DESC
+                 OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
+
+            }
+            return await QueryAsync<Assessments>(sql, request);
           
         }
     }
