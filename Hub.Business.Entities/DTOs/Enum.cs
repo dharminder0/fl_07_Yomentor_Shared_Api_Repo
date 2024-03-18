@@ -49,5 +49,15 @@ namespace Core.Business.Entities.DTOs
             Present=1,
             Absent=0,
         }
+        public enum MediaEntityType {
+            None = 0,
+        }
+        public enum MediaType {
+            None=0,
+            Image=1,
+            Video=2,
+            Pdf=4,
+
+        }
     }
 }
