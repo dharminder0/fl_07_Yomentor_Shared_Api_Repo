@@ -139,6 +139,8 @@ namespace Hub.Common.Settings {
         public static string BlobSymmetricSecretKey = GetString("BlobSymmetricSecretKey");
         public static string JwtIssuer { get; set; }
         public static string JwtAudience { get; set; }
+        public static string BlobAssessment => GetString("BlobAssessment");
+        public static string BlobAssignment => GetString("BlobAssignment");
 
         public static string GetKeyValues(string key) {
             return !string.IsNullOrWhiteSpace(_appSettings[key]) ? _appSettings[key] : null;
