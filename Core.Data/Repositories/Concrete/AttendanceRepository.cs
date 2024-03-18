@@ -76,11 +76,11 @@ END ;";
 
                 subquery = $@" and  Date between '{attendanceRequest.fromDate}' and '{attendanceRequest.ToDate}' ";
             } 
-            var sql = $@"  select u.firstname,u.lastname,u.phone, a.status as attendenceStatus,a.date as attendancedate from batch_students bs 
-left join  users u on u.id=bs.studentid
-left join attendance a on a.studentid=bs.studentid {subquery} where bs.batchid=@batchid ";
+            var sql = $@"select u.firstname,u.lastname,u.phone, a.[status] as Status,a.[date] as date from attendance a 
+            left join  users u on u.id=a.studentid
+            left join batch_students bs on a.studentid=bs.studentid {subquery} where a.batchid=@batchid ";
             if(attendanceRequest.StudentId > 0) {
-                sql += " and StudentId=@StudentId  ";
+                sql += " and a.StudentId=@StudentId";
             }
             
             if (attendanceRequest.PageIndex > 0 && attendanceRequest.PageSize > 0) {

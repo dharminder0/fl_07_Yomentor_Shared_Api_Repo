@@ -46,8 +46,16 @@ namespace Core.Business.Sevices.Concrete
                 attendance.Id = item.Id;    
                 attendance.StudentId = item.StudentId;  
                 attendance.Status = item.Status;    
-                attendance.Date = item.Date;    
-                attendance.UpdateDate = item.UpdateDate;    
+                attendance.Date = item.Date;
+                if(item.UpdateDate== DateTime.MinValue)
+                {
+                    attendance.UpdateDate =DateTime.Now;
+                }
+                else
+                {
+
+                    attendance.UpdateDate = item.UpdateDate;
+                }
                 attendance.CreateDate = item.CreateDate;
                 attendance.BatchId = item.BatchId;
                 attendance.FirstName=item.FirstName;    
