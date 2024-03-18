@@ -3,6 +3,8 @@ using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
+using Microsoft.AspNetCore.Http.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +38,25 @@ namespace Core.Business.Sevices.Concrete
                 return new ActionMassegeResponse { Content = null, Message = "ex.Message", Response = true };
             }
         }
+        public async Task<ActionMassegeResponse> BulkInsertAttendance(AttendanceV2 attendance)
+        {
+            try
+            {
+                if(attendance.Id > 0)
+                {
+                    var response= await _attendanceRepository.BulkUpdateAttendance(attendance);  
+                    return new ActionMassegeResponse { Content= response,Message="Attendance_Updated!!",Response = true};
+                }
+                var res = await _attendanceRepository.BulkInsertAttendance(attendance);
+                return new ActionMassegeResponse { Content = res, Message = "Attendance_Inserted!!", Response = true };
+
+            }
+            catch (Exception ex)
+            {
+                return new ActionMassegeResponse { Content = null, Message = ex.Message, Response = true };
+            }
+        }
+
         public  async Task<List<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest request) {
             List < AttendanceResponse > obj=new List<AttendanceResponse> ();
        
@@ -49,8 +70,16 @@ namespace Core.Business.Sevices.Concrete
                 attendance.Id = item.Id;    
                 attendance.StudentId = item.StudentId;  
                 attendance.Status = item.Status;    
-                attendance.Date = item.Date;    
-                attendance.UpdateDate = item.UpdateDate;    
+                attendance.Date = item.Date;
+                if(item.UpdateDate== DateTime.MinValue)
+                {
+                    attendance.UpdateDate =DateTime.Now;
+                }
+                else
+                {
+
+                    attendance.UpdateDate = item.UpdateDate;
+                }
                 attendance.CreateDate = item.CreateDate;
                 attendance.BatchId = item.BatchId;
                 attendance.FirstName=info.Firstname;    
