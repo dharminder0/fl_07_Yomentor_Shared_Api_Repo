@@ -14,10 +14,12 @@ namespace Core.Business.Sevices.Concrete
     public class AttendanceService : IAttendanceService
     {
         private readonly IAttendanceRepository _attendanceRepository;
-        private readonly IUserRepository _userRepository;   
-        public AttendanceService(IAttendanceRepository attendanceRepository, IUserRepository userRepository) {
-        _attendanceRepository = attendanceRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IBatchStudentsRepository _batchStudents;
+        public AttendanceService(IAttendanceRepository attendanceRepository, IUserRepository userRepository, IBatchStudentsRepository batchStudents) {
+            _attendanceRepository = attendanceRepository;
             _userRepository = userRepository;
+            _batchStudents = batchStudents;
         }
         public async Task<ActionMassegeResponse> InsertAttendance(Attendance attendance)
         {
@@ -36,32 +38,59 @@ namespace Core.Business.Sevices.Concrete
                 return new ActionMassegeResponse { Content = null, Message = "ex.Message", Response = true };
             }
         }
-        public  async Task<List<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest request) {
-            List < AttendanceResponse > obj=new List<AttendanceResponse> ();
-       
+        public async Task<List<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest request) {
+            List<BatchStudents> batches=new List<BatchStudents>();
             if (request == null) {
                 return new List<AttendanceResponse>();
             }
-            var response=  await  _attendanceRepository.GetStudentsAttendance(request);
-            foreach (var item in response) {
-                var info=  await _userRepository.GetUser(item.StudentId);
-                AttendanceResponse attendance = new AttendanceResponse();
-                attendance.Id = item.Id;    
-                attendance.StudentId = item.StudentId;  
-                attendance.Status = item.Status;    
-                attendance.Date = item.Date;    
-                attendance.UpdateDate = item.UpdateDate;    
-                attendance.CreateDate = item.CreateDate;
-                attendance.BatchId = item.BatchId;
-                attendance.FirstName=info.Firstname;    
-                attendance.LastName= info.Lastname;  
-                attendance.Phone= info.Phone;    
-                obj.Add(attendance);
 
-            }
-            return obj; 
-         
-        }
+            var response = await _attendanceRepository.GetStudentsAttendance(request);
        
+
+            if (!response.Any()) {
+                batches = _batchStudents.GetBatchStudentsbybatchId(request.BatchId).ToList();
+            }
+            List<AttendanceResponse> obj = new List<AttendanceResponse>();
+
+            foreach (var item in response) {
+                var info = await _userRepository.GetUser(item.StudentId);
+                if (info != null) {
+                    AttendanceResponse attendance = new AttendanceResponse {
+                        Id = item.Id,
+                        StudentId = item.StudentId,
+                        Status = item.Status,
+                        Date = item.Date,
+                        UpdateDate = item.UpdateDate,
+                        CreateDate = item.CreateDate,
+                        BatchId = item.BatchId,
+                        FirstName = info.Firstname,
+                        LastName = info.Lastname,
+                        Phone = info.Phone
+                    };
+                    obj.Add(attendance);
+                }
+            }
+
+            foreach (var batch in batches) {
+                var info = await _userRepository.GetUser(batch.StudentId);
+                if (info != null) {
+                    AttendanceResponse res = new AttendanceResponse {
+                        Id = batch.Id,
+                        StudentId = batch.Id,
+                        CreateDate = batch.CreateDate,
+                        UpdateDate = batch.UpdateDate,
+                        BatchId = batch.BatchId,
+                        FirstName = info.Firstname,
+                        LastName = info.Lastname,
+                        Phone = info.Phone
+                    };
+                    obj.Add(res);
+                }
+            }
+
+            return obj;
+        }
+
+
     }
 }

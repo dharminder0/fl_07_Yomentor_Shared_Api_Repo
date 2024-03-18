@@ -79,6 +79,7 @@ END ;";
 
                 sql += $@" and  Date between '{attendanceRequest.fromDate}' and '{attendanceRequest.ToDate}' ";
             }
+
             if (attendanceRequest.PageIndex > 0 && attendanceRequest.PageSize > 0) {
                 sql += $@" ORDER BY id  DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
