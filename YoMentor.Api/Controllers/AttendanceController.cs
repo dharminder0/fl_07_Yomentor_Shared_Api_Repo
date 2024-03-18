@@ -14,7 +14,7 @@ namespace YoMentor.Api.Controllers
         private readonly IAttendanceService _attendanceServices;
         public AttendanceController(IAttendanceService attendanceServices)
         {
-            _attendanceServices = attendanceServices;   
+            _attendanceServices = attendanceServices;
         }
         /// <summary>
         /// 
@@ -38,8 +38,24 @@ namespace YoMentor.Api.Controllers
         [HttpPost]
         [Route("StudentsAttendance")]
         public async Task<IActionResult> GetStudentsAttendance(AttendanceRequest request) {
-            var response=await _attendanceServices.GetStudentsAttendance(request); 
-            return JsonExt(response);   
+            var response = await _attendanceServices.GetStudentsAttendance(request);
+            return JsonExt(response);
+        }
+
+        [HttpPost]
+        [Route("Bulk/Add")]
+
+        public async Task<IActionResult> BulkInsertAttendance(AttendanceV2 attendanceV2)
+        {
+            try
+            {
+                var res = await _attendanceServices.BulkInsertAttendance(attendanceV2);
+                return JsonExt(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
