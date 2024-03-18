@@ -68,27 +68,23 @@ END ;";
             return await ExecuteScalarAsync<int>(sql, attendance);
         }
 
-        public  async Task<IEnumerable<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest attendanceRequest) {
+        public  async Task<IEnumerable<Attendance>> GetStudentsAttendance(AttendanceRequest attendanceRequest) {
 
-            var subquery = "";
 
-            if (!string.IsNullOrWhiteSpace(attendanceRequest.fromDate) && !string.IsNullOrWhiteSpace(attendanceRequest.fromDate)) {
-
-                subquery = $@" and  Date between '{attendanceRequest.fromDate}' and '{attendanceRequest.ToDate}' ";
-            } 
-            var sql = $@"  select u.firstname,u.lastname,u.phone, a.status as attendenceStatus,a.date as attendancedate from batch_students bs 
-left join  users u on u.id=bs.studentid
-left join attendance a on a.studentid=bs.studentid {subquery} where bs.batchid=@batchid ";
+            var  sql = $@"  select * from attendance where batchid=@batchid ";
             if(attendanceRequest.StudentId > 0) {
                 sql += " and StudentId=@StudentId  ";
             }
-            
+            if (!string.IsNullOrWhiteSpace(attendanceRequest.fromDate) && !string.IsNullOrWhiteSpace(attendanceRequest.fromDate)) {
+
+                sql += $@" and  Date between '{attendanceRequest.fromDate}' and '{attendanceRequest.ToDate}' ";
+            }
             if (attendanceRequest.PageIndex > 0 && attendanceRequest.PageSize > 0) {
-                sql += $@" ORDER BY a.id  DESC
+                sql += $@" ORDER BY id  DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
             }
-            return await QueryAsync<AttendanceResponse>(sql,attendanceRequest);
+            return await QueryAsync<Attendance>(sql,attendanceRequest);
         }
 
 

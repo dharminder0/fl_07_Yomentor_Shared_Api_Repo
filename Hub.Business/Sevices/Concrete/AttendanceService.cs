@@ -14,8 +14,10 @@ namespace Core.Business.Sevices.Concrete
     public class AttendanceService : IAttendanceService
     {
         private readonly IAttendanceRepository _attendanceRepository;
-        public AttendanceService(IAttendanceRepository attendanceRepository) {
+        private readonly IUserRepository _userRepository;   
+        public AttendanceService(IAttendanceRepository attendanceRepository, IUserRepository userRepository) {
         _attendanceRepository = attendanceRepository;
+            _userRepository = userRepository;
         }
         public async Task<ActionMassegeResponse> InsertAttendance(Attendance attendance)
         {
@@ -42,6 +44,7 @@ namespace Core.Business.Sevices.Concrete
             }
             var response=  await  _attendanceRepository.GetStudentsAttendance(request);
             foreach (var item in response) {
+                var info=  await _userRepository.GetUser(item.StudentId);
                 AttendanceResponse attendance = new AttendanceResponse();
                 attendance.Id = item.Id;    
                 attendance.StudentId = item.StudentId;  
@@ -50,9 +53,9 @@ namespace Core.Business.Sevices.Concrete
                 attendance.UpdateDate = item.UpdateDate;    
                 attendance.CreateDate = item.CreateDate;
                 attendance.BatchId = item.BatchId;
-                attendance.FirstName=item.FirstName;    
-                attendance.LastName=item.LastName;  
-                attendance.Phone=item.Phone;    
+                attendance.FirstName=info.Firstname;    
+                attendance.LastName= info.Lastname;  
+                attendance.Phone= info.Phone;    
                 obj.Add(attendance);
 
             }
