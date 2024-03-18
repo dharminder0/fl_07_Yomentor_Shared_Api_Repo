@@ -3,6 +3,8 @@ using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
+using Microsoft.AspNetCore.Http.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,19 +40,35 @@ namespace Core.Business.Sevices.Concrete
                 return new ActionMassegeResponse { Content = null, Message = "ex.Message", Response = true };
             }
         }
+
+        public async Task<ActionMassegeResponse> BulkInsertAttendance(AttendanceV2 attendance) {
+            try {
+                //if(attendance.Id > 0)
+                //{
+                //    var response= await _attendanceRepository.BulkUpdateAttendance(attendance);  
+                //    return new ActionMassegeResponse { Content= response,Message="Attendance_Updated!!",Response = true};
+                //}
+                var res = await _attendanceRepository.BulkInsertAttendance(attendance);
+                return new ActionMassegeResponse { Content = res, Message = "Attendance_Inserted!!", Response = true };
+
+            } catch (Exception ex) {
+                return new ActionMassegeResponse { Content = null, Message = ex.Message, Response = true };
+            }
+        }
         public async Task<List<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest request) {
             List<BatchStudents> batches=new List<BatchStudents>();
             if (request == null) {
                 return new List<AttendanceResponse>();
             }
 
+            List <AttendanceResponse> obj=new List<AttendanceResponse> ();       
             var response = await _attendanceRepository.GetStudentsAttendance(request);
        
 
             if (!response.Any()) {
                 batches = _batchStudents.GetBatchStudentsbybatchId(request.BatchId).ToList();
             }
-            List<AttendanceResponse> obj = new List<AttendanceResponse>();
+         
 
             foreach (var item in response) {
                 var info = await _userRepository.GetUser(item.StudentId);
