@@ -42,11 +42,11 @@ namespace Core.Business.Sevices.Concrete
         {
             try
             {
-                if(attendance.Id > 0)
-                {
-                    var response= await _attendanceRepository.BulkUpdateAttendance(attendance);  
-                    return new ActionMassegeResponse { Content= response,Message="Attendance_Updated!!",Response = true};
-                }
+                //if(attendance.Id > 0)
+                //{
+                //    var response= await _attendanceRepository.BulkUpdateAttendance(attendance);  
+                //    return new ActionMassegeResponse { Content= response,Message="Attendance_Updated!!",Response = true};
+                //}
                 var res = await _attendanceRepository.BulkInsertAttendance(attendance);
                 return new ActionMassegeResponse { Content = res, Message = "Attendance_Inserted!!", Response = true };
 
