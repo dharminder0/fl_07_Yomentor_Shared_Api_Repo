@@ -7,7 +7,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> InsertAssessments(Assessments assignment);
         Task<int> UpdateAssessments(Assessments assignment);
         IEnumerable<Assessments> GetAssessmentsList(int id);
-        Task<List<Assessments>> GetAssessmentsAllList(StudentProgressRequest request);
+        Task<List<Assessments>> GetAssessmentsAllList(StudentProgressRequestV2 request);
         Task<IEnumerable<Assessments>> GetAssessmentsByBatch(ListRequest listRequest );
     }
 }

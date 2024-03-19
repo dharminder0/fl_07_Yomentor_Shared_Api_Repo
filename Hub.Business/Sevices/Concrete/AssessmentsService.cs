@@ -69,7 +69,7 @@ namespace Core.Business.Sevices.Concrete {
                 return null;
             }
         }
-        public async Task<List<AssessmentResponse>> GetAssessmentsAllList(StudentProgressRequest request)
+        public async Task<List<AssessmentResponse>> GetAssessmentsAllList(StudentProgressRequestV2 request)
         {
             try
             {

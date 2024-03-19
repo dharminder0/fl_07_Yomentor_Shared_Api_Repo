@@ -85,15 +85,24 @@ namespace Core.Data.Repositories.Concrete {
             return Query<Assignments>(sql,new {id});
         }
 
-        public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequest request) {
+        public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequestV2 request) {
 
             var sql = $@"Select * from Assignments where  teacherid=@TeacherId ";
+            if (request.GradeId > 0)
+            {
+                sql += $@" and GradeId=@GradeId";
+            }
+            if (request.SubjectId > 0)
+            {
+                sql += $@" and SubjectId=@SubjectId";
+            }
             if (request.PageIndex > 0 && request.PageIndex > 0) {
                 sql += $@" ORDER BY Id DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
             }
-            return (List<Assignments>)await QueryAsync<Assignments>(sql, request);
+           var res= (List<Assignments>)await QueryAsync<Assignments>(sql, request);
+            return res;
         }
             public async Task<IEnumerable<Assignments>> GetAssignmentsByBatch(ListRequest request) {
 

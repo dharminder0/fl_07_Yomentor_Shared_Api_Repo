@@ -60,7 +60,7 @@ namespace Core.Business.Sevices.Concrete {
 
         }
 
-        public async Task<List<AssignmentsResponse>> GetAllAssignments(StudentProgressRequest request) {
+        public async Task<List<AssignmentsResponse>> GetAllAssignments(StudentProgressRequestV2 request) {
             try {
                 var response = await _assignmentsRepo.GetAllAssignments(request);
                 List <AssignmentsResponse> res = new List<AssignmentsResponse>();  
