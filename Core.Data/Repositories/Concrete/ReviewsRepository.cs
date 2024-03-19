@@ -100,10 +100,13 @@ LEFT JOIN
 LEFT JOIN 
     Batch ba ON ba.Id = a.BatchId
 WHERE 
-    ut.Id = @UserId ";
+    ut.Id = @AddedFor ";
+            if(reviewRequest.AddedBy >0) {
+                sql += $@" and a.Addedby=@Addedby";
+            }
             if (reviewRequest.BatchId > 0)
             {
-                sql += $@"and ba.Id=@batchId;";
+                sql += $@" and ba.Id=@batchId;";
             }
             if (reviewRequest.PageIndex > 0 && reviewRequest.PageIndex > 0)
             {
