@@ -102,24 +102,25 @@ namespace Core.Business.Sevices.Concrete {
                 return null;
             }
         }
-        public async Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequest request) {
-            if (request == null) {
+        public async Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequestV2 requestV2) {
+            if (requestV2== null ) {
                 return new ActionMassegeResponse { Response = false };
             }
 
-            var response = _batchStudentsRepository.GetBatchStudentsbybatchId(request.BatchId);
+            var response = _batchStudentsRepository.GetBatchStudentsbybatchId(requestV2.BatchId);
             if (response == null || !response.Any()) {
                 return new ActionMassegeResponse { Message = "No students found for the given batch.", Response = false };
             }
-
-
-            foreach (var item in response.Select(v => v.StudentId)) {
-                StudentAssessment student = new StudentAssessment();
-                student.Status = request.Status;
-                student.AssessmentId = request.AssessmentId;
-                student.BatchId = request.BatchId;
-                student.StudentId = item;
-                student.Marks= request.Marks;   
+            foreach (var item in response) {
+                StudentAssessment student = new StudentAssessment
+                {
+                    Id = item.Id,   
+                    Status = requestV2.Status,
+                    AssessmentId = requestV2.AssessmentId,
+                    BatchId = requestV2.BatchId,
+                    StudentId = item.StudentId,
+                    Marks = requestV2.Marks,
+                };
                 var res = await _studentAssessmentRepository.InsertStudentAssessment(student);
             }
 

@@ -12,4 +12,11 @@ namespace Core.Business.Entities.RequestModels {
         public string? Status { get; set; }
         public double Marks { get; set; }
     }
+    public class StudentAssessmentRequestV2
+    {
+        public int BatchId { get; set; }
+        public int AssessmentId { get; set; }
+        public string? Status { get; set; }
+        public double Marks { get; set; }
+    }
 }
