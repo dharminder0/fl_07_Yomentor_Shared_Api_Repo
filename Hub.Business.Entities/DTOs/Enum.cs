@@ -51,6 +51,8 @@ namespace Core.Business.Entities.DTOs
         }
         public enum MediaEntityType {
             None = 0,
+            Assignment=1,
+            Assessment=2,
         }
         public enum MediaType {
             None=0,
