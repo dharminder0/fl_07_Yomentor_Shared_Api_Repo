@@ -13,4 +13,12 @@ namespace Core.Business.Entities.RequestModels {
         public int Status { get; set; } = 0;
 
     }
+    public class StudentAssignmentsRequestV2
+    {
+        public int Id { get; set; }
+        public int BatchId { get; set; }
+        public int AssignmentId { get; set; }
+        public int Status { get; set; } = 0;
+
+    }
 }

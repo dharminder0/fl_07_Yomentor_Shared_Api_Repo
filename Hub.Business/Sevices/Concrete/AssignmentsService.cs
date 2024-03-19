@@ -90,7 +90,7 @@ namespace Core.Business.Sevices.Concrete {
                 return null;
             }
         }
-        public async Task<ActionMassegeResponse> AssignStudentAssignments(StudentAssignmentsRequest request) {
+        public async Task<ActionMassegeResponse> AssignStudentAssignments(StudentAssignmentsRequestV2 request) {
             if (request == null) {
                 return new ActionMassegeResponse { Response = false };
             }
@@ -101,12 +101,15 @@ namespace Core.Business.Sevices.Concrete {
             }
 
 
-            foreach (var item in response.Select(v => v.StudentId)) {
-                Student_Assignments student = new Student_Assignments();
-                student.Status = request.Status; 
-                student.AssignmentId = request.AssignmentId;
-                student.BatchId = request.BatchId;
-                student.StudentId = item;
+            foreach (var item in response) {
+                Student_Assignments student = new Student_Assignments { 
+               Status = request.Status,
+               AssignmentId = request.AssignmentId,
+               BatchId = request.BatchId,
+               StudentId = item.StudentId,
+               Id = item.Id
+            };
+               
                 var res = await _studentAssignmentsRepo.InsertStudentAssignment(student);
             }
 
