@@ -12,7 +12,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> InsertAssignment(Assignments assignment);
         Task<int> UpdateAssignment(Assignments assignment);
         IEnumerable<Assignments> GetAssignments(int id);
-        Task<List<Assignments>> GetAllAssignments(StudentProgressRequest request);
+        Task<List<Assignments>> GetAllAssignments(StudentProgressRequestV2 request);
         Task<IEnumerable<Assignments>> GetAssignmentsByBatch(ListRequest request);
 
     }
