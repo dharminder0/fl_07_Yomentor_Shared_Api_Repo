@@ -9,10 +9,7 @@ using System.Threading.Tasks;
 namespace Core.Data.Repositories.Abstract {
     public class StudentAssessmentRepository :DataRepository<StudentAssessment>,IStudentAssessmentRepository{
         public async Task<int> InsertStudentAssessment(StudentAssessment studentAssessment) {
-            var sql = @"
-    IF NOT EXISTS (SELECT 1 FROM Student_Assessments WHERE Id = @Id)
-    BEGIN
-        INSERT INTO Student_Assessments
+            var sql = @" INSERT INTO Student_Assessments
         (
             StudentId,
             BatchId,
@@ -31,15 +28,9 @@ namespace Core.Data.Repositories.Abstract {
             GetUtcdate()
         );
 
-        SELECT SCOPE_IDENTITY();
-    END
-    ELSE
-    BEGIN
-        SELECT Id FROM Student_Assessments WHERE Id = @Id;
-    END;
-    ";
-
-            return await ExecuteScalarAsync<int>(sql, studentAssessment);
+        SELECT SCOPE_IDENTITY(); ";
+        var res = await ExecuteScalarAsync<int>(sql, studentAssessment);
+            return res;
         }
 
         public async Task<int> UpdateStudentAssessment(StudentAssessment studentAssessment) {

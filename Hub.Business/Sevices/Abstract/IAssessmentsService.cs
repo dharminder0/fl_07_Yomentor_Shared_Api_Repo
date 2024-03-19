@@ -13,7 +13,7 @@ namespace Core.Business.Sevices.Abstract {
         Task<ActionMessageResponse> InsertOrUpdateAssessments(AssessmentsRequest assessmentsRequest);
         IEnumerable<Assessments> GetAssessmentsList(int id);
         Task<List<AssessmentResponse>> GetAssessmentsAllList(StudentProgressRequest request);
-        Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequest request);
+        Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequestV2 requestV2);
         Task<List<AssessmentResponse>> GetAssessmentByBatch(ListRequest request);
     }
 }
