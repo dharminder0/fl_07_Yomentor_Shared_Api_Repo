@@ -96,7 +96,7 @@ namespace Core.Data.Repositories.Concrete
 FROM 
     Users ut
 LEFT JOIN 
-    Reviews a ON a.Addedby = ut.Id
+    Reviews a ON a.AddedFor = ut.Id
 LEFT JOIN 
     Batch ba ON ba.Id = a.BatchId
 WHERE 
