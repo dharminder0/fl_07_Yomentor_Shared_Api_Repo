@@ -111,7 +111,7 @@ namespace Core.Data.Repositories.Concrete {
 
             var sql = $@" SELECT A.*, DistinctAssessments.AssignedDate
 FROM (
-    SELECT DISTINCT SA.AssessmentId, SA.AssignedDate
+    SELECT DISTINCT SA.AssessmentId, cast(SA.AssignedDate as date) as AssignedDate
     FROM Assessments A
     JOIN student_assessments SA ON A.id = SA.assessmentid
     WHERE SA.batchid = @batchId
