@@ -107,7 +107,7 @@ WHERE
             }
             if (reviewRequest.PageIndex > 0 && reviewRequest.PageIndex > 0)
             {
-                sql += $@" ORDER BY Id DESC
+                sql += $@" ORDER BY a.Id DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
             }
