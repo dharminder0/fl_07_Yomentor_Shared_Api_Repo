@@ -8,7 +8,8 @@ namespace Core.Business.Entities.RequestModels
 {
     public class ReviewRequest
     {
-        public int UserId { get; set; }
+        public int AddedFor { get; set; }
+        public int AddedBy { get; set; }    
         public int BatchId { get; set; }    
         public int PageSize { get; set; } = 10;
         public int PageIndex { get; set; } = 1;
