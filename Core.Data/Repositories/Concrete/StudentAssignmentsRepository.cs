@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 namespace Core.Data.Repositories.Concrete {
     public class StudentAssignmentsRepository: DataRepository<Student_Assignments>,IStudentAssignmentsRepository {
         public async Task<int> InsertStudentAssignment(Student_Assignments studentAssignment) {
-            var sql = @"
-        IF NOT EXISTS (SELECT 1 FROM Student_Assignments WHERE Id = @Id)
-        BEGIN
+            var sql = @" 
             INSERT INTO Student_Assignments
             (
                 StudentId,
@@ -30,15 +28,10 @@ namespace Core.Data.Repositories.Concrete {
                 GetUtcDate()
             );
 
-            SELECT SCOPE_IDENTITY();
-        END
-        ELSE
-        BEGIN
-            SELECT Id FROM Student_Assignments WHERE Id = @Id;
-        END;
-    ";
+            SELECT SCOPE_IDENTITY();";
 
-            return await ExecuteScalarAsync<int>(sql, studentAssignment);
+          var res= await ExecuteScalarAsync<int>(sql, studentAssignment);
+            return res;
         }
 
         public async Task<int> UpdateStudentAssignment(Student_Assignments studentAssignment) {

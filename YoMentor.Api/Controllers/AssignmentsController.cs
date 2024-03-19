@@ -56,7 +56,7 @@ namespace YoMentor.Api.Controllers {
         [Route("AssignStudentAssignments")]
         [HttpPost]
 
-        public async Task<IActionResult> AssignStudentAssignments(StudentAssignmentsRequest request) {
+        public async Task<IActionResult> AssignStudentAssignments(StudentAssignmentsRequestV2 request) {
             var response = await _assignmentsService.AssignStudentAssignments(request);
             return JsonExt(response);
         }/// <summary>
