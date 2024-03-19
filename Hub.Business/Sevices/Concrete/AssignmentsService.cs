@@ -134,6 +134,8 @@ namespace Core.Business.Sevices.Concrete {
                 obj.Isfavorite  = item.Isfavorite;
                 obj.GradeId = item.GradeId;
                 obj.Id= item.Id;  
+                obj.CreateDate = item.CreateDate;
+                obj.UpdateDate = item.UpdateDate;
                 obj.AssignedDate= item.AssignedDate;    
                     
                 res.Add(obj);   
