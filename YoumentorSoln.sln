@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Common", "Core.Common\Core.Common.csproj", "{3D7C2EBD-2D5C-47FA-AF35-58CFC495D934}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data", "Core.Data\Core.Data.csproj", "{3C40D33A-B165-4396-A476-7C1316939242}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Business", "Hub.Business\Core.Business.csproj", "{657A05DE-3FC5-478C-B760-C35C19ABA8A6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Business.Entities", "Hub.Business.Entities\Core.Business.Entities.csproj", "{E29A2804-B83E-4999-A763-674659B91CB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoMentor.Api", "YoMentor.Api\YoMentor.Api.csproj", "{B6C6E347-10DF-49BA-8844-8F07049C33DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yomentor.Security", "Yomentor.Security\Yomentor.Security.csproj", "{6A8CE46A-83F7-4A37-BCB6-C4A099028628}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D7C2EBD-2D5C-47FA-AF35-58CFC495D934}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D7C2EBD-2D5C-47FA-AF35-58CFC495D934}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D7C2EBD-2D5C-47FA-AF35-58CFC495D934}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D7C2EBD-2D5C-47FA-AF35-58CFC495D934}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C40D33A-B165-4396-A476-7C1316939242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C40D33A-B165-4396-A476-7C1316939242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C40D33A-B165-4396-A476-7C1316939242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C40D33A-B165-4396-A476-7C1316939242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{657A05DE-3FC5-478C-B760-C35C19ABA8A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{657A05DE-3FC5-478C-B760-C35C19ABA8A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{657A05DE-3FC5-478C-B760-C35C19ABA8A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{657A05DE-3FC5-478C-B760-C35C19ABA8A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E29A2804-B83E-4999-A763-674659B91CB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29A2804-B83E-4999-A763-674659B91CB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29A2804-B83E-4999-A763-674659B91CB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29A2804-B83E-4999-A763-674659B91CB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C6E347-10DF-49BA-8844-8F07049C33DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A8CE46A-83F7-4A37-BCB6-C4A099028628}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A8CE46A-83F7-4A37-BCB6-C4A099028628}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A8CE46A-83F7-4A37-BCB6-C4A099028628}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A8CE46A-83F7-4A37-BCB6-C4A099028628}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2BB20D34-2AB0-4604-810F-7963FEE2A964}
+	EndGlobalSection
+EndGlobal

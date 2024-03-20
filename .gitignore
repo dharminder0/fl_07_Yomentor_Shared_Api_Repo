@@ -1,0 +1,15 @@
+Core.Data/.vs/
+.vs/
+Hub.Business.Entities/bin/
+Hub.Business.Entities/obj/
+Hub.Business/bin/
+Hub.Business/obj/
+Core.Data/obj/
+Core.Data/bin/
+Core.Common/obj/
+Core.Common/bin/
+YoMentor.Api/bin/
+YoMentor.Api/obj/
+YoMentor.Api/ElmahLog/
+Yomentor.Security/obj/
+Yomentor.Security/bin/
