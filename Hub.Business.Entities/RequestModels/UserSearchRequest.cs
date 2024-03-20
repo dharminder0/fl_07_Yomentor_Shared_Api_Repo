@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Core.Business.Entities.RequestModels {
     public class UserSearchRequest {
-        public string  SearchText { get; set; }
-        public int userType { get; set; }
-        public string  grade { get; set; }
-        public List<int> subject { get; set; }
+        public string?  SearchText { get; set; }
+        public int? userType { get; set; }
+        public string? grade { get; set; }
+        public List<int>? subject { get; set; }
         public int PageSize { get; set; }
         public int pageIndex { get; set; }
 

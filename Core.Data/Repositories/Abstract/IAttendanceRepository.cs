@@ -16,5 +16,6 @@ namespace Core.Data.Repositories.Abstract
         Task<IEnumerable<Attendance>> GetStudentsAttendance(AttendanceRequest attendanceRequest);
         Task<int> BulkInsertAttendance(AttendanceV2 attendance);
         Task<int> BulkUpdateAttendance(AttendanceV2 attendance);
+        Task<bool> DeleteAttendence(int batchId, DateTime date);
     }
 }
