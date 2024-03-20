@@ -9,10 +9,10 @@ namespace Core.Business.Entities.ResponseModels
     public class ReviewResponse
     {
         public int Id { get; set; } 
-        public int UserId { get; set; }
+        public int AddedForUserId { get; set; }
         public int AddedByUserId { get; set; }
-        public string AddedByFirstName { get; set; }
-        public string AddedByLastName { get; set; }
+        public string AddedForFirstName { get; set; }
+        public string AddedForLastName { get; set; }
         public int BatchId { get; set; }
         public string BatchTitle { get; set; }
         public int Rating { get; set; }

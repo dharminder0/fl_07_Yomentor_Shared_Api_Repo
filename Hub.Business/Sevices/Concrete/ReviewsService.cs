@@ -15,9 +15,11 @@ namespace Core.Business.Sevices.Concrete
     public class ReviewsService : IReviewsService
     {
         private readonly IReviewsRepository _reviewsRepository;
-        public ReviewsService(IReviewsRepository reviewsRepository)
+        private readonly IBatchRepository _batchRepository;
+        public ReviewsService(IReviewsRepository reviewsRepository, IBatchRepository batchRepository)
         {
             _reviewsRepository = reviewsRepository;
+            _batchRepository = batchRepository;
         }
         public async Task<ActionMessageResponse> InsertOrUpdateReviews(Reviews reviews)
         {
@@ -52,20 +54,20 @@ namespace Core.Business.Sevices.Concrete
                 foreach(var item  in res)
                 {
                     review = new ReviewResponse();
-                    review.Id = item.UserId;
-                    review.UserId = item.UserId;
+                    review.Id = item.Id;
+                    review.AddedForUserId = item.AddedForUserId;
                     review.AddedByUserId= item.AddedByUserId;
-                    review.AddedByUserId = item.AddedByUserId;
-                    review.AddedByFirstName = item.AddedByFirstName;
-                    review.AddedByLastName = item.AddedByLastName;
+                    review.AddedForFirstName = item.AddedForFirstName;
+                    review.AddedForLastName = item.AddedForLastName;
+                    var batchDetails = _batchRepository.GetBatchNamebybatchId(item.BatchId);
                     review.BatchId = item.BatchId;
-                    review.BatchTitle= item.BatchTitle;
+                    review.BatchTitle= batchDetails.ElementAt(0);
                     review.Rating = item.Rating;
                     review.Review= item.Review;
                     review.CreateDate = item.CreateDate;
                     if (item.UpdateDate == DateTime.MinValue)
                     {
-                        item.UpdateDate = DateTime.UtcNow;
+                        review.UpdateDate = DateTime.UtcNow;
                     }
                     else
                     {
