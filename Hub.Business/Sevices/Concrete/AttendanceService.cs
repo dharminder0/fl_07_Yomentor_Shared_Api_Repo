@@ -67,23 +67,22 @@ namespace Core.Business.Sevices.Concrete
             }
         }
         public async Task<List<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest request) {
-            List<BatchStudents> batches=new List<BatchStudents>();
             if (request == null) {
                 return new List<AttendanceResponse>();
             }
 
-            List <AttendanceResponse> obj=new List<AttendanceResponse> ();       
             var response = await _attendanceRepository.GetStudentsAttendance(request);
-       
 
-                batches = _batchStudents.GetBatchStudentsbybatchId(request.BatchId).ToList();
-          
-         
+            var studentIds = response.Select(r => r.StudentId).ToList();
+            var batchStudents = _batchStudents.GetBatchStudentsbybatchId(request.BatchId)
+                                              .Where(bs => !studentIds.Contains(bs.StudentId))
+                                              .ToList();
 
+            var obj = new List<AttendanceResponse>();
             foreach (var item in response) {
                 var info = await _userRepository.GetUser(item.StudentId);
                 if (info != null) {
-                    AttendanceResponse attendance = new AttendanceResponse {
+                    var attendance = new AttendanceResponse {
                         Id = item.Id,
                         StudentId = item.StudentId,
                         Status = item.Status,
@@ -99,10 +98,10 @@ namespace Core.Business.Sevices.Concrete
                 }
             }
 
-            foreach (var batch in batches) {
+            foreach (var batch in batchStudents) {
                 var info = await _userRepository.GetUser(batch.StudentId);
                 if (info != null) {
-                    AttendanceResponse res = new AttendanceResponse {
+                    var res = new AttendanceResponse {
                         Id = batch.Id,
                         StudentId = batch.StudentId,
                         CreateDate = batch.CreateDate,
@@ -118,6 +117,7 @@ namespace Core.Business.Sevices.Concrete
 
             return obj;
         }
+
 
 
     }
