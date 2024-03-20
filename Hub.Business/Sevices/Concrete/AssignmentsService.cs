@@ -91,6 +91,7 @@ namespace Core.Business.Sevices.Concrete {
             }
         }
         public async Task<ActionMassegeResponse> AssignStudentAssignments(StudentAssignmentsRequestV2 request) {
+            int res = 0;
             if (request == null) {
                 return new ActionMassegeResponse { Response = false };
             }
@@ -110,11 +111,11 @@ namespace Core.Business.Sevices.Concrete {
                Id = item.Id
             };
                
-                var res = await _studentAssignmentsRepo.InsertStudentAssignment(student);
+                 res = await _studentAssignmentsRepo.InsertStudentAssignment(student);
             }
 
             
-            return new ActionMassegeResponse {  Message = "Assigned_Successfully", Response = true };
+            return new ActionMassegeResponse {  Message = "Assigned_Successfully", Response = true,Content=res };
         }
 
        public  async Task<List<AssignmentsResponse>> GetAssignmentsByBatch(ListRequest request) {
