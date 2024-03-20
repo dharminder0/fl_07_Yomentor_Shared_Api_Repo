@@ -177,6 +177,9 @@ END ;";
             return await QueryAsync<Attendance>(sql,attendanceRequest);
         }
 
-
+        public async Task<bool> DeleteAttendence(int batchId, DateTime date) {
+            var sql = @" delete from attendance where batchId=@batchId and Date=@date";
+            return await ExecuteScalarAsync<bool>(sql, new { batchId, date });
+        }
     }
 }
