@@ -65,9 +65,8 @@ namespace Core.Business.Sevices.Concrete
             var response = await _attendanceRepository.GetStudentsAttendance(request);
        
 
-            if (!response.Any()) {
                 batches = _batchStudents.GetBatchStudentsbybatchId(request.BatchId).ToList();
-            }
+          
          
 
             foreach (var item in response) {

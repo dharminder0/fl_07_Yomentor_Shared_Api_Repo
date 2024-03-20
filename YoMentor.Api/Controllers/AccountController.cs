@@ -94,7 +94,7 @@ namespace Core.Web.API.Controllers {
         /// <param name="listRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/User/UserInfo")]
+        [Route("api/User/UserSearch")]
         public async Task<IActionResult> UserInfo(UserSearchRequest listRequest) {
             try {
 
