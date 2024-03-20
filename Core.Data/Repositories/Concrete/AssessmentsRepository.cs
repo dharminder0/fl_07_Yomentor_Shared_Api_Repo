@@ -114,8 +114,12 @@ FROM (
     SELECT DISTINCT SA.AssessmentId, cast(SA.AssignedDate as date) as AssignedDate
     FROM Assessments A
     JOIN student_assessments SA ON A.id = SA.assessmentid
-    WHERE SA.batchid = @batchId
-) AS DistinctAssessments
+    WHERE SA.batchid = @batchId";
+            if (request.StudentId > 0)
+            {
+                sql += $@" And SA.StudentId=@StudentId";
+            }
+sql+=$@") AS DistinctAssessments
 JOIN Assessments A ON A.id = DistinctAssessments.AssessmentId
  ";
             if (request.PageIndex > 0 && request.PageIndex > 0) {

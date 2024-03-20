@@ -106,14 +106,17 @@ namespace Core.Data.Repositories.Concrete {
         }
             public async Task<IEnumerable<Assignments>> GetAssignmentsByBatch(ListRequest request) {
 
-                var sql = $@"SELECT A.*,DistinctAssignments.AssignedDate
+            var sql = $@"SELECT A.*,DistinctAssignments.AssignedDate
 FROM (
     SELECT DISTINCT SA.AssignmentId, cast(SA.AssignedDate as date) as AssignedDate
     FROM Assignments A
     JOIN student_assignments SA ON A.id = SA.assignmentid
-    WHERE SA.batchid =@batchId
-) AS DistinctAssignments
-JOIN Assignments A ON A.id = DistinctAssignments.AssignmentId";
+    WHERE SA.batchid =@batchId";
+            if (request.StudentId>0)
+            { sql += $@" and SA.StudentId = @StudentId"; }
+                  sql+=$@" ) AS DistinctAssignments
+                JOIN Assignments A ON A.id = DistinctAssignments.AssignmentId";
+           
                 if (request.PageIndex > 0 && request.PageIndex > 0) {
                     sql += $@" ORDER BY A.Id DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
