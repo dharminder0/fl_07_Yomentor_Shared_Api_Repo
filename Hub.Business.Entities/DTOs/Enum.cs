@@ -53,6 +53,7 @@ namespace Core.Business.Entities.DTOs
             None = 0,
             Assignment=1,
             Assessment=2,
+            Users=3
         }
         public enum MediaType {
             None=0,

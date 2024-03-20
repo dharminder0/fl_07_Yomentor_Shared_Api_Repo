@@ -17,6 +17,7 @@ namespace Core.Data.Repositories.Abstract {
         int VerifyUserByUsername(string userName);
         IEnumerable<Users> GetStudentUser(List<int> studentId);
         Task<Users> GetUser(int Id);
+        Task<IEnumerable<Users>> UserInfo(UserSearchRequest listRequest);
 
 
 
