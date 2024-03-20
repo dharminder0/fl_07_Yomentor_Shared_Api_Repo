@@ -45,7 +45,7 @@ namespace Core.Business.Sevices.Concrete
         public async Task<ActionMassegeResponse> BulkInsertAttendance(AttendanceV2 attendance) {
             try {
                 var res = 0;
-               await  _attendanceRepository.DeleteAttendence(attendance.BatchId, attendance.Date);
+               await  _attendanceRepository.DeleteAttendance(attendance.BatchId, attendance.Date);
                 foreach (var item in attendance.student_attendance) {
                     Attendance obj = new Attendance();
                     obj.UpdateDate = DateTime.Now;
