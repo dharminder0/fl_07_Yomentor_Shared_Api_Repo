@@ -13,6 +13,8 @@ namespace Core.Business.Entities.ResponseModels
         public int AddedByUserId { get; set; }
         public string AddedForFirstName { get; set; }
         public string AddedForLastName { get; set; }
+        public string AddedByFirstName { get; set; }
+        public string AddedByLastName { get; set; }
         public int BatchId { get; set; }
         public string BatchTitle { get; set; }
         public int Rating { get; set; }
