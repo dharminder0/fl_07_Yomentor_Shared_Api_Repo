@@ -89,16 +89,21 @@ namespace Core.Data.Repositories.Concrete
     a.AddedBy AS AddedByUserId,
     ut.FirstName AS AddedForFirstName,
     ut.LastName AS AddedForLastName,
+    uty.FirstName As AddedByFirstName,
+    uty.LastName As AddedByLastName,
 	a.BatchId,
     a.Rating,
     a.Review,
     a.CreateDate,
     a.UpdateDate
-FROM 
+    FROM 
     Reviews a 
-JOIN 
+    JOIN 
    Users ut ON  a.AddedFor = ut.Id
-  WHERE a.AddedFor = @AddedFor ";
+Join
+Users uty On a.Addedby= uty.Id";
+ sql+=@"
+WHERE a.AddedFor = @AddedFor ";
             if(reviewRequest.AddedBy >0) {
                  sql += $@" and a.Addedby=@Addedby"; 
             }
@@ -113,7 +118,8 @@ JOIN
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
             }
-            return await QueryAsync<ReviewResponse>(sql, reviewRequest);
+           var res= await QueryAsync<ReviewResponse>(sql, reviewRequest);
+            return res;
         }
 
         public async Task<IEnumerable<Reviews>> GetReviewsForTeacher(int teacherId) {

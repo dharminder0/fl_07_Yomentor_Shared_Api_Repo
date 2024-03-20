@@ -59,6 +59,8 @@ namespace Core.Business.Sevices.Concrete
                     review.AddedByUserId= item.AddedByUserId;
                     review.AddedForFirstName = item.AddedForFirstName;
                     review.AddedForLastName = item.AddedForLastName;
+                    review.AddedByFirstName = item.AddedByFirstName;
+                    review.AddedByLastName= item.AddedByLastName;
                     var batchDetails = _batchRepository.GetBatchNamebybatchId(item.BatchId);
                     review.BatchId = item.BatchId;
                     review.BatchTitle= batchDetails.ElementAt(0);
