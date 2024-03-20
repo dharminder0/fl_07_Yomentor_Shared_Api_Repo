@@ -162,7 +162,7 @@ END ;";
 
             var  sql = $@"  select * from attendance where batchid=@batchid ";
             if(attendanceRequest.StudentId > 0) {
-                sql += " and a.StudentId=@StudentId";
+                sql += " and StudentId=@StudentId";
             }
             if (!string.IsNullOrWhiteSpace(attendanceRequest.fromDate) && !string.IsNullOrWhiteSpace(attendanceRequest.fromDate)) {
 
