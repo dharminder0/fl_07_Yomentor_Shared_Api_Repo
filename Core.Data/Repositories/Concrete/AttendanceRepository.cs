@@ -177,6 +177,11 @@ END ;";
             return await QueryAsync<Attendance>(sql,attendanceRequest);
         }
 
+        public async Task<bool> DeleteAttendance(int batchId, DateTime date) {
+            string datestring=date.ToString("yyyy/MM/dd");
+            var sql = $@"DELETE FROM attendance WHERE batchId = @batchId AND Date = '{datestring}'";
+            return await ExecuteScalarAsync<bool>(sql, new { batchId, datestring });
+        }
 
     }
 }

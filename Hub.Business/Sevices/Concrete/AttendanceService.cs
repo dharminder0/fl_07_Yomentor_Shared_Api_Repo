@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,12 +44,22 @@ namespace Core.Business.Sevices.Concrete
 
         public async Task<ActionMassegeResponse> BulkInsertAttendance(AttendanceV2 attendance) {
             try {
-                //if(attendance.Id > 0)
-                //{
-                //    var response= await _attendanceRepository.BulkUpdateAttendance(attendance);  
-                //    return new ActionMassegeResponse { Content= response,Message="Attendance_Updated!!",Response = true};
-                //}
-                var res = await _attendanceRepository.BulkInsertAttendance(attendance);
+                var res = 0;
+               await  _attendanceRepository.DeleteAttendance(attendance.BatchId, attendance.Date);
+                foreach (var item in attendance.student_attendance) {
+                    Attendance obj = new Attendance();
+                    obj.UpdateDate = DateTime.Now;
+                    obj.CreateDate = DateTime.Now;
+                    obj.BatchId = attendance.BatchId;
+                    obj.Date = attendance.Date;
+                    obj.Status = item.Status;
+                    obj.StudentId = item.StudentId;
+
+                     res = await _attendanceRepository.InsertAttendance(obj);
+     
+
+
+                }
                 return new ActionMassegeResponse { Content = res, Message = "Attendance_Inserted!!", Response = true };
 
             } catch (Exception ex) {
