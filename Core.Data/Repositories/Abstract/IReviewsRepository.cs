@@ -14,5 +14,6 @@ namespace Core.Data.Repositories.Abstract
         Task<int> UpdateReviews(Reviews reviews);
         Task<int> InsertReviews(Reviews reviews);
         Task<IEnumerable<ReviewResponse>> GetReviewResponse(ReviewRequest reviewRequest);
+        Task<IEnumerable<Reviews>> GetReviewsForTeacher(int teacherId);
     }
 }

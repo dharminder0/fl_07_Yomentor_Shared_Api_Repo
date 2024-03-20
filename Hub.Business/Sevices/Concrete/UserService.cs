@@ -8,7 +8,9 @@ using Core.Common.Web;
 using Core.Data.Repositories.Abstract;
 using Hub.Common.Settings;
 using RLV.Security.Lib;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Services.Concrete {
     public class UserService : IUserService {
@@ -17,10 +19,14 @@ namespace Core.Business.Services.Concrete {
         private static string _symmetricSecretKey = GlobalSettings.BlobSymmetricSecretKey;
         private static string _jwtIssuer = GlobalSettings.JwtIssuer;
         private static string _jwtAudience = GlobalSettings.JwtAudience;
+        private readonly IReviewsRepository _reviewsRepository; 
+        private readonly IMediaFileRepository _mediaFileRepository; 
 
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository usersRepository) {
+        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository) {
             _userRepository = usersRepository;
+            _reviewsRepository = reviewsRepository;
+            _mediaFileRepository = mediaFileRepository;
 
 
         }
@@ -220,7 +226,38 @@ namespace Core.Business.Services.Concrete {
             }
         }
 
+       public  async Task<List<UserResponse>> UserInfo(UserSearchRequest listRequest) {
+            var response =await _userRepository.UserInfo(listRequest);
+            List<UserResponse>  responses = new List<UserResponse>();
 
+          
+            foreach (var item in response) {
+                UserResponse res = new UserResponse();
+                res.Id = item.Id;   
+                res.FirstName = item.Firstname;
+                res.LastName = item.Lastname;   
+                res.Phone= item.Phone;
+                var image= _mediaFileRepository.GetImage(item.Id, MediaEntityType.Users);
+                if(image != null) {
+                    res.ProfilePicture=image.BlobLink;
+                }
+                if (item.Type == (int)UserType.Teacher) {
+
+                   var review= await _reviewsRepository.GetReviewsForTeacher(item.Id);
+                    if (review != null && review.Any()) {
+                        int rating= review.Select(x => x.Rating).Sum();
+                        int  average=rating/review.Select(v=>v.Rating).Count(); 
+                        res.AverageRating = average;
+                        res.ReviewCount = review.Select(v => v.Rating).Count();
+                  
+                      
+                    }
+                }
+                responses.Add(res); 
+
+            }
+            return responses;   
+        }
 
     }
 }

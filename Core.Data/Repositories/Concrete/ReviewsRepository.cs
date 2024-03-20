@@ -1,9 +1,11 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.DTOs;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,5 +119,9 @@ WHERE
             return await QueryAsync<ReviewResponse>(sql, reviewRequest);
         }
 
+        public async Task<IEnumerable<Reviews>> GetReviewsForTeacher(int teacherId) {
+            var sql = @" select * from reviews where Addedfor=@teacherId ";
+            return await QueryAsync<Reviews>(sql, new { teacherId });
+        }
     }
 }
