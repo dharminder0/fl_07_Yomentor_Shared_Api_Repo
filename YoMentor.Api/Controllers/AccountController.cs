@@ -88,6 +88,26 @@ namespace Core.Web.API.Controllers {
 
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listRequest"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/User/UserInfo")]
+        public async Task<IActionResult> UserInfo(UserSearchRequest listRequest) {
+            try {
+
+                var response = await _userService.UserInfo(listRequest);
+                return JsonExt(response);
+            } catch (Exception ex) {
+                return JsonExt(ex.Message);
+
+
+            }
+        }
+
     }
+    
 }
   

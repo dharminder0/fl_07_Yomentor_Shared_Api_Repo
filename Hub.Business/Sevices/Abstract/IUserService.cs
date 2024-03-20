@@ -12,7 +12,9 @@ namespace Core.Business.Services.Abstract {
        
         Task<ActionMessageResponse> ChangePassword(ChangePasswordRequest model);
         Task<ActionMessageResponse> ResetUserPassword(ResetPasswordRequest model);
+        Task<List<UserResponse>> UserInfo(UserSearchRequest listRequest);
 
-       
+
+
     }
 }
