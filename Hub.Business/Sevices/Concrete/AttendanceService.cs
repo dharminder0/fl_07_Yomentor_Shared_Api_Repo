@@ -104,7 +104,7 @@ namespace Core.Business.Sevices.Concrete
                 if (info != null) {
                     AttendanceResponse res = new AttendanceResponse {
                         Id = batch.Id,
-                        StudentId = batch.Id,
+                        StudentId = batch.StudentId,
                         CreateDate = batch.CreateDate,
                         UpdateDate = batch.UpdateDate,
                         BatchId = batch.BatchId,
