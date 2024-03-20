@@ -84,35 +84,32 @@ namespace Core.Data.Repositories.Concrete
 
         public async Task<IEnumerable<ReviewResponse>> GetReviewResponse(ReviewRequest reviewRequest)
         {
-            var sql = @"SELECT 
-    ut.Id AS UserId,
+            var sql = @"SELECT A.Id, 
+    a.AddedFor AS AddedForUserId,
     a.AddedBy AS AddedByUserId,
-    ut.FirstName AS AddedByFirstName,
-    ut.LastName AS AddedByLastName,
-    a.BatchId,
-    ba.name AS BatchTitle,
+    ut.FirstName AS AddedForFirstName,
+    ut.LastName AS AddedForLastName,
+	a.BatchId,
     a.Rating,
     a.Review,
     a.CreateDate,
     a.UpdateDate
 FROM 
-    Users ut
-LEFT JOIN 
-    Reviews a ON a.AddedFor = ut.Id
-LEFT JOIN 
-    Batch ba ON ba.Id = a.BatchId
-WHERE 
-    ut.Id = @AddedFor ";
+    Reviews a 
+JOIN 
+   Users ut ON  a.AddedFor = ut.Id
+  WHERE a.AddedFor = @AddedFor ";
             if(reviewRequest.AddedBy >0) {
-                sql += $@" and a.Addedby=@Addedby";
+                 sql += $@" and a.Addedby=@Addedby"; 
             }
             if (reviewRequest.BatchId > 0)
             {
-                sql += $@" and ba.Id=@batchId;";
+                if (reviewRequest.AddedBy > 0 || reviewRequest.AddedBy > 0) { sql += $@" and a.batchId=@batchId;"; }
+                else { sql += $@"WHERE a.batchId=@batchId;"; }
             }
             if (reviewRequest.PageIndex > 0 && reviewRequest.PageIndex > 0)
             {
-                sql += $@" ORDER BY a.Id DESC
+                sql += $@" ORDER BY a.Id ASC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
             }

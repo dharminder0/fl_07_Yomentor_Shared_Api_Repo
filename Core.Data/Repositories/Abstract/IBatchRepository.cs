@@ -20,5 +20,6 @@ namespace Core.Data.Repositories.Abstract
         IEnumerable<int> CounterStudent(int batchId);
         Task<IEnumerable<Batch>> GetBatchDetailsbyStudentId(int studentId);
          Task<List<Batch>> GetBatchDetailsV2(int teacherId, int statusId);
+        IEnumerable<string> GetBatchNamebybatchId(int batchId);
     }
 }
