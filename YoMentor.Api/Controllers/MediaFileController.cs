@@ -21,6 +21,7 @@ namespace YoMentor.Api.Controllers
     public class MediaFileController : BaseApiController
     {
         private readonly IMediaFileService _mediaFileService;
+        private readonly BlobStorageService _blobStorageService = new BlobStorageService();
         public MediaFileController(IMediaFileService mediaFileService)
         {
             _mediaFileService = mediaFileService;
@@ -91,6 +92,46 @@ namespace YoMentor.Api.Controllers
                 return JsonExt(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("Blob/UploadFile")]
+    
+        public async Task<IActionResult> UploadFile(MediaEntityType mediaEntityType = MediaEntityType.None) {
+            try {
+                FileUploadResponse response = null;
+                var formCollection = await Request.ReadFormAsync();
+                var fileList = formCollection.Files;
 
+                if (fileList != null) {
+                    foreach (var item in fileList) {
+                        using (var memoryStream = new MemoryStream()) {
+                            await item.CopyToAsync(memoryStream);
+                            var fileBytes = memoryStream.ToArray();
+
+                            if (fileBytes != null) {
+                                var fileName = item.FileName.Trim('\"');
+                                fileName = fileName.Replace(" ", "").Replace("-", "");
+                                string _blobContainerName = GlobalSettings.BlobContainerName;
+                               
+                              
+
+
+                                response = _blobStorageService.UploadFileToBlob(fileName, fileBytes, _blobContainerName);
+                            }
+                        }
+                    }
+                }
+
+                if (response != null) {
+                    var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+                    var json = JObject.FromObject(response, serializer);
+                    return JsonExt(new { data = json, message = "Upload success" });
+                }
+                else {
+                    return JsonExt(new { data = (FileUploadResponse)null, message = "Upload failed" });
+                }
+            } catch (Exception ex) {
+                return JsonExt(new { data = (string)null, message = ex.ExtractInnerException() });
+            }
+        }
     }
 }
