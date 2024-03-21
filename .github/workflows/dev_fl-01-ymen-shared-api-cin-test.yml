@@ -54,4 +54,4 @@ jobs:
           app-name: 'fl-01-ymen-Shared-Api-CIN-Test'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A1D82E7C590B4EC889BE45B598B608FB }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B08AC6E2A9784916A7B701547CB678F1 }}
