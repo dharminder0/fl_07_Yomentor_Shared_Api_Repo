@@ -16,15 +16,14 @@ namespace Core.Business.Sevices.Concrete {
     public class BatchService : IBatchService
     {
         private readonly IBatchRepository _batchRepository;
-        private readonly IClassRepository _classRepository;
+        
         private readonly IGradeRepository _gradeRepository; 
         private readonly ISubjectRepository _subjectRepository;
         private readonly IBatchStudentsRepository _batchStudentsRepository;
         private readonly IUserRepository _userRepository;
-        public BatchService(IBatchRepository batchRepository, IClassRepository classRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository)
+        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository)
         {
-            _batchRepository = batchRepository;
-            _classRepository = classRepository;
+            _batchRepository = batchRepository;         
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
             _batchStudentsRepository = batchStudentsRepository;
