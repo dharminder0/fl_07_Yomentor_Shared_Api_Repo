@@ -4,13 +4,6 @@ using Core.Business.Entities.ResponseModels;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
-using Core.Data.Repositories.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Slapper.AutoMapper;
 
 namespace Core.Business.Sevices.Concrete {
     public class AssignmentsService : IAssignmentsService {
