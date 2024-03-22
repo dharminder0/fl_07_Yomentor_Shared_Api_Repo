@@ -175,6 +175,35 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMassegeResponse { Content = response, Message = "Updated_successfully", Response = true };
 
         }
+        public async Task<ActionMassegeResponse> AssignBatchStudents(BatchStudentsRequest request) {
+            int res = 0;
+            if (request == null) {
+                return new ActionMassegeResponse { Response = false };
+            }
+
+            var response = _batchStudentsRepository.GetBatchStudentsbybatchId(request.BatchId);
+            if (response == null || !response.Any()) {
+                return new ActionMassegeResponse { Message = "No students found for the given batch.", Response = false };
+            }
+
+
+            foreach (var item in response) {
+                BatchStudents student = new BatchStudents {
+                    Enrollmentstatus = item.Enrollmentstatus,
+                    CreateDate = item.CreateDate,
+                    BatchId = request.BatchId,
+                    StudentId = item.StudentId,
+                    Id = item.Id,
+                    IsDeleted=item.IsDeleted,
+                    UpdateDate = request.UpdateDate,        
+                };
+
+                res =  _batchStudentsRepository.InsertBatchStudent(student);
+            }
+
+
+            return new ActionMassegeResponse { Message = "Assigned_Successfully", Response = true, Content = res };
+        }
     }
 
 }

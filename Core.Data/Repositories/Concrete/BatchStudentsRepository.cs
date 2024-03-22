@@ -20,5 +20,53 @@ namespace Core.Data.Repositories.Concrete
             var sql = @" update batch_students set enrollmentstatus=@status  where id=@Id  ";
             return await  ExecuteScalarAsync<bool>(sql, new { status, Id });   
         }
+
+        public int InsertBatchStudent(BatchStudents batchStudent) {
+        
+            
+                    var sql = $@"
+                IF NOT EXISTS (SELECT 1 FROM BatchStudents WHERE StudentId = @StudentId AND BatchId = @BatchId)
+                BEGIN
+                    INSERT INTO BatchStudents
+                    (
+                        StudentId,
+                        BatchId,
+                        Enrollmentstatus,
+                        CreateDate,
+                        UpdateDate,
+                        IsDeleted
+                    )
+                    VALUES
+                    (
+                        @StudentId,
+                        @BatchId,
+                        @Enrollmentstatus,
+                        @CreateDate,
+                        @UpdateDate,
+                        @IsDeleted
+                    );
+
+                    SELECT SCOPE_IDENTITY();
+                END
+                ELSE
+                BEGIN
+                    SELECT Id FROM BatchStudents WHERE StudentId = @StudentId AND BatchId = @BatchId;
+                END";
+
+                    var parameters = new {
+                        StudentId = batchStudent.StudentId,
+                        BatchId = batchStudent.BatchId,
+                        Enrollmentstatus = batchStudent.Enrollmentstatus,
+                        CreateDate = batchStudent.CreateDate,
+                        UpdateDate = batchStudent.UpdateDate,
+                        IsDeleted = batchStudent.IsDeleted
+                    };
+
+                    return ExecuteScalar<int>(sql, parameters);
+                }
+            
+         
+        
+
     }
 }

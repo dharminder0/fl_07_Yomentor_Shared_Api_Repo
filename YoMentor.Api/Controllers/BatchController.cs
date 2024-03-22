@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.RequestModels;
+﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
 using Hub.Web.Api.Filters;
@@ -83,6 +84,18 @@ namespace YoMentor.Api.Controllers
         [Route("UpdateEnrollmentStatus")]
         public async Task<IActionResult> UpdateEnrollmentStatus(int status, int Id) {
             var response = await _batchService.UpdateEnrollmentStatus(status, Id);
+            return JsonExt(response);
+        }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+
+        [HttpPost]
+        [Route("AssignedStudent")]
+        public async Task<IActionResult> AssignedStudent(BatchStudentsRequest request) {
+            var response = await _batchService.AssignBatchStudents(request);
             return JsonExt(response);
         }
     }

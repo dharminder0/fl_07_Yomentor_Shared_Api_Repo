@@ -11,5 +11,10 @@ namespace Core.Data.Repositories.Abstract
     {
         IEnumerable<BatchStudents> GetBatchStudentsbybatchId(int batchId);
         Task<bool> UpdateEnrollmentStatus(int status, int Id);
+        int InsertBatchStudent(BatchStudents batchStudent);
+
+
+
+
     }
 }
