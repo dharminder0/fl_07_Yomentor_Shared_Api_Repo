@@ -1,5 +1,6 @@
 ﻿using Autofac.Features.Scanning;
 using Core.Business.Entities.DataModels;
+using Core.Business.Entities.Dto;
 using Core.Business.Entities.DTOs;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
@@ -165,7 +166,7 @@ namespace Core.Business.Sevices.Concrete {
 
             return listBatchStudentDetails;
         }
-     
+
     }
 
 }

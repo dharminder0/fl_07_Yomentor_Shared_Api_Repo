@@ -22,11 +22,7 @@ namespace Core.Data.Repositories.Concrete {
         }
 
 
-        public IEnumerable<Users> GetUsersInfoById(int id, int brandId) {
-            var sql = $@"select u.*  from Users u
-            join UserBrandRef ub on u.id = ub.UserId  where BrandId = @BrandId and u.Id = @Id";
-            return Query<Users>(sql, new { id, brandId });
-        }
+        
 
 
         public int VerifyUserByUsername(string phone) {
@@ -175,7 +171,13 @@ END
             }
             return await QueryAsync<Users>(sql, listRequest);
         }
-
+        public async Task<Users> GetUserInfo(int Id, int type) {
+            var sql = @" select * from users where id=@Id";
+            if(type > 0) {
+                sql += " and type=@type";
+            }
+            return await QueryFirstAsync<Users>(sql, new { Id,type });
+        }
     }
 }
 
