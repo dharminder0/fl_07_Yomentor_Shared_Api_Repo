@@ -106,7 +106,18 @@ namespace Core.Web.API.Controllers {
 
             }
         }
-
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/User/UserInfo")]
+        public async Task<IActionResult> GetUserInfo(int userid, int type) {
+            var response = await _userService.GetUserInfo(userid, type);
+            return JsonExt(response);   
+        }
     }
     
 }

@@ -258,6 +258,34 @@ namespace Core.Business.Services.Concrete {
             }
             return responses;   
         }
+        public async Task<UserDto> GetUserInfo(int userid, int type) {
+            var response = await _userRepository.GetUserInfo(userid, type);
+            UserDto userDto = new UserDto();
+            if (response != null) {
 
+                userDto.IsDeleted = response.IsDeleted;
+                userDto.UpdateDate = response.UpdateDate;
+                userDto.Firstname = response.Firstname;
+                userDto.LastLoginDate = response.LastLoginDate;
+                userDto.Email = response.Email;
+                userDto.Lastname = response.Lastname;
+                userDto.Address = response.Address;
+                userDto.Phone = response.Phone;
+                userDto.DateOfBirth = response.DateOfBirth;
+                userDto.Parentid = response.Parentid;
+                userDto.CreateDate = response.CreateDate;
+                userDto.Id = response.Id;
+                userDto.Type = response.Type;
+                userDto.Address=response.Address;
+                userDto.DateOfBirth=response.DateOfBirth;   
+
+                return userDto;
+
+
+
+            }
+            return userDto;
+
+        }
     }
 }

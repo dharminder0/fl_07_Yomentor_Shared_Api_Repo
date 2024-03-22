@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Business.Entities.Dto;
 
 namespace Core.Business.Sevices.Abstract
 {
@@ -21,7 +22,9 @@ namespace Core.Business.Sevices.Abstract
 
         List<BatchStudentDetailsDto> GetStudentDetailsbyBatchId(int batchId);
         Task<List<BatchDto>> BatchDetails(BatchRequest request);
-        
+       
+
+
 
     }
 }
