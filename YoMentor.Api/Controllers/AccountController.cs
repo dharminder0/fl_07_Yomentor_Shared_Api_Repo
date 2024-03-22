@@ -1,5 +1,6 @@
 ﻿using Core.Business.Entities.RequestModels;
 using Core.Business.Services.Abstract;
+using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
 using Hub.Web.Api.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +10,10 @@ namespace Core.Web.API.Controllers {
     [ApiController]
     public class AccountController : BaseApiController {
         private readonly IUserService _userService;
-        public AccountController(IUserService usersService) {
+        private readonly ITeacherSpecialityService _teacherSpeciality;
+        public AccountController(IUserService usersService, ITeacherSpecialityService teacherSpeciality) {
             _userService = usersService;
+            _teacherSpeciality = teacherSpeciality; 
         }
 
 
@@ -117,6 +120,17 @@ namespace Core.Web.API.Controllers {
         public async Task<IActionResult> GetUserInfo(int userid, int type) {
             var response = await _userService.GetUserInfo(userid, type);
             return JsonExt(response);   
+        }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/User/AssignTeacherSpeciality")]
+        public async Task<IActionResult> AssignTeacherSpeciality(TeacherSpecialityRequest request) {
+            var response = await _teacherSpeciality.TeacherSpeciality(request);
+            return JsonExt(response);
         }
     }
     
