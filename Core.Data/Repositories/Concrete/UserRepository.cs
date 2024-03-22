@@ -147,56 +147,51 @@ END
                 listRequest.SearchText = listRequest.SearchText.ToLower();
             }
 
-            var sql = $@"
+            var sql = @"
         SELECT u.*
-        FROM USERS u
+        FROM USERS u";
+
+          
+                if(listRequest.grade != null && listRequest.grade.Any() ||
+                listRequest.subject != null && listRequest.subject.Any()) {
+                sql += @"
         INNER JOIN teacher_speciality ts ON u.Id = ts.teacherid";
-
-            if (!string.IsNullOrWhiteSpace(listRequest.SearchText) && listRequest.userType != 0) {
-                sql += $@"
-            WHERE
-                (u.Firstname LIKE '%{listRequest.SearchText}%' OR
-                u.Firstname + SPACE(1) + u.Lastname LIKE '%{listRequest.SearchText}%' OR
-                u.Lastname LIKE '%{listRequest.SearchText}%' OR
-                u.Email LIKE '%{listRequest.SearchText}%' OR
-                u.Phone = '{listRequest.SearchText}') AND
-                u.type = @usertype";
             }
 
-            if (!string.IsNullOrWhiteSpace(listRequest.SearchText) && listRequest.userType == 0) {
+            sql += @"
+        WHERE 1 = 1";
+
+            if (!string.IsNullOrWhiteSpace(listRequest.SearchText)) {
                 sql += $@"
-            WHERE
-                (u.Firstname LIKE '%{listRequest.SearchText}%' OR
-                u.Firstname + SPACE(1) + u.Lastname LIKE '%{listRequest.SearchText}%' OR
-                u.Lastname LIKE '%{listRequest.SearchText}%' OR
-                u.Email LIKE '%{listRequest.SearchText}%' OR
-                u.Phone = '{listRequest.SearchText}')";
+        AND (u.Firstname LIKE '%{listRequest.SearchText}%' OR
+             u.Firstname + SPACE(1) + u.Lastname LIKE '%{listRequest.SearchText}%' OR
+             u.Lastname LIKE '%{listRequest.SearchText}%' OR
+             u.Email LIKE '%{listRequest.SearchText}%' OR
+             u.Phone = '{listRequest.SearchText}')";
             }
 
-            if (listRequest.userType != 0 && string.IsNullOrWhiteSpace(listRequest.SearchText)) {
-                sql += $@"
-            WHERE
-                u.type = @usertype";
+            if (listRequest.userType > 0) {
+                sql += @"
+        AND u.type = @usertype";
             }
 
             if (listRequest.grade != null && listRequest.grade.Any()) {
                 sql += $@"
-            AND
-                ts.gradeId IN ({string.Join(",", listRequest.grade)})";
+        AND ts.gradeId IN ({string.Join(",", listRequest.grade)})";
             }
 
             if (listRequest.subject != null && listRequest.subject.Any()) {
                 sql += $@"
-            AND
-                ts.subjectId IN ({string.Join(",", listRequest.subject)})";
+        AND ts.subjectId IN ({string.Join(",", listRequest.subject)})";
             }
 
-            sql += $@"
+            sql += @"
         ORDER BY u.id DESC
         OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             return await QueryAsync<Users>(sql, listRequest);
         }
+
 
         public async Task<Users> GetUserInfo(int Id, int type) {
             var sql = @" select * from users   where id=@Id";
