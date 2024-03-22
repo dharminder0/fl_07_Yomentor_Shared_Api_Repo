@@ -21,5 +21,7 @@ namespace Core.Business.Entities.ResponseModels
         public string Review {  get; set; } 
         public DateTime CreateDate { get; set; }    
         public DateTime UpdateDate { get; set; }
+        public string  TeacherImage { get; set; }
+        public string  StudentImage { get; set; }
     }
 }

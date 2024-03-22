@@ -22,7 +22,9 @@ namespace Core.Business.Sevices.Abstract
 
         List<BatchStudentDetailsDto> GetStudentDetailsbyBatchId(int batchId);
         Task<List<BatchDto>> BatchDetails(BatchRequest request);
-       
+        Task<ActionMassegeResponse> UpdateBatchStatus(int batchStatus, int batchId);
+        Task<ActionMassegeResponse> UpdateEnrollmentStatus(int status, int Id);
+
 
 
 

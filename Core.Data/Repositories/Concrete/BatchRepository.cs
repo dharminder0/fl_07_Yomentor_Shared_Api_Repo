@@ -148,5 +148,9 @@ END ;";
             var res =await  QueryAsync<Batch>(sql, new { teacherId, statusId });
             return (List<Batch>)res;
         }
+        public async Task<bool> UpdateBatchStatus(int batchStatus, int batchId) {
+            var sql = @" update Batch set status=@batchStatus where id=@batchId  ";
+            return await  ExecuteScalarAsync<bool>(sql, new { batchStatus,batchId});  
+        }
     }
 }

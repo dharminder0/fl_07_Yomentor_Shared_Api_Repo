@@ -6,6 +6,7 @@ using Core.Business.Services.Abstract;
 using Core.Common.Account;
 using Core.Common.Web;
 using Core.Data.Repositories.Abstract;
+using Core.Data.Repositories.Concrete;
 using Hub.Common.Settings;
 using RLV.Security.Lib;
 using System.Collections.Generic;
@@ -259,9 +260,26 @@ namespace Core.Business.Services.Concrete {
             return responses;   
         }
         public async Task<UserDto> GetUserInfo(int userid, int type) {
-            var response = await _userRepository.GetUserInfo(userid, type);
             UserDto userDto = new UserDto();
+            var response = await _userRepository.GetUserInfo(userid, type);
+          
+            
+
+  
             if (response != null) {
+                if (response.Type == (int)UserType.Teacher) {
+                    var teacherInfo = await _userRepository.GetTeacherProfile(response.Id);
+                    if (teacherInfo != null) {
+                        userDto.Experience = teacherInfo.Experience;
+                        userDto.About = teacherInfo.About;
+                        userDto.Education = teacherInfo.Education;
+
+                    }
+                }
+               var image= _mediaFileRepository.GetImage(userid, MediaEntityType.Users);
+                if(image != null) {
+                    userDto.Image = image.BlobLink;
+                        }
 
                 userDto.IsDeleted = response.IsDeleted;
                 userDto.UpdateDate = response.UpdateDate;

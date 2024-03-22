@@ -172,11 +172,15 @@ END
             return await QueryAsync<Users>(sql, listRequest);
         }
         public async Task<Users> GetUserInfo(int Id, int type) {
-            var sql = @" select * from users where id=@Id";
+            var sql = @" select * from users   where id=@Id";
             if(type > 0) {
                 sql += " and type=@type";
             }
             return await QueryFirstAsync<Users>(sql, new { Id,type });
+        }
+        public async Task<TeacherProfile> GetTeacherProfile(int userId) {
+            var sql = @" select * from Teacher_Profile where teacherid=@userId ";
+            return await QueryFirstAsync<TeacherProfile>(sql, new { userId });
         }
     }
 }

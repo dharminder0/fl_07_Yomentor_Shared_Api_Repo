@@ -57,7 +57,7 @@ namespace Core.Business.Sevices.Concrete {
                 batch.SubjectName = _subjectRepository.GetSubjectName(row.SubjectId);
                 batch.Fee = row.Fee;
                 batch.StudentCount = row.StudentCount;
-                batch.Status = System.Enum.GetName(typeof(Status), row.Status);
+                batch.Status = System.Enum.GetName(typeof(BatchStatus), row.Status);
                 batch.FeeType = System.Enum.GetName(typeof(FeeType), row.FeeType);
                 batch.Id = row.Id;
                 batch.StatusId = row.Status;
@@ -166,7 +166,15 @@ namespace Core.Business.Sevices.Concrete {
 
             return listBatchStudentDetails;
         }
+        public  async  Task<ActionMassegeResponse> UpdateBatchStatus(int batchStatus, int batchId) {
+           bool response=   await _batchRepository.UpdateBatchStatus(batchStatus, batchId);
+            return new ActionMassegeResponse { Content = response, Message = "Updated_successfully", Response = true };
+        }
+        public async Task<ActionMassegeResponse> UpdateEnrollmentStatus(int status, int Id) {
+            bool response = await _batchStudentsRepository.UpdateEnrollmentStatus(status, Id);
+            return new ActionMassegeResponse { Content = response, Message = "Updated_successfully", Response = true };
 
+        }
     }
 
 }

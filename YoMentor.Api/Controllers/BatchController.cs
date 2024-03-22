@@ -61,6 +61,29 @@ namespace YoMentor.Api.Controllers
             var response = _batchService.GetStudentDetailsbyBatchId(batchId);
             return JsonExt(response);
         }
-     
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="batchStatus"></param>
+        /// <param name="batchId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("UpdateBatchStatus")]
+        public  async Task<IActionResult> UpdateBatchStatus(int batchStatus, int batchId) {
+            var response = await _batchService.UpdateBatchStatus(batchStatus, batchId);
+            return JsonExt(response);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="batchStatus"></param>
+        /// <param name="batchId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("UpdateEnrollmentStatus")]
+        public async Task<IActionResult> UpdateEnrollmentStatus(int status, int Id) {
+            var response = await _batchService.UpdateEnrollmentStatus(status, Id);
+            return JsonExt(response);
+        }
     }
 }

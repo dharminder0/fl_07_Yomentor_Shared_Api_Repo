@@ -23,7 +23,7 @@ namespace Core.Business.Entities.DTOs
             Parent = 2,
             Student = 3
         }
-        public enum Status {
+        public enum BatchStatus {
             Open = 1,
             Active = 2,
             Close = 3,

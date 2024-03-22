@@ -116,7 +116,7 @@ namespace Core.Web.API.Controllers {
         /// <param name="type"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/User/UserInfo")]
+        [Route("api/User/UserDetails")]
         public async Task<IActionResult> GetUserInfo(int userid, int type) {
             var response = await _userService.GetUserInfo(userid, type);
             return JsonExt(response);   
@@ -127,7 +127,7 @@ namespace Core.Web.API.Controllers {
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/User/AssignTeacherSpeciality")]
+        [Route("api/User/UpsertTeacherSpeciality")]
         public async Task<IActionResult> AssignTeacherSpeciality(TeacherSpecialityRequest request) {
             var response = await _teacherSpeciality.TeacherSpeciality(request);
             return JsonExt(response);

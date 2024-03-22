@@ -19,6 +19,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<Users> GetUser(int Id);
         Task<IEnumerable<Users>> UserInfo(UserSearchRequest listRequest);
          Task<Users> GetUserInfo(int Id, int type);
+        Task<TeacherProfile> GetTeacherProfile(int userId);
 
 
 
