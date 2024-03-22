@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Sevices.Concrete
 {
@@ -16,10 +17,13 @@ namespace Core.Business.Sevices.Concrete
     {
         private readonly IReviewsRepository _reviewsRepository;
         private readonly IBatchRepository _batchRepository;
-        public ReviewsService(IReviewsRepository reviewsRepository, IBatchRepository batchRepository)
+        private readonly IMediaFileRepository _mediaFileRepository; 
+        public ReviewsService(IReviewsRepository reviewsRepository, IBatchRepository batchRepository, IMediaFileRepository mediaFileRepository)
         {
             _reviewsRepository = reviewsRepository;
             _batchRepository = batchRepository;
+            _mediaFileRepository = mediaFileRepository;
+
         }
         public async Task<ActionMessageResponse> InsertOrUpdateReviews(Reviews reviews)
         {
@@ -54,6 +58,19 @@ namespace Core.Business.Sevices.Concrete
                 foreach(var item  in res)
                 {
                     review = new ReviewResponse();
+                    try {
+                        var studentImage = _mediaFileRepository.GetImage(item.AddedByUserId, MediaEntityType.Users);
+                        review.StudentImage = studentImage.BlobLink
+;                    } catch (Exception) {
+
+                      
+                    }
+                    try {
+                        var teacherImage = _mediaFileRepository.GetImage(item.AddedForUserId, MediaEntityType.Users);
+                        review.TeacherImage = teacherImage.BlobLink;
+                    } catch (Exception) {
+
+                    }
                     review.Id = item.Id;
                     review.AddedForUserId = item.AddedForUserId;
                     review.AddedByUserId= item.AddedByUserId;

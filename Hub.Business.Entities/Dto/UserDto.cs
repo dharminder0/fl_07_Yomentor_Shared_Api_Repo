@@ -24,7 +24,11 @@ namespace Core.Business.Entities.Dto {
           
             public string Token { get; set; }
             public string Address { get; set; }
-        
+            public string  About { get; set; }
+            public string  Education { get; set; }
+            public string  Experience { get; set; }
+            public string  Image { get; set; }
+
     }
     public class UserAuthenticationDto : UserDto {
         public bool AuthenticationStatus { get; set; }

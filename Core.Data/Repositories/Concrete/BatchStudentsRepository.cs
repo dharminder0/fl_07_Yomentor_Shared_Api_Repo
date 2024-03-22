@@ -16,6 +16,9 @@ namespace Core.Data.Repositories.Concrete
             var sql = $@"SELECT * FROM batch_students WHERE batchId=@batchId";
             return Query<BatchStudents>(sql, new { batchId });
         }
-
+        public async Task<bool> UpdateEnrollmentStatus(int status, int Id) {
+            var sql = @" update batch_students set enrollmentstatus=@status  where id=@Id  ";
+            return await  ExecuteScalarAsync<bool>(sql, new { status, Id });   
+        }
     }
 }
