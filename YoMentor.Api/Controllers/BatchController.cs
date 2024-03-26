@@ -74,8 +74,8 @@ namespace YoMentor.Api.Controllers {
         /// <returns></returns>
         [HttpGet]
         [Route("UpdateEnrollmentStatus")]
-        public async Task<IActionResult> UpdateEnrollmentStatus(int status, int Id) {
-            var response = await _batchService.UpdateEnrollmentStatus(status, Id);
+        public async Task<IActionResult> UpdateEnrollmentStatus(int status, int studentid, int batchId) {
+            var response = await _batchService.UpdateEnrollmentStatus(status, studentid,batchId);
             return JsonExt(response);
         }
         /// <summary>
