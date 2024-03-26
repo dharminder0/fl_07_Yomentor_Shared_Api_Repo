@@ -175,8 +175,8 @@ namespace Core.Business.Sevices.Concrete {
            bool response=   await _batchRepository.UpdateBatchStatus(batchStatus, batchId);
             return new ActionMassegeResponse { Content = response, Message = "Updated_successfully", Response = true };
         }
-        public async Task<ActionMassegeResponse> UpdateEnrollmentStatus(int status, int Id) {
-            bool response = await _batchStudentsRepository.UpdateEnrollmentStatus(status, Id);
+        public async Task<ActionMassegeResponse> UpdateEnrollmentStatus(int status, int Id, int batchId) {
+            bool response = await _batchStudentsRepository.UpdateEnrollmentStatus(status, Id,batchId);
             return new ActionMassegeResponse { Content = response, Message = "Updated_successfully", Response = true };
 
         }
