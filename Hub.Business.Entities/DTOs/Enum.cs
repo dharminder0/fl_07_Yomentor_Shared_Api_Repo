@@ -62,5 +62,10 @@ namespace Core.Business.Entities.DTOs
             Pdf=4,
 
         }
+        public enum FavouriteEntityType {
+            None=0,
+            Batch=1,
+            Teacher=2
+        }
     }
 }

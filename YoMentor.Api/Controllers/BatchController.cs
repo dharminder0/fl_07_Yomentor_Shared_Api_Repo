@@ -1,34 +1,30 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using Azure.Core;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
 using Hub.Web.Api.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-  
-namespace YoMentor.Api.Controllers
-{
+
+namespace YoMentor.Api.Controllers {
     [Route("api/Batch")]
     [ApiController]
-    public class BatchController : BaseApiController
-    {
+    public class BatchController : BaseApiController {
         private readonly IBatchService _batchService;
-        public BatchController(IBatchService batchService)
-        {
-         _batchService = batchService;  
+        public BatchController(IBatchService batchService) {
+            _batchService = batchService;
         }
 
         [HttpPost]
         [Route("BatchListbyUserid")]
-       
-        public async Task<IActionResult> GetBatchDetails(BatchRequest request ) {
-            try
-            {
-                var response =await  _batchService.BatchDetails(request);
+
+        public async Task<IActionResult> GetBatchDetails(BatchRequest request) {
+            try {
+                var response = await _batchService.BatchDetails(request);
                 return JsonExt(response);
-            }
-            catch (Exception ex) { 
-            return JsonExt(ex);
+            } catch (Exception ex) {
+                return JsonExt(ex);
             }
         }
         /// <summary>
@@ -39,13 +35,10 @@ namespace YoMentor.Api.Controllers
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> AddBatchDetails(BatchDetailRequestV2 batchDetailRequest) {
-            try
-            {
+            try {
                 var response = await _batchService.AddBatchDetails(batchDetailRequest);
                 return JsonExt(response);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return JsonExt(ex);
             }
         }
@@ -57,8 +50,7 @@ namespace YoMentor.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("StudentList/{batchId}")]
-        public IActionResult GetStudentDetailsbyBatchId(int batchId)
-        {
+        public IActionResult GetStudentDetailsbyBatchId(int batchId) {
             var response = _batchService.GetStudentDetailsbyBatchId(batchId);
             return JsonExt(response);
         }
@@ -70,7 +62,7 @@ namespace YoMentor.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("UpdateBatchStatus")]
-        public  async Task<IActionResult> UpdateBatchStatus(int batchStatus, int batchId) {
+        public async Task<IActionResult> UpdateBatchStatus(int batchStatus, int batchId) {
             var response = await _batchService.UpdateBatchStatus(batchStatus, batchId);
             return JsonExt(response);
         }
@@ -98,7 +90,17 @@ namespace YoMentor.Api.Controllers
             var response = await _batchService.AssignBatchStudents(request);
             return JsonExt(response);
         }
-       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="favouriteBatchRequest"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AssignedFavouriteBatch")]
+        public async Task<IActionResult> AssignedFavouriteBatch(FavouriteBatchRequest favouriteBatchRequest) {
+            var response = await _batchService.InsertOrUpdateFavouriteBatch(favouriteBatchRequest);
+            return JsonExt(response);
 
+        }
     }
 }
