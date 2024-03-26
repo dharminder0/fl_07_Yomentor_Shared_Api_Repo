@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Core.Business.Sevices.Abstract
 {
     public interface IAnnouncementsService
     {
-        Task<List<Announcements>> GetAnnouncement(int teacherId);
+        Task<List<Announcements>> GetAnnouncement(AnnouncementsRequest announcements);
+        Task<Announcements> GetbyId(int id);
     }
 }

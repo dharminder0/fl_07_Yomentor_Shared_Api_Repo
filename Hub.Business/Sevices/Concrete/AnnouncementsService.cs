@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Core.Data.Repositories.Abstract;
 using System;
@@ -17,31 +18,48 @@ namespace Core.Business.Sevices.Concrete
             _annoucementsRepository = annoucementsRepository;
         }
 
-        public async Task<List<Announcements>> GetAnnouncement(int teacherId)
+        public async Task<Announcements> GetbyId(int id)
         {
-            if(teacherId <= 0)
+            if(id <= 0)
+            {
+                return null;
+            }
+            try
+            {
+                var res= await _annoucementsRepository.GetById(id);
+                return res;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+            public async Task<List<Announcements>> GetAnnouncement(AnnouncementsRequest announcements)
+        {
+            if(announcements== null)
             {
                 throw new Exception("it cannot be null");
             }
             try
             {
-                var res= await _annoucementsRepository.GetAnnouncement(teacherId);
+                var res= await _annoucementsRepository.GetAnnouncement(announcements);
                 List<Announcements> announcementsList = new List<Announcements>();
                 foreach (var item in res) { 
-                Announcements announcements = new Announcements();
-                    announcements.Id = item.Id;
-                    announcements.TeacherId= item.TeacherId;
-                    announcements.BatchId= item.BatchId;
-                    announcements.Announcement= item.Announcement;
-                    announcements.CreateOn= item.CreateOn;
-                    announcements.UpdateOn= item.UpdateOn;
-                    announcementsList.Add(announcements);
+                Announcements announcementsdata = new Announcements();
+                    announcementsdata.Id = item.Id;
+                    announcementsdata.TeacherId= item.TeacherId;
+                    announcementsdata.BatchId= item.BatchId;
+                    announcementsdata.Announcement= item.Announcement;
+                    announcementsdata.CreateOn= item.CreateOn;
+                    announcementsdata.UpdateOn= item.UpdateOn;
+                    announcementsList.Add(announcementsdata);
                 }
                 return announcementsList;
             }
             catch(Exception ex)
             {
-                return null;
+               throw new Exception(ex.Message);
             }
         }
     }
