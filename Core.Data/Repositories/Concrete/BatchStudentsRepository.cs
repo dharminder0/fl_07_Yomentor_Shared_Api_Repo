@@ -65,6 +65,9 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<bool>(sql, new { batchId, datestring });
         }
 
-
+        public async Task<int> GetEnrollmentStatus(int batchId,int studentId) {
+            var sql = @" select enrollmentstatus from batch_students where batchId=@batchId and studentId=@studentId ";
+            return await ExecuteScalarAsync<int>(sql, new { batchId, studentId });
+        }
     }
 }
