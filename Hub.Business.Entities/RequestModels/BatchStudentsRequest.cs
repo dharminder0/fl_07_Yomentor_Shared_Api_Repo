@@ -10,13 +10,17 @@ namespace Core.Business.Entities.DataModels
    
     public class BatchStudentsRequest
     {
-       
-        public int Id { get; set; } 
-        public int StudentId { get; set;}
+
+        public int Id { get; set; }
+        public List<StudentAttendance> student_Info{ get; set; }
         public int BatchId { get; set; }
-        public int Enrollmentstatus {  get; set; }  
-        public DateTime CreateDate { get; set; }
+    
+        public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime UpdateDate { get; set; }
-        public bool IsDeleted { get; set; } 
+    }
+  
+    public class student_Info {
+        public int StudentId { get; set; }
+        public int Status { get; set; }
     }
 }

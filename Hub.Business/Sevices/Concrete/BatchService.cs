@@ -10,7 +10,9 @@ using Core.Data.Repositories.Concrete;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
+using System.Security.AccessControl;
 using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Sevices.Concrete {
@@ -181,29 +183,24 @@ namespace Core.Business.Sevices.Concrete {
                 return new ActionMassegeResponse { Response = false };
             }
 
-            var response = _batchStudentsRepository.GetBatchStudentsbybatchId(request.BatchId);
-            if (response == null || !response.Any()) {
-                return new ActionMassegeResponse { Message = "No students found for the given batch.", Response = false };
+            var response = await  _batchStudentsRepository.DeleteBatchStudents(request.BatchId,request.CreateDate);
+
+            foreach (var item in request.student_Info) {
+                BatchStudents obj = new BatchStudents();
+                obj.UpdateDate = DateTime.Now;
+                obj.BatchId = request.BatchId;
+                obj.CreateDate = request.CreateDate;
+                obj.Enrollmentstatus = item.Status;
+                obj.StudentId = item.StudentId;
+
+                res = await _batchStudentsRepository.InsertBatchStudent(obj);
+
             }
+            return new ActionMassegeResponse { Content = res, Message = "Assigned Successfully !!", Response = true };
 
+        } 
+      
 
-            foreach (var item in response) {
-                BatchStudents student = new BatchStudents {
-                    Enrollmentstatus = item.Enrollmentstatus,
-                    CreateDate = item.CreateDate,
-                    BatchId = request.BatchId,
-                    StudentId = item.StudentId,
-                    Id = item.Id,
-                    IsDeleted=item.IsDeleted,
-                    UpdateDate = request.UpdateDate,        
-                };
-
-                res =  _batchStudentsRepository.InsertBatchStudent(student);
-            }
-
-
-            return new ActionMassegeResponse { Message = "Assigned_Successfully", Response = true, Content = res };
-        }
     }
-
 }
+
