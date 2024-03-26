@@ -1,4 +1,5 @@
 ﻿using Autofac.Features.Scanning;
+using Azure.Core;
 using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
 using Core.Business.Entities.DTOs;
@@ -24,13 +25,15 @@ namespace Core.Business.Sevices.Concrete {
         private readonly ISubjectRepository _subjectRepository;
         private readonly IBatchStudentsRepository _batchStudentsRepository;
         private readonly IUserRepository _userRepository;
-        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository)
+        private readonly IFavouriteBatchRepository _favouriteBatchRepository;   
+        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository, IFavouriteBatchRepository favouriteBatchRepository)
         {
             _batchRepository = batchRepository;         
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
             _batchStudentsRepository = batchStudentsRepository;
             _userRepository = userRepository;
+            _favouriteBatchRepository= favouriteBatchRepository;    
         }
         public async Task<List<BatchDto>> BatchDetails(BatchRequest request)
         {
@@ -198,8 +201,29 @@ namespace Core.Business.Sevices.Concrete {
             }
             return new ActionMassegeResponse { Content = res, Message = "Assigned Successfully !!", Response = true };
 
-        } 
-      
+        }
+       public async  Task<ActionMassegeResponse> InsertOrUpdateFavouriteBatch(FavouriteBatchRequest batch) {
+        
+            if (batch == null) {
+                return new ActionMassegeResponse { Response = false };
+            }
+            
+                FavouriteBatch obj = new FavouriteBatch();
+                obj.Id = batch.Id;
+                obj.EntityTypeId = batch.EntityTypeId;
+                obj.EntityType = batch.EntityType;
+                obj.IsFavourite = batch.IsFavourite;
+                obj.UserId = batch.UserId;
+                obj.CreatedDate= DateTime.Now;
+
+
+               int  res = await _favouriteBatchRepository.InsertOrUpdateFavouriteBatch(obj);
+            return new ActionMassegeResponse { Content = res, Message = " favourite_Batch_Assigned Successfully ", Response = true };
+
+        }
+           
+
+        
 
     }
 }
