@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Core.Data.Repositories.Abstract {
     public interface IFavouriteBatchRepository:IDataRepository<FavouriteBatch> {
         Task<int> InsertOrUpdateFavouriteBatch(FavouriteBatch batch);
+        Task<bool> GetFavouriteStatus(int userId, int entityTypeId);
 
     }
 }

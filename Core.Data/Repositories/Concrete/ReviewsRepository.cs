@@ -82,44 +82,28 @@ namespace Core.Data.Repositories.Concrete
             return await ExecuteScalarAsync<int>(sql, reviews);
         }
 
-        public async Task<IEnumerable<ReviewResponse>> GetReviewResponse(ReviewRequest reviewRequest)
+        public async Task<IEnumerable<Reviews>> GetReviewResponse(ReviewRequest reviewRequest)
         {
-            var sql = @"SELECT A.Id, 
-    a.AddedFor AS AddedForUserId,
-    a.AddedBy AS AddedByUserId,
-    ut.FirstName AS AddedForFirstName,
-    ut.LastName AS AddedForLastName,
-    uty.FirstName As AddedByFirstName,
-    uty.LastName As AddedByLastName,
-	a.BatchId,
-    a.Rating,
-    a.Review,
-    a.CreateDate,
-    a.UpdateDate
+            var sql = @"SELECT *
     FROM 
-    Reviews a 
-    JOIN 
-   Users ut ON  a.AddedFor = ut.Id
-Join
-Users uty On a.Addedby= uty.Id";
- sql+=@"
-WHERE a.AddedFor = @AddedFor ";
-            if(reviewRequest.AddedBy >0) {
-                 sql += $@" and a.Addedby=@Addedby"; 
-            }
-            if (reviewRequest.BatchId > 0)
-            {
-                if (reviewRequest.AddedBy > 0 || reviewRequest.AddedBy > 0) { sql += $@" and a.batchId=@batchId;"; }
-                else { sql += $@"WHERE a.batchId=@batchId;"; }
-            }
-            if (reviewRequest.PageIndex > 0 && reviewRequest.PageIndex > 0)
-            {
-                sql += $@" ORDER BY a.Id ASC
-                 OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
+    Reviews where 1=1   ";
 
+              if(reviewRequest.BatchId > 0) { 
+                sql += @"and  batchId=@BatchId
+                    ";
             }
-           var res= await QueryAsync<ReviewResponse>(sql, reviewRequest);
-            return res;
+            if (reviewRequest.AddedBy > 0) {
+                sql += @" and  AddedBy=@AddedBy";
+            }
+            if(reviewRequest.AddedFor > 0) {
+                sql += @"and AddedFor=@AddedFor";
+            }
+         
+           
+ 
+            
+           return  await QueryAsync<Reviews>(sql, reviewRequest);
+            
         }
 
         public async Task<IEnumerable<Reviews>> GetReviewsForTeacher(int teacherId) {

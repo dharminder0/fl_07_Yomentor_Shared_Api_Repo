@@ -50,6 +50,22 @@ namespace Core.Business.Sevices.Concrete {
                 batch = new BatchDto();
                 int BatchId = row.Id;
                 IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
+                    try {
+                        if (request.UserType == 3 && request.IsFavourite) {
+                            bool isFavourite = await _favouriteBatchRepository.GetFavouriteStatus(request.Userid, row.Id);
+                            batch.IsFavourite = isFavourite;
+                        }
+                        if (request.UserType == 3) {
+                          int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.Userid);
+                            batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
+                        }
+
+
+                    } catch (Exception) {
+
+                        throw;
+                    }
+
                 int noofstudents = count.ElementAt(0);
                 batch.ActualStudents = noofstudents;
                 batch.BatchName = row.Name;
@@ -70,11 +86,13 @@ namespace Core.Business.Sevices.Concrete {
                     TeacherInformation teacher = new TeacherInformation();
                     if (request.UserType == 3) {
                         var teacherdetails = await _userRepository.GetUser(row.TeacherId);
-                        teacher.Id = teacherdetails.Id;
-                        teacher.FirstName = teacherdetails.Firstname;
-                        teacher.LastName = teacherdetails.Lastname;
-                        teacher.Phone = teacherdetails.Phone;
-                        batch.TeacherInformation = teacher;
+                        if (teacherdetails != null) {
+                            teacher.Id = teacherdetails.Id;
+                            teacher.FirstName = teacherdetails.Firstname;
+                            teacher.LastName = teacherdetails.Lastname;
+                            teacher.Phone = teacherdetails.Phone;
+                            batch.TeacherInformation = teacher;
+                        }
                     }
                   
                     batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
