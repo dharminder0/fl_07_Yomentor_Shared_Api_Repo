@@ -5,6 +5,7 @@ using Core.Data.Repositories.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using static Core.Business.Entities.DTOs.Enum;
@@ -152,5 +153,7 @@ END ;";
             var sql = @" update Batch set status=@batchStatus where id=@batchId  ";
             return await  ExecuteScalarAsync<bool>(sql, new { batchStatus,batchId});  
         }
+
+        
     }
 }

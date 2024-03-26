@@ -22,5 +22,6 @@ namespace Core.Data.Repositories.Abstract
          Task<List<Batch>> GetBatchDetailsV2(int teacherId, int statusId);
         IEnumerable<string> GetBatchNamebybatchId(int batchId);
         Task<bool> UpdateBatchStatus(int batchStatus, int batchId);
+       
     }
 }

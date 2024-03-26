@@ -21,13 +21,13 @@ namespace Core.Data.Repositories.Concrete
             return await  ExecuteScalarAsync<bool>(sql, new { status, Id });   
         }
 
-        public int InsertBatchStudent(BatchStudents batchStudent) {
+        public  async Task<int> InsertBatchStudent(BatchStudents batchStudent) {
         
             
                     var sql = $@"
-                IF NOT EXISTS (SELECT 1 FROM BatchStudents WHERE StudentId = @StudentId AND BatchId = @BatchId)
+                IF NOT EXISTS (SELECT 1 FROM Batch_Students WHERE StudentId = @StudentId AND BatchId = @BatchId)
                 BEGIN
-                    INSERT INTO BatchStudents
+                    INSERT INTO Batch_Students
                     (
                         StudentId,
                         BatchId,
@@ -50,7 +50,7 @@ namespace Core.Data.Repositories.Concrete
                 END
                 ELSE
                 BEGIN
-                    SELECT Id FROM BatchStudents WHERE StudentId = @StudentId AND BatchId = @BatchId;
+                    SELECT Id FROM Batch_Students WHERE StudentId = @StudentId AND BatchId = @BatchId;
                 END";
 
                     var parameters = new {
@@ -62,11 +62,15 @@ namespace Core.Data.Repositories.Concrete
                         IsDeleted = batchStudent.IsDeleted
                     };
 
-                    return ExecuteScalar<int>(sql, parameters);
+                    return  await ExecuteScalarAsync<int>(sql, parameters);
                 }
-            
-         
-        
+
+        public async Task<bool> DeleteBatchStudents(int batchId, DateTime date) {
+            string datestring = date.ToString("yyyy/MM/dd");
+            var sql = $@"DELETE FROM batch_students WHERE batchId = @batchId AND createdate = '{datestring}'";
+            return await ExecuteScalarAsync<bool>(sql, new { batchId, datestring });
+        }
+
 
     }
 }

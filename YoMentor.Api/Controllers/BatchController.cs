@@ -98,5 +98,7 @@ namespace YoMentor.Api.Controllers
             var response = await _batchService.AssignBatchStudents(request);
             return JsonExt(response);
         }
+       
+
     }
 }
