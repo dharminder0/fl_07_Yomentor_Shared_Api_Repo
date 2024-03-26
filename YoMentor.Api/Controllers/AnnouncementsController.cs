@@ -16,7 +16,16 @@ namespace YoMentor.Api.Controllers
         {
             _announcementsService = announcementsService;   
         }
-  
+
+
+        [HttpGet]
+        [Route("GetAnnouncement/Id")]
+
+        public async Task<IActionResult> getAnnouncements(int id)
+        {
+            var res =await _announcementsService.GetbyId(id);
+            return JsonExt(res);
+        }
 
         [HttpPost]
         [Route("GetAnnouncementList/teacherId")]

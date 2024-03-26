@@ -11,5 +11,6 @@ namespace Core.Business.Sevices.Abstract
     public interface IAnnouncementsService
     {
         Task<List<Announcements>> GetAnnouncement(AnnouncementsRequest announcements);
+        Task<Announcements> GetbyId(int id);
     }
 }

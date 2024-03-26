@@ -12,5 +12,6 @@ namespace Core.Data.Repositories.Abstract
     public interface IAnnoucementsRepository :IDataRepository<Announcements>
     {
         Task<IEnumerable<Announcements>> GetAnnouncement(AnnouncementsRequest announcements);
+        Task<Announcements> GetById(int Id);
     }
 }

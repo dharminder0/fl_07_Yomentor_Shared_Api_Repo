@@ -12,6 +12,12 @@ namespace Core.Data.Repositories.Concrete
 {
     public class AnnoucementsRepository : DataRepository<Announcements>, IAnnoucementsRepository
     {
+        public async Task<Announcements> GetById(int Id)
+        {
+            var sql = @"SELECT * FROM Announcements WHERE Id = @Id";
+            var res = await QueryFirstAsync<Announcements>(sql,new { Id });
+            return res;
+        }
         public async Task<IEnumerable<Announcements>> GetAnnouncement(AnnouncementsRequest announcements)
         {
             var sql = @"SELECT * FROM Announcements WHERE TeacherId = @TeacherId";

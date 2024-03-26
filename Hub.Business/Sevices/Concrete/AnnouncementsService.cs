@@ -18,7 +18,24 @@ namespace Core.Business.Sevices.Concrete
             _annoucementsRepository = annoucementsRepository;
         }
 
-        public async Task<List<Announcements>> GetAnnouncement(AnnouncementsRequest announcements)
+        public async Task<Announcements> GetbyId(int id)
+        {
+            if(id <= 0)
+            {
+                return null;
+            }
+            try
+            {
+                var res= await _annoucementsRepository.GetById(id);
+                return res;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+            public async Task<List<Announcements>> GetAnnouncement(AnnouncementsRequest announcements)
         {
             if(announcements== null)
             {
