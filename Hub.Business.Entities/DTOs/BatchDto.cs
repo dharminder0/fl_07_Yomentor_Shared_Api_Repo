@@ -18,6 +18,8 @@ namespace Core.Business.Entities.DTOs {
         public string Status { get; set; }
         public int StatusId { get; set; }
         public TeacherInformation TeacherInformation { get; set; }
+        public string Enrollmentstatus { get; set; }
+        public bool IsFavourite { get; set; }
 
 
     }
