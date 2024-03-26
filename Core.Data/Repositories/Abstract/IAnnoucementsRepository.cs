@@ -10,5 +10,6 @@ namespace Core.Data.Repositories.Abstract
 {
     public interface IAnnoucementsRepository :IDataRepository<Announcements>
     {
+        Task<IEnumerable<Announcements>> GetAnnouncement(int teacherId);
     }
 }
