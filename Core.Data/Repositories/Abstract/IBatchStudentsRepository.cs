@@ -10,7 +10,7 @@ namespace Core.Data.Repositories.Abstract
     public interface IBatchStudentsRepository
     {
         IEnumerable<BatchStudents> GetBatchStudentsbybatchId(int batchId);
-        Task<bool> UpdateEnrollmentStatus(int status, int Id);
+        Task<bool> UpdateEnrollmentStatus(int status, int Id, int batchId);
         Task<int> InsertBatchStudent(BatchStudents batchStudent);
         Task<bool> DeleteBatchStudents(int batchId, DateTime date);
 
