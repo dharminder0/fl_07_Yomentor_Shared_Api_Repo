@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
@@ -11,10 +12,19 @@ namespace Core.Data.Repositories.Concrete
 {
     public class AnnoucementsRepository : DataRepository<Announcements>, IAnnoucementsRepository
     {
-        public async Task<IEnumerable<Announcements>> GetAnnouncement(int teacherId)
+        public async Task<IEnumerable<Announcements>> GetAnnouncement(AnnouncementsRequest announcements)
         {
-            var sql = $@"Select * from Announcements where teacherId=@teacherId";
-            return await QueryAsync<Announcements>(sql, new { teacherId });
+            var sql = @"SELECT * FROM Announcements WHERE TeacherId = @TeacherId";
+            object parameters = new { TeacherId = announcements.TeacherId };
+            if (announcements.BatchId >= 0)
+            {
+                sql += " AND BatchId = @BatchId";
+                parameters = new { TeacherId = announcements.TeacherId, BatchId = announcements.BatchId };
+            }
+            var res = await QueryAsync<Announcements>(sql, parameters);
+            return res;
         }
+
+
     }
 }

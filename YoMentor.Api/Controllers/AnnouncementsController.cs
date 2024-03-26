@@ -1,4 +1,6 @@
-﻿using Core.Business.Sevices.Abstract;
+﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
+using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +16,13 @@ namespace YoMentor.Api.Controllers
         {
             _announcementsService = announcementsService;   
         }
+  
 
-        [HttpGet]
-        [Route("{teacherId}")]
-        public async Task<IActionResult> Get(int teacherId)
+        [HttpPost]
+        [Route("GetAnnouncementList/teacherId")]
+        public async Task<IActionResult> Get(AnnouncementsRequest announcements)
         {
-            var res = await _announcementsService.GetAnnouncement(teacherId);
+            var res = await _announcementsService.GetAnnouncement(announcements);
             return JsonExt(res);
 
         }

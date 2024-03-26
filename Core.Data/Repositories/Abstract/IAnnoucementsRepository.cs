@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Core.Data.Repositories.Abstract
 {
     public interface IAnnoucementsRepository :IDataRepository<Announcements>
     {
-        Task<IEnumerable<Announcements>> GetAnnouncement(int teacherId);
+        Task<IEnumerable<Announcements>> GetAnnouncement(AnnouncementsRequest announcements);
     }
 }
