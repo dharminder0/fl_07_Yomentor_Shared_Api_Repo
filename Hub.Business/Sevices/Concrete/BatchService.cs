@@ -51,10 +51,8 @@ namespace Core.Business.Sevices.Concrete {
                 int BatchId = row.Id;
                 IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
                     try {
-                        if (request.UserType == 3 && request.IsFavourite) {
-                            bool isFavourite = await _favouriteBatchRepository.GetFavouriteStatus(request.Userid, row.Id);
-                            batch.IsFavourite = isFavourite;
-                        }
+                            batch.IsFavourite = row.IsFavourite;   
+                       
                         if (request.UserType == 3) {
                           int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.Userid);
                             batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
@@ -66,6 +64,7 @@ namespace Core.Business.Sevices.Concrete {
                         throw;
                     }
 
+                 
                 int noofstudents = count.ElementAt(0);
                 batch.ActualStudents = noofstudents;
                 batch.BatchName = row.Name;
@@ -96,7 +95,9 @@ namespace Core.Business.Sevices.Concrete {
                     }
                   
                     batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
-                    batchDtos.Add(batch);
+                    
+                        batchDtos.Add(batch);
+                    
                    
                 }
 
