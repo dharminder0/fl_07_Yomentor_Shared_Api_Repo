@@ -34,9 +34,9 @@ namespace Core.Data.Repositories.Concrete {
                 EntityType = batch.EntityType
             });
         }
-        public async Task<bool> GetFavouriteStatus(int userId, int entityTypeId) {
+        public async Task<FavouriteBatch> GetFavouriteStatus(int userId, int entityTypeId) {
             var sql = @" select * from favourite_batch where userid=@userId and EntityTypeId=@EntityTypeId ";
-            return await ExecuteScalarAsync<bool>(sql, new { userId, entityTypeId });
+            return await QueryFirstAsync<FavouriteBatch>(sql, new { userId, entityTypeId });
         }
         public async Task<bool> UpdateStatus(int userId, int entityId) {
             var sql = @" update   favourite_batch   set IsFavourite=0 where userId=@userId and EntityTypeId=@entityId ";

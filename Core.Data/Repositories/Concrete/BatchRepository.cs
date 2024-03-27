@@ -186,33 +186,14 @@ END ;";
 
             var parameters = new DynamicParameters();
 
-            if (request.teacherId > 0 && request.StudentId > 0) {
-                sql += @"
-INNER JOIN batch_students BS ON B.id = BS.batchid
-WHERE B.teacherId = @teacherId
-AND BS.studentId = @studentId";
-                parameters.Add("teacherId", request.teacherId);
-                parameters.Add("studentId", request.StudentId);
-            }
-            else {
+   
                 if (request.teacherId >0) {
                     sql += @"
 WHERE B.teacherId = @teacherId";
                     parameters.Add("teacherId", request.teacherId);
                 }
 
-                if (request.StudentId >0) {
-                    if (sql.Contains("INNER JOIN batch_students BS ON B.id = BS.batchid")) {
-                        sql += " AND BS.studentId = @studentId";
-                    }
-                    else {
-                        sql += @"
-INNER JOIN batch_students BS ON B.id = BS.batchid
-WHERE BS.studentId = @studentId";
-                    }
-                    parameters.Add("studentId", request.StudentId);
-                }
-            }
+           
 
             if (request.StatusId?.Count > 0) {
                 sql += @"

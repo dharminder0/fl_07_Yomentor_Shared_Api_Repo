@@ -55,8 +55,9 @@ namespace Core.Business.Sevices.Concrete {
                             batch.IsFavourite = row.IsFavourite;   
                        
                         if (request.UserType == 3) {
-                          int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.UserId);
-                            batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
+                          var enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.UserId);
+                            batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus.Enrollmentstatus);
+                            batch.StatusId=enrollmentstatus.Enrollmentstatus;
                         }
 
 
@@ -279,18 +280,20 @@ namespace Core.Business.Sevices.Concrete {
                     try {
 
                     
-
                        
-                            int enrollmentstatus = await _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.StudentId);
-                            batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
+                            var enrollmentstatus = await _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.StudentId);
+                            batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus.Enrollmentstatus);
+                        batch.EnrollmentstatusId=enrollmentstatus.Enrollmentstatus;
+                        var favBatch=await  _favouriteBatchRepository.GetFavouriteStatus(BatchId, request.StudentId);
+                        batch.IsFavourite = favBatch.IsFavourite;
                         
 
 
                     } catch (Exception) {
 
-                        throw;
+                        
                     }
-
+                  
 
                     int noofstudents = count.ElementAt(0);
                     batch.ActualStudents = noofstudents;

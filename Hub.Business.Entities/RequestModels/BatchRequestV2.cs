@@ -11,6 +11,7 @@ namespace Core.Business.Entities.RequestModels {
         public List<int>? StatusId { get; set; }
         public int? PageSize { get; set; }
         public int? PageIndex { get; set; }
-       
+    
+
     }
 }
