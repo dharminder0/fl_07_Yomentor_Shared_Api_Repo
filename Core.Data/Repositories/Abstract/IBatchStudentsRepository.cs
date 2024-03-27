@@ -13,7 +13,7 @@ namespace Core.Data.Repositories.Abstract
         Task<bool> UpdateEnrollmentStatus(int status, int Id, int batchId);
         Task<int> InsertBatchStudent(BatchStudents batchStudent);
         Task<bool> DeleteBatchStudents(int batchId, DateTime date);
-        Task<int> GetEnrollmentStatus(int batchId, int studentId);
+        Task<BatchStudents> GetEnrollmentStatus(int batchId, int studentId);
 
 
 

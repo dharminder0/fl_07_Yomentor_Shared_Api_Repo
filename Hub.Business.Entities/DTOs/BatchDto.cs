@@ -23,6 +23,7 @@ namespace Core.Business.Entities.DTOs {
         public TeacherInformation TeacherInformation { get; set; }
         public string Enrollmentstatus { get; set; }
         public bool IsFavourite { get; set; }
+        public int EnrollmentstatusId { get; set; }
 
 
     }
