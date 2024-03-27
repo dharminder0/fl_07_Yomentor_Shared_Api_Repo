@@ -38,5 +38,9 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select * from favourite_batch where userid=@userId and EntityTypeId=@EntityTypeId ";
             return await ExecuteScalarAsync<bool>(sql, new { userId, entityTypeId });
         }
+        public async Task<bool> UpdateStatus(int userId, int entityId) {
+            var sql = @" update   favourite_batch   set IsFavourite=0 where userId=@userId and EntityTypeId=@entityId ";
+            return  await ExecuteScalarAsync<bool>(sql, new { userId, entityId });
+        }
     }
 }
