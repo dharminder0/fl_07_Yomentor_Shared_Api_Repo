@@ -13,5 +13,8 @@ namespace Core.Business.Entities.ResponseModels {
         public int AverageRating { get; set; }
         public int ReviewCount { get; set; }
         public string  ProfilePicture { get; set; }
+        public string About { get; set; }
+        public string Education { get; set; }
+        public string Experience { get; set; }
     }
 }
