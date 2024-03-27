@@ -37,7 +37,7 @@ namespace Core.Business.Sevices.Concrete {
         }
         public async Task<List<BatchDto>> BatchDetails(BatchRequest request)
         {
-            if (request.Userid <= 0)
+            if (request.UserId <= 0)
                 throw new Exception("Teacher Id is blank!!!");
 
             try
@@ -51,10 +51,13 @@ namespace Core.Business.Sevices.Concrete {
                 int BatchId = row.Id;
                 IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
                     try {
+                        if (batch.IsFavourite) {
+                            batch.IsFavourite = true;
+                        }
                             batch.IsFavourite = row.IsFavourite;   
                        
                         if (request.UserType == 3) {
-                          int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.Userid);
+                          int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.UserId);
                             batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
                         }
 

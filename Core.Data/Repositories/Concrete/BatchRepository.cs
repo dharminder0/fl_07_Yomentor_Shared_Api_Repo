@@ -16,12 +16,14 @@ namespace Core.Data.Repositories.Concrete
     public class BatchRepository : DataRepository<Batch>, IBatchRepository
     {
         public async Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequest request) {
-            var sql = @"
-        SELECT DISTINCT B.*, fb.isfavourite, BS.studentId
-        FROM Batch B";
+            var sql = @" SELECT DISTINCT B.* ";
 
-            var parameters = new DynamicParameters();
-            parameters.Add("userId", request.Userid);
+            if (request.UserType == (int)UserType.Student) {
+                sql += " ,  BS.studentId,fb.isfavourite ";
+            }
+            sql += " FROM Batch B ";
+           var parameters = new DynamicParameters();
+            parameters.Add("userId", request.UserId);
             parameters.Add("PageSize", request.PageSize);
             parameters.Add("PageIndex", request.PageIndex);
 
