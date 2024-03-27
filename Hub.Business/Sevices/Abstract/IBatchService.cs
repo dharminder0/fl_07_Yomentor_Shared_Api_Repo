@@ -26,6 +26,7 @@ namespace Core.Business.Sevices.Abstract
         Task<ActionMassegeResponse> UpdateEnrollmentStatus(int status, int Id, int batchId);
         Task<ActionMassegeResponse> AssignBatchStudents(BatchStudentsRequest request);
         Task<ActionMassegeResponse> InsertOrUpdateFavouriteBatch(FavouriteBatchRequest batch);
+        Task<ActionMassegeResponse> UpdateFavouriteStatus(int userId, int entityId);
 
 
 

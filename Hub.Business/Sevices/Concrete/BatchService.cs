@@ -254,7 +254,12 @@ namespace Core.Business.Sevices.Concrete {
         }
            
 
-        
+        public async Task<ActionMassegeResponse> UpdateFavouriteStatus(int userId, int entityId) {
+            bool isresoponse=false;
+           isresoponse=await  _favouriteBatchRepository.UpdateStatus(userId, entityId);
+            return new ActionMassegeResponse { Response = true, Content = isresoponse, Message = "Updated Successfully" };
+
+        }
 
     }
 }

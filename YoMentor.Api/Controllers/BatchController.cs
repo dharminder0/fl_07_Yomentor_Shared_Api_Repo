@@ -102,5 +102,17 @@ namespace YoMentor.Api.Controllers {
             return JsonExt(response);
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="entityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("UpdateFavouriteStatus")]
+        public async Task<IActionResult> UpdateFavouriteStatus(int userId, int entityId) {
+            var response= await _batchService.UpdateFavouriteStatus(userId, entityId);  
+            return JsonExt(response);   
+        }
     }
 }
