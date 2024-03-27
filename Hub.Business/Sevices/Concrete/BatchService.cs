@@ -73,8 +73,10 @@ namespace Core.Business.Sevices.Concrete {
                 batch.CreateDate = row.CreateDate;
                 batch.Description = row.Description;
                 batch.TuitionTime = row.TuitionTime;
-                batch.ClassName = _gradeRepository.GetGradeName(row.GradeId);
+                batch.GradeName = _gradeRepository.GetGradeName(row.GradeId);
                 batch.SubjectName = _subjectRepository.GetSubjectName(row.SubjectId);
+                batch.GradeId= row.GradeId; 
+                batch.SubjectId= row.SubjectId; 
                 batch.Fee = row.Fee;
                 batch.StudentCount = row.StudentCount;
                 batch.Status = System.Enum.GetName(typeof(BatchStatus), row.Status);
