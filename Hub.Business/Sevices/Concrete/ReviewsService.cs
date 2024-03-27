@@ -62,7 +62,7 @@ namespace Core.Business.Sevices.Concrete
                 {
                     review = new ReviewResponse();
                     try {
-                        if (reviewRequest.AddedBy > 0) {
+                        if (item.AddedBy > 0) {
                             var studentImage = _mediaFileRepository.GetImage(item.AddedBy, MediaEntityType.Users);
                             if (studentImage != null) {
                                 review.StudentImage = studentImage.BlobLink;
@@ -73,7 +73,7 @@ namespace Core.Business.Sevices.Concrete
                       
                     }
                     try {
-                        if (reviewRequest.AddedFor > 0) {
+                        if (item.AddedFor > 0) {
                             var teacherImage = _mediaFileRepository.GetImage(item.AddedFor, MediaEntityType.Users);
                             if (teacherImage != null) {
                                 review.TeacherImage = teacherImage.BlobLink;
@@ -83,8 +83,8 @@ namespace Core.Business.Sevices.Concrete
 
                     }
                     try {
-                        if (reviewRequest.AddedFor > 0) {
-                            var teacherInfo = await _userRepository.GetUser(reviewRequest.AddedFor);
+                        if (item.AddedFor > 0) {
+                            var teacherInfo = await _userRepository.GetUser(item.AddedFor);
                             review.AddedForFirstName = teacherInfo.Firstname;
                             review.AddedForLastName = teacherInfo.Lastname;
                             review.AddedForUserId = teacherInfo.Id;
@@ -95,8 +95,8 @@ namespace Core.Business.Sevices.Concrete
                         throw;
                     }
                     try {
-                        if (reviewRequest.AddedBy > 0) {
-                            var studentInfo = await _userRepository.GetUser(reviewRequest.AddedBy);
+                        if (item.AddedBy > 0) {
+                            var studentInfo = await _userRepository.GetUser(item.AddedBy);
                             review.AddedByFirstName = studentInfo.Firstname;
                             review.AddedByLastName = studentInfo.Lastname;
                             review.AddedByUserId = studentInfo.Id;

@@ -102,7 +102,8 @@ namespace Core.Data.Repositories.Concrete
            
  
             
-           return  await QueryAsync<Reviews>(sql, reviewRequest);
+           var res=  await QueryAsync<Reviews>(sql, reviewRequest);
+            return res;
             
         }
 
