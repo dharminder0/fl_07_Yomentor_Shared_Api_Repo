@@ -181,6 +181,57 @@ END ;";
             return await  ExecuteScalarAsync<bool>(sql, new { batchStatus,batchId});  
         }
 
-        
+        public async Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequestV2 request) {
+            var sql = @"SELECT DISTINCT B.* FROM Batch B";
+
+            var parameters = new DynamicParameters();
+
+            if (request.teacherId > 0 && request.StudentId > 0) {
+                sql += @"
+INNER JOIN batch_students BS ON B.id = BS.batchid
+WHERE B.teacherId = @teacherId
+AND BS.studentId = @studentId";
+                parameters.Add("teacherId", request.teacherId);
+                parameters.Add("studentId", request.StudentId);
+            }
+            else {
+                if (request.teacherId >0) {
+                    sql += @"
+WHERE B.teacherId = @teacherId";
+                    parameters.Add("teacherId", request.teacherId);
+                }
+
+                if (request.StudentId >0) {
+                    if (sql.Contains("INNER JOIN batch_students BS ON B.id = BS.batchid")) {
+                        sql += " AND BS.studentId = @studentId";
+                    }
+                    else {
+                        sql += @"
+INNER JOIN batch_students BS ON B.id = BS.batchid
+WHERE BS.studentId = @studentId";
+                    }
+                    parameters.Add("studentId", request.StudentId);
+                }
+            }
+
+            if (request.StatusId?.Count > 0) {
+                sql += @"
+AND B.status IN @statusIds";
+                parameters.Add("statusIds", request.StatusId);
+            }
+
+            if (request.PageSize > 0 && request.PageIndex > 0) {
+                sql += @"
+ORDER BY B.status DESC
+OFFSET @PageSize * (@PageIndex - 1) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+                parameters.Add("PageSize", request.PageSize);
+                parameters.Add("PageIndex", request.PageIndex);
+            }
+
+            return await QueryAsync<Batch>(sql, parameters);
+        }
+
+
+
     }
 }
