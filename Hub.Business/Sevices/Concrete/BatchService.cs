@@ -232,10 +232,22 @@ namespace Core.Business.Sevices.Concrete {
                 obj.EntityType = batch.EntityType;
                 obj.IsFavourite = batch.IsFavourite;
                 obj.UserId = batch.UserId;
-                obj.CreatedDate= DateTime.Now;
-
-
+                obj.CreatedDate= DateTime.Now;            
                int  res = await _favouriteBatchRepository.InsertOrUpdateFavouriteBatch(obj);
+            try {
+                BatchStudents batchStudents=new BatchStudents();
+                batchStudents.BatchId = batch.EntityTypeId;
+                batchStudents.StudentId = batch.UserId;
+                batchStudents.CreateDate = DateTime.Now;
+                batchStudents.Enrollmentstatus = 0;
+                batchStudents.IsDeleted= false; 
+                batchStudents.UpdateDate = DateTime.Now;    
+               await  _batchStudentsRepository.InsertBatchStudent(batchStudents);
+
+            } catch (Exception) {
+
+                throw;
+            }
             return new ActionMassegeResponse { Content = res, Message = " favourite_Batch_Assigned Successfully ", Response = true };
 
         }
