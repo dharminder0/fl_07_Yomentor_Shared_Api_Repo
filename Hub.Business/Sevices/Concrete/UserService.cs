@@ -250,8 +250,14 @@ namespace Core.Business.Services.Concrete {
                         int  average=rating/review.Select(v=>v.Rating).Count(); 
                         res.AverageRating = average;
                         res.ReviewCount = review.Select(v => v.Rating).Count();
-                  
-                      
+                    }
+                    var teacherInfo = await _userRepository.GetTeacherProfile(item.Id);
+                    if (teacherInfo != null)
+                    {
+                        res.Experience = teacherInfo.Experience;
+                        res.About = teacherInfo.About;
+                        res.Education = teacherInfo.Education;
+
                     }
                 }
                 responses.Add(res); 
