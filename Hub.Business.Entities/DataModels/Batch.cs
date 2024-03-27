@@ -22,6 +22,7 @@ namespace Core.Business.Entities.DataModels {
         public string Days { get; set; } 
        // public bool IsDeleted { get; set; }
         public int Status { get; set; }
+        public bool IsFavourite { get; set; }
 
     }
    

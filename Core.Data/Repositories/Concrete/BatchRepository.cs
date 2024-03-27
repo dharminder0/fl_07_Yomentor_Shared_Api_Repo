@@ -2,6 +2,7 @@
 using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,26 +15,50 @@ namespace Core.Data.Repositories.Concrete
 {
     public class BatchRepository : DataRepository<Batch>, IBatchRepository
     {
-        public async Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequest request)
-        {
-            var sql = @" select B.* from Batch B  ";
+        public async Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequest request) {
+            var sql = @"
+        SELECT DISTINCT B.*, fb.isfavourite, BS.studentId
+        FROM Batch B";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("userId", request.Userid);
+            parameters.Add("PageSize", request.PageSize);
+            parameters.Add("PageIndex", request.PageIndex);
+
             if (request.UserType == 3) {
-                sql += $@" join  batch_students BS on B.id=BS.batchid  where BS.studentId= @userId ";
+                sql += @"
+            LEFT JOIN favourite_batch fb ON B.id = fb.EntityTypeid
+            LEFT JOIN batch_students BS ON B.id = BS.batchid";
+
+                if (request.IsFavourite) {
+                    sql += @"
+                WHERE BS.studentId = @userId AND IsFavourite = 1";
+                }
+                else {
+                    sql += @"
+                WHERE BS.studentId = @userId";
+                }
             }
-            if (request.UserType == 1) {
-                sql += $@" where B.teacherId= @userId ";
+            else if (request.UserType == 1) {
+                sql += @"
+            WHERE B.teacherId = @userId";
             }
 
-            if (request.StatusId!= null) {
-                sql += $@" and B.status in @StatusId ";
+            if (request.StatusId != null) {
+                sql += @"
+            AND B.status IN @StatusId";
+                parameters.Add("StatusId", request.StatusId);
             }
-            if(request.PageIndex  > 0 && request.PageIndex > 0) {
-                sql += $@" ORDER BY B.status DESC
-                 OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
 
+            if (request.PageIndex > 0 && request.PageSize > 0) {
+                sql += @"
+            ORDER BY B.status DESC
+            OFFSET @PageSize * (@PageIndex - 1) ROWS FETCH NEXT @PageSize ROWS ONLY;";
             }
-            return  await QueryAsync<Batch>(sql, request);
+
+            return await QueryAsync<Batch>(sql, parameters);
         }
+
 
         public IEnumerable<int> CounterStudent(int batchId)
         {

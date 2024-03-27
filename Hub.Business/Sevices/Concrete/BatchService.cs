@@ -51,10 +51,8 @@ namespace Core.Business.Sevices.Concrete {
                 int BatchId = row.Id;
                 IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
                     try {
-                        if (request.UserType == 3 && request.IsFavourite) {
-                            bool isFavourite = await _favouriteBatchRepository.GetFavouriteStatus(request.Userid, row.Id);
-                            batch.IsFavourite = isFavourite;
-                        }
+                            batch.IsFavourite = row.IsFavourite;   
+                       
                         if (request.UserType == 3) {
                           int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.Userid);
                             batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
@@ -66,6 +64,7 @@ namespace Core.Business.Sevices.Concrete {
                         throw;
                     }
 
+                 
                 int noofstudents = count.ElementAt(0);
                 batch.ActualStudents = noofstudents;
                 batch.BatchName = row.Name;
@@ -74,8 +73,10 @@ namespace Core.Business.Sevices.Concrete {
                 batch.CreateDate = row.CreateDate;
                 batch.Description = row.Description;
                 batch.TuitionTime = row.TuitionTime;
-                batch.ClassName = _gradeRepository.GetGradeName(row.GradeId);
+                batch.GradeName = _gradeRepository.GetGradeName(row.GradeId);
                 batch.SubjectName = _subjectRepository.GetSubjectName(row.SubjectId);
+                batch.GradeId= row.GradeId; 
+                batch.SubjectId= row.SubjectId; 
                 batch.Fee = row.Fee;
                 batch.StudentCount = row.StudentCount;
                 batch.Status = System.Enum.GetName(typeof(BatchStatus), row.Status);
@@ -96,7 +97,9 @@ namespace Core.Business.Sevices.Concrete {
                     }
                   
                     batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
-                    batchDtos.Add(batch);
+                    
+                        batchDtos.Add(batch);
+                    
                    
                 }
 
@@ -232,16 +235,33 @@ namespace Core.Business.Sevices.Concrete {
                 obj.EntityType = batch.EntityType;
                 obj.IsFavourite = batch.IsFavourite;
                 obj.UserId = batch.UserId;
-                obj.CreatedDate= DateTime.Now;
-
-
+                obj.CreatedDate= DateTime.Now;            
                int  res = await _favouriteBatchRepository.InsertOrUpdateFavouriteBatch(obj);
+            try {
+                BatchStudents batchStudents=new BatchStudents();
+                batchStudents.BatchId = batch.EntityTypeId;
+                batchStudents.StudentId = batch.UserId;
+                batchStudents.CreateDate = DateTime.Now;
+                batchStudents.Enrollmentstatus = 0;
+                batchStudents.IsDeleted= false; 
+                batchStudents.UpdateDate = DateTime.Now;    
+               await  _batchStudentsRepository.InsertBatchStudent(batchStudents);
+
+            } catch (Exception) {
+
+                throw;
+            }
             return new ActionMassegeResponse { Content = res, Message = " favourite_Batch_Assigned Successfully ", Response = true };
 
         }
            
 
-        
+        public async Task<ActionMassegeResponse> UpdateFavouriteStatus(int userId, int entityId) {
+            bool isresoponse=false;
+           isresoponse=await  _favouriteBatchRepository.UpdateStatus(userId, entityId);
+            return new ActionMassegeResponse { Response = true, Content = isresoponse, Message = "Updated Successfully" };
+
+        }
 
     }
 }
