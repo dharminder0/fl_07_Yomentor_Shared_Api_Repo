@@ -13,5 +13,8 @@ namespace Core.Data.Repositories.Abstract
     {
         Task<IEnumerable<Announcements>> GetAnnouncement(AnnouncementsRequest announcements);
         Task<Announcements> GetById(int Id);
+        Task<int> InsertAnnouncements(Announcements announcements);
+        Task<int> UpdateAnnouncements(Announcements announcements);
+        Task<IEnumerable<Announcements>> Getthroughbatch(AnnouncementsRequest announcements);
     }
 }
