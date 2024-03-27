@@ -114,5 +114,21 @@ namespace YoMentor.Api.Controllers {
             var response= await _batchService.UpdateFavouriteStatus(userId, entityId);  
             return JsonExt(response);   
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("BatchListbyUseridV2")]
+
+        public async Task<IActionResult> GetBatchDetailsV2(BatchRequestV2 request) {
+            try {
+                var response = await _batchService.BatchDetails(request);
+                return JsonExt(response);
+            } catch (Exception ex) {
+                return JsonExt(ex);
+            }
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace Core.Business.Sevices.Concrete {
         }
         public async Task<List<BatchDto>> BatchDetails(BatchRequest request)
         {
-            if (request.Userid <= 0)
+            if (request.UserId <= 0)
                 throw new Exception("Teacher Id is blank!!!");
 
             try
@@ -51,10 +51,11 @@ namespace Core.Business.Sevices.Concrete {
                 int BatchId = row.Id;
                 IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
                     try {
+                       
                             batch.IsFavourite = row.IsFavourite;   
                        
                         if (request.UserType == 3) {
-                          int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.Userid);
+                          int enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.UserId);
                             batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
                         }
 
@@ -261,6 +262,78 @@ namespace Core.Business.Sevices.Concrete {
            isresoponse=await  _favouriteBatchRepository.UpdateStatus(userId, entityId);
             return new ActionMassegeResponse { Response = true, Content = isresoponse, Message = "Updated Successfully" };
 
+        }
+        public async Task<List<BatchDto>> BatchDetails(BatchRequestV2 request) {
+            if (request.teacherId <= 0)
+                throw new Exception("Teacher Id is blank!!!");
+
+            try {
+                var res = await _batchRepository.GetBatchDetailsbyId(request);
+                if (res == null) throw new Exception("Data is empty with this params");
+                BatchDto batch = new BatchDto();
+                List<BatchDto> batchDtos = new List<BatchDto>();
+                foreach (var row in res) {
+                    batch = new BatchDto();
+                    int BatchId = row.Id;
+                    IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
+                    try {
+
+                    
+
+                       
+                            int enrollmentstatus = await _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.StudentId);
+                            batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus);
+                        
+
+
+                    } catch (Exception) {
+
+                        throw;
+                    }
+
+
+                    int noofstudents = count.ElementAt(0);
+                    batch.ActualStudents = noofstudents;
+                    batch.BatchName = row.Name;
+                    batch.StartDate = row.StartDate;
+                    batch.UpdateDate = row.UpdateDate;
+                    batch.CreateDate = row.CreateDate;
+                    batch.Description = row.Description;
+                    batch.TuitionTime = row.TuitionTime;
+                    batch.GradeName = _gradeRepository.GetGradeName(row.GradeId);
+                    batch.SubjectName = _subjectRepository.GetSubjectName(row.SubjectId);
+                    batch.GradeId = row.GradeId;
+                    batch.SubjectId = row.SubjectId;
+                    batch.Fee = row.Fee;
+                    batch.StudentCount = row.StudentCount;
+                    batch.Status = System.Enum.GetName(typeof(BatchStatus), row.Status);
+                    batch.FeeType = System.Enum.GetName(typeof(FeeType), row.FeeType);
+                    batch.Id = row.Id;
+                    batch.StatusId = row.Status;
+                    batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
+                    TeacherInformation teacher = new TeacherInformation();
+                    
+                        var teacherdetails = await _userRepository.GetUser(row.TeacherId);
+                        if (teacherdetails != null) {
+                            teacher.Id = teacherdetails.Id;
+                            teacher.FirstName = teacherdetails.Firstname;
+                            teacher.LastName = teacherdetails.Lastname;
+                            teacher.Phone = teacherdetails.Phone;
+                            batch.TeacherInformation = teacher;
+                        }
+                    
+
+                    batch.Days = row.Days != null ? ConvertToDays(row.Days).Select(day => day.ToString()).ToList() : null;
+
+                    batchDtos.Add(batch);
+
+
+                }
+
+                return batchDtos;
+            } catch (Exception ex) {
+                return null;
+            }
         }
 
     }
