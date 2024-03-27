@@ -35,5 +35,20 @@ namespace YoMentor.Api.Controllers
             return JsonExt(res);
 
         }
+        [HttpPost]
+        [Route("Upsert")]
+        public async Task<IActionResult> AddAnnouncements(Announcements announcements)
+        {
+            var res= await _announcementsService.AddAnnouncements(announcements);
+            return JsonExt(res);
+        }
+        [HttpPost]
+        [Route("GetAnnouncementList/batchId")]
+        public async Task<IActionResult> Getthroughbatch(AnnouncementsRequest announcements)
+        {
+            var res = await _announcementsService.Getthroughbatch(announcements);
+            return JsonExt(res);
+
+        }
     }
 }
