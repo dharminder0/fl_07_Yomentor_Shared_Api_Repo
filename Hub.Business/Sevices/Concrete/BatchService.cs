@@ -51,9 +51,7 @@ namespace Core.Business.Sevices.Concrete {
                 int BatchId = row.Id;
                 IEnumerable<int> count = _batchRepository.CounterStudent(BatchId);
                     try {
-                        if (batch.IsFavourite) {
-                            batch.IsFavourite = true;
-                        }
+                       
                             batch.IsFavourite = row.IsFavourite;   
                        
                         if (request.UserType == 3) {
