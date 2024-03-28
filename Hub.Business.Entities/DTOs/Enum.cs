@@ -67,5 +67,9 @@ namespace Core.Business.Entities.DTOs
             Batch=1,
             Teacher=2
         }
+        public enum TaskStatus {
+            Assign=1,
+            Complete=2
+        }
     }
 }
