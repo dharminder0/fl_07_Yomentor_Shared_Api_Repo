@@ -67,7 +67,7 @@ namespace Core.Data.Repositories.Concrete {
 
         public async Task<BatchStudents> GetEnrollmentStatus(int batchId,int studentId) {
             var sql = @" select enrollmentstatus from batch_students where batchId=@batchId and studentId=@studentId ";
-            return await ExecuteScalarAsync<BatchStudents>(sql, new { batchId, studentId });
+            return await QueryFirstAsync<BatchStudents>(sql, new { batchId, studentId });
         }
     }
 }
