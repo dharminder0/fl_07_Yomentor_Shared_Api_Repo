@@ -120,7 +120,7 @@ namespace YoMentor.Api.Controllers {
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("BatchListbyUseridV2")]
+        [Route("BatchListbyEntity")]
 
         public async Task<IActionResult> GetBatchDetailsV2(BatchRequestV2 request) {
             try {
