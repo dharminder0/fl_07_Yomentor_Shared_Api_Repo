@@ -18,8 +18,8 @@ namespace Core.Data.Repositories.Concrete
         public async Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequest request) {
             var sql = @" SELECT DISTINCT B.* ";
 
-            if (request.UserType == (int)UserType.Student) {
-                sql += " ,  BS.studentId,fb.isfavourite ";
+            if (request.UserType == (int)UserType.Student && request.IsFavourite) {
+                sql += " ,fb.isfavourite ";
             }
             sql += " FROM Batch B ";
            var parameters = new DynamicParameters();
@@ -27,25 +27,25 @@ namespace Core.Data.Repositories.Concrete
             parameters.Add("PageSize", request.PageSize);
             parameters.Add("PageIndex", request.PageIndex);
 
-            if (request.UserType == 3) {
+            if (request.UserType == 3 && request.IsFavourite) {
                 sql += @"
             LEFT JOIN favourite_batch fb ON B.id = fb.EntityTypeid
             LEFT JOIN batch_students BS ON B.id = BS.batchid";
 
                 if (request.IsFavourite) {
                     sql += @"
-                WHERE BS.studentId = @userId AND IsFavourite = 1";
+                WHERE fb.userId = @userId AND IsFavourite = 1";
                 }
-                else {
-                    sql += @"
-                WHERE BS.studentId = @userId";
-                }
+               
             }
             else if (request.UserType == 1) {
                 sql += @"
             WHERE B.teacherId = @userId";
             }
+            if (request.UserType == 3 && !request.IsFavourite) {
+                sql += " LEFT JOIN batch_students BS ON B.id = BS.batchid  WHERE BS.studentId = @userId ";
 
+            }
             if (request.StatusId != null) {
                 sql += @"
             AND B.status IN @StatusId";
@@ -60,6 +60,7 @@ namespace Core.Data.Repositories.Concrete
 
             return await QueryAsync<Batch>(sql, parameters);
         }
+
 
 
         public IEnumerable<int> CounterStudent(int batchId)

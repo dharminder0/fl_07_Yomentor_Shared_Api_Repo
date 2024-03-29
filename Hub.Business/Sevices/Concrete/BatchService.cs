@@ -56,8 +56,10 @@ namespace Core.Business.Sevices.Concrete {
                        
                         if (request.UserType == 3) {
                           var enrollmentstatus  =await  _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.UserId);
-                            batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus.Enrollmentstatus);
-                            batch.StatusId=enrollmentstatus.Enrollmentstatus;
+                            if (enrollmentstatus != null) {
+                                batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus.Enrollmentstatus);
+                                batch.EnrollmentstatusId = enrollmentstatus.Enrollmentstatus;
+                            }
                         }
 
 
