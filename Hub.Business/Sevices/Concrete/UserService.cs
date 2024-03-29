@@ -207,6 +207,7 @@ namespace Core.Business.Services.Concrete {
             user.Address = dbUser.Address;
             user.Type = dbUser.Type;
             user.AuthenticationStatus = true;
+            
             return user;
         }
 
@@ -231,13 +232,21 @@ namespace Core.Business.Services.Concrete {
             var response =await _userRepository.UserInfo(listRequest);
             List<UserResponse>  responses = new List<UserResponse>();
 
+            
+
+
           
             foreach (var item in response) {
+                if (item.Rank == 0) {
+                    item.Rank = 999;
+
+                }
                 UserResponse res = new UserResponse();
                 res.Id = item.Id;   
                 res.FirstName = item.Firstname;
                 res.LastName = item.Lastname;   
                 res.Phone= item.Phone;
+                res.Rank = item.Rank  ;
                 var image= _mediaFileRepository.GetImage(item.Id, MediaEntityType.Users);
                 if(image != null) {
                     res.ProfilePicture=image.BlobLink;
@@ -263,8 +272,68 @@ namespace Core.Business.Services.Concrete {
                 responses.Add(res); 
 
             }
-            return responses;   
+            if (listRequest.userType == (int)UserType.Teacher) {
+                responses = responses.OrderBy(r => r.Rank)
+                             .ThenByDescending(r => r.AverageRating)
+                             .ToList();
+            }
+            foreach (var item in responses) {
+                if (item.Rank == 999) {
+                    item.Rank = 0;
+                }
+            
         }
+
+    return responses;
+}
+    public async Task<List<UserResponse>> UserInfo2(UserSearchRequest listRequest) {
+            var response = await _userRepository.UserInfo(listRequest);
+            List<UserResponse> responses = new List<UserResponse>();
+
+            foreach (var item in response) {
+                UserResponse res = new UserResponse();
+                res.Id = item.Id;
+                res.FirstName = item.Firstname;
+                res.LastName = item.Lastname;
+                res.Phone = item.Phone;
+                res.Rank = item.Rank;
+
+                var image = _mediaFileRepository.GetImage(item.Id, MediaEntityType.Users);
+                if (image != null) {
+                    res.ProfilePicture = image.BlobLink;
+                }
+
+                if (item.Type == (int)UserType.Teacher) {
+                    var review = await _reviewsRepository.GetReviewsForTeacher(item.Id);
+                    if (review != null && review.Any()) {
+                        int rating = review.Select(x => x.Rating).Sum();
+                        int average = review.Where(v => v.Rating != 0).Select(v => v.Rating).Count() > 0 ?
+                            rating / review.Where(v => v.Rating != 0).Select(v => v.Rating).Count() : 0;
+                        res.AverageRating = average;
+                        res.ReviewCount = review.Select(v => v.Rating).Count();
+                    }
+                    var teacherInfo = await _userRepository.GetTeacherProfile(item.Id);
+                    if (teacherInfo != null) {
+                        res.Experience = teacherInfo.Experience;
+                        res.About = teacherInfo.About;
+                        res.Education = teacherInfo.Education;
+                    }
+                }
+                responses.Add(res);
+            }
+
+            if (listRequest.userType == (int)UserType.Teacher) {
+                responses = responses.Where(r => r.Rank != 0 || r.AverageRating != 0)
+                    .OrderByDescending(r => r.Rank != 0)
+                    .ThenBy(r => r.Rank)
+                    .ThenByDescending(r => r.AverageRating != 0)
+                    .ThenByDescending(r => r.AverageRating)
+                    .ToList();
+            }
+
+            return responses;
+        }
+
         public async Task<UserDto> GetUserInfo(int userid, int type) {
             UserDto userDto = new UserDto();
             var response = await _userRepository.GetUserInfo(userid, type);
