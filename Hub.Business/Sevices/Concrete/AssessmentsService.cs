@@ -84,7 +84,7 @@ namespace Core.Business.Sevices.Concrete {
                     obj.TeacherId = item.TeacherId;
                     obj.Title = item.Title;
                     obj.Description = item.Description;
-                    obj.GradeId = item.GradeId;
+                    obj.GradeId = item.GradeId; 
                     obj.IsFavorite = item.IsFavorite;
                     obj.Id = item.Id;
                     obj.Createdate = item.Createdate;

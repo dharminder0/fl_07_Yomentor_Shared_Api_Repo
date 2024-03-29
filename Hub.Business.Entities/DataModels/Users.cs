@@ -22,5 +22,6 @@ namespace Core.Business.Entities.DataModels {
         public string PasswordSalt { get; set; }
         public string Token { get; set; }
         public string  Address { get; set; }
+        public int Rank { get; set; }
     }
 }

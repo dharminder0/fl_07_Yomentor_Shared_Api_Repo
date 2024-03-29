@@ -63,6 +63,7 @@ BEGIN
              ,parentId
              ,createdate 
              ,isdeleted
+               ,Rank
             )
      VALUES
            (
@@ -81,6 +82,7 @@ BEGIN
             ,@parentId
             ,GETDATE()
             ,0
+            ,@Rank
             );
 
     SELECT SCOPE_IDENTITY() 
@@ -106,6 +108,7 @@ END
                 Gender = ob.Gender,
                 parentId=ob.Parentid,
                 Address=ob.Address,
+                Rank=ob.Rank,   
             });
         }
 
@@ -143,12 +146,34 @@ END
         }
 
         public async Task<IEnumerable<Users>> UserInfo(UserSearchRequest listRequest) {
+            string sqlString = "";
             if (!string.IsNullOrWhiteSpace(listRequest.SearchText)) {
                 listRequest.SearchText = listRequest.SearchText.ToLower();
             }
 
             var sql = @"
-        SELECT u.*
+        SELECT 
+u.id
+,u.firstname
+,u.lastname
+,u.phone
+,u.email
+,u.type
+,u.createdate
+,u.updatedate
+,u.lastlogindate
+,u.isdeleted
+,u.parentid
+,u.Password
+,u.PasswordSalt
+,u.Token
+,u.Address
+,u.Gender
+,u.DateOfBirth
+,u.Rank
+
+
+
         FROM USERS u";
 
           
@@ -184,9 +209,20 @@ END
                 sql += $@"
         AND ts.subjectId IN ({string.Join(",", listRequest.subject)})";
             }
-
-            sql += @"
-        ORDER BY u.id DESC
+            if (listRequest.userType == 1) {
+                sqlString = @"
+        ORDER BY
+            CASE
+                WHEN u.Rank IN (1, 2, 3,4,5,6,7,8,9) THEN 0 
+                ELSE 1 
+            END,
+            u.Rank ASC";
+            }
+            else {
+                sqlString = " ORDER BY u.id DESC";
+            }
+            sql += $@"
+       {sqlString}
         OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             return await QueryAsync<Users>(sql, listRequest);
