@@ -35,8 +35,8 @@ namespace Core.Data.Repositories.Concrete {
         }
 
 
-        public int InsertUser(UserRequest ob, string password, string passwordSalt) {
-            if (string.IsNullOrWhiteSpace(ob.Gender)){
+        public int UpsertUser(UserRequest ob, string password, string passwordSalt) {
+            if (string.IsNullOrWhiteSpace(ob.Gender)) {
                 ob.Gender = null;
             }
 
@@ -44,71 +44,87 @@ namespace Core.Data.Repositories.Concrete {
                 ob.DateOfBirth = ob.DateOfBirth?.Date;
             }
 
-            var sql = $@"IF NOT EXISTS (SELECT 1 FROM users WHERE phone = @phone)
-BEGIN
-    INSERT INTO Users
-           (
-            
-              FirstName
-             ,LastName        
-             ,Password
-             ,PasswordSalt
-             ,Token
-             ,Email
-             ,Phone
-             ,Address
-             ,type
-             ,DateOfBirth
-             ,Gender
-             ,parentId
-             ,createdate 
-             ,isdeleted
-               ,Rank
+            var sql = @"
+        IF EXISTS (SELECT 1 FROM Users WHERE Phone = @Phone)
+        BEGIN
+            UPDATE Users
+            SET
+                FirstName = @FirstName,
+                LastName = @LastName,
+                Password = @Password,
+                PasswordSalt = @PasswordSalt,
+                Token = @Token,
+                Email = @Email,
+                Address = @Address,
+                Type = @Type,
+                DateOfBirth = @DateOfBirth,
+                Gender = @Gender,
+                ParentId = @ParentId,
+                Rank = @Rank,
+                CreateDate = GETDATE(),
+                IsDeleted = 0
+            WHERE Phone = @Phone;
+
+            SELECT Id FROM Users WHERE Phone = @Phone;
+        END
+        ELSE
+        BEGIN
+            INSERT INTO Users
+            (
+                FirstName,
+                LastName,
+                Password,
+                PasswordSalt,
+                Token,
+                Email,
+                Phone,
+                Address,
+                Type,
+                DateOfBirth,
+                Gender,
+                ParentId,
+                CreateDate,
+                IsDeleted,
+                Rank
             )
-     VALUES
-           (
-        
-            @FirstName
-            ,@LastName
-            ,@password
-            ,@passwordSalt
-            ,@Token
-            ,@Email
-            ,@Phone
-            ,@Address
-            ,@type
-            ,@DateOfBirth
-            ,@Gender
-            ,@parentId
-            ,GETDATE()
-            ,0
-            ,@Rank
+            VALUES
+            (
+                @FirstName,
+                @LastName,
+                @Password,
+                @PasswordSalt,
+                @Token,
+                @Email,
+                @Phone,
+                @Address,
+                @Type,
+                @DateOfBirth,
+                @Gender,
+                @ParentId,
+                GETDATE(),
+                0,
+                @Rank
             );
 
-    SELECT SCOPE_IDENTITY() 
-END
-ELSE 
-BEGIN
-    SELECT Id FROM Users WHERE phone = @phone;
-END
+            SELECT SCOPE_IDENTITY();
+        END
+    ";
 
-";
             ob.Firstname = ob.Firstname.Trim();
             return ExecuteScalar<int>(sql, new {
-           
                 FirstName = ob.Firstname,
                 LastName = ob.Lastname,
-                password = password,
-                passwordSalt = passwordSalt,
+                Password = password,
+                PasswordSalt = passwordSalt,
                 Token = Guid.NewGuid(),
                 Email = ob.Email,
                 Phone = ob.Phone,
-               Type = ob.Type,  
+                Type = ob.Type,
                 DateOfBirth = ob.DateOfBirth,
                 Gender = ob.Gender,
-                parentId=ob.Parentid,
-                Address=ob.Address,
-                Rank=ob.Rank,   
+                ParentId = ob.Parentid,
+                Address = ob.Address,
+                Rank = ob.Rank
             });
         }
 
@@ -240,6 +256,45 @@ u.id
             var sql = @" select * from Teacher_Profile where teacherid=@userId ";
             return await QueryFirstAsync<TeacherProfile>(sql, new { userId });
         }
+        public async Task<int> UpsertTeacherProfile(TeacherProfile teacherProfile) {
+            var sql = $@"
+        IF NOT EXISTS (SELECT 1 FROM teacher_profile WHERE TeacherId = @TeacherId)
+        BEGIN
+            INSERT INTO teacher_profile
+            (
+                TeacherId,
+                About,
+                Education,
+                Experience
+            )
+            VALUES
+            (
+                @TeacherId,
+                @About,
+                @Education,
+                @Experience
+            );
+            SELECT SCOPE_IDENTITY();
+        END
+        ELSE
+        BEGIN
+            UPDATE teacher_profile SET
+                About = @About,
+                Education = @Education,
+                Experience = @Experience
+            WHERE TeacherId = @TeacherId;
+        END";
+
+            var parameters = new {
+                TeacherId = teacherProfile.TeacherId,
+                About = teacherProfile.About,
+                Education = teacherProfile.Education,
+                Experience = teacherProfile.Experience
+            };
+
+            return await ExecuteScalarAsync<int>(sql, parameters);
+        }
+
     }
 }
 

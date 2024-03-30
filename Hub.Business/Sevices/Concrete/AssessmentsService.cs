@@ -164,10 +164,10 @@ namespace Core.Business.Sevices.Concrete {
                 obj.GradeId = item.GradeId;
                 obj.IsFavorite = item.IsFavorite;
                 obj.Id = item.Id;
-                obj.Createdate = item.Createdate;
-                obj.Updatedate = item.Updatedate;
-                obj.Maxmark = item.Maxmark;
-                obj.Subjectid = item.Subjectid;
+                obj.CreateDate = item.Createdate;
+                obj.UpdateDate = item.Updatedate;
+                obj.MaxMark = item.Maxmark;
+                obj.SubjectId = item.Subjectid;
 
 
                 try {
@@ -220,10 +220,10 @@ namespace Core.Business.Sevices.Concrete {
                     obj.GradeId = item.GradeId; 
                     obj.IsFavorite = item.IsFavorite;
                     obj.Id = item.Id;
-                    obj.Createdate = item.Createdate;
-                    obj.Updatedate = item.Updatedate;
-                    obj.Maxmark= item.Maxmark;  
-                    obj.Subjectid = item.Subjectid; 
+                    obj.CreateDate = item.Createdate;
+                    obj.UpdateDate = item.Updatedate;
+                    obj.MaxMark= item.Maxmark;  
+                    obj.SubjectId = item.Subjectid; 
                     res.Add(obj);
 
                 }
@@ -278,8 +278,8 @@ namespace Core.Business.Sevices.Concrete {
                 obj.GradeId = item.GradeId;
                 obj.IsFavorite = item.IsFavorite;
                 obj.Id = item.Id;
-                obj.Createdate = item.Createdate;
-                obj.Updatedate = item.Updatedate;
+                obj.CreateDate = item.Createdate;
+                obj.UpdateDate = item.Updatedate;
                 obj.AssignedDate = item.AssignedDate;
                 res.Add(obj);
 
