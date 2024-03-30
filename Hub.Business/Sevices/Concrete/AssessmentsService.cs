@@ -180,7 +180,7 @@ namespace Core.Business.Sevices.Concrete {
                             FileIdentifier=fileItem.FileName,
                         };
                        ros.Add(fileUpload); 
-                    obj.UploadFiles=ros;
+                    obj.UploadedFiles=ros;
 
 
                     }
