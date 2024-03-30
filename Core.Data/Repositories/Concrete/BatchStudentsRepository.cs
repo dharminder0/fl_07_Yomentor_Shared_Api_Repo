@@ -43,8 +43,9 @@ namespace Core.Data.Repositories.Concrete {
                     SELECT SCOPE_IDENTITY();
                 END
                 ELSE
+
                 BEGIN
-                    SELECT Id FROM Batch_Students WHERE StudentId = @StudentId AND BatchId = @BatchId;
+                    Update Batch_Students set Enrollmentstatus=1  WHERE StudentId = @StudentId AND BatchId = @BatchId  ;
                 END";
 
                     var parameters = new {
