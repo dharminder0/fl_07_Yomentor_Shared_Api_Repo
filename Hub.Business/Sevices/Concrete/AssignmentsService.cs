@@ -72,7 +72,7 @@ namespace Core.Business.Sevices.Concrete {
                         fileUpload.FileLink = item1.BlobLink;
                         fileUpload.FileName = item1.FileName;
                         UploadFiles.Add(fileUpload);
-                        obj.UploadFiles = UploadFiles;
+                        obj.UploadedFiles = UploadFiles;
 
                     }
                 } catch (Exception) {
