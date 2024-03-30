@@ -28,6 +28,8 @@ namespace Core.Business.Entities.Dto {
             public string  Education { get; set; }
             public string  Experience { get; set; }
             public string  Image { get; set; }
+            public int AverageRating { get; set; }
+            public int ReviewCount { get; set; }
 
     }
     public class UserAuthenticationDto : UserDto {
