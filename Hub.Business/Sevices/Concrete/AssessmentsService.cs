@@ -131,6 +131,7 @@ namespace Core.Business.Sevices.Concrete {
         }
 
         private async Task ProcessUploadedFiles(int entityId, List<FileUploadResponse> uploadedFiles) {
+            _mediaFileRepository.DeleteMediaFIle(entityId, (int)Entities.DTOs.Enum.MediaEntityType.Assessment);
             foreach (var item in uploadedFiles) {
                 MediaFileRequest mediaFile = new MediaFileRequest {
                     FileName = item.FileName,
@@ -138,11 +139,10 @@ namespace Core.Business.Sevices.Concrete {
                     EntityId = entityId,
                     EntityTypeId = Entities.DTOs.Enum.MediaEntityType.Assessment
                 };
-                 _mediaFileRepository.UpsertMediaFile(mediaFile);
+             _mediaFileRepository.InsertInMediaFile(mediaFile);
             }
         }
-
-
+ 
         public IEnumerable<Assessments> GetAssessmentsList(int id)
         {
             if (id <= 0)

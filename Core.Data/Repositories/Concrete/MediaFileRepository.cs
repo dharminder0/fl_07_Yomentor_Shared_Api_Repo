@@ -61,7 +61,7 @@ INSERT INTO Media_File
         }
 
         public bool UpsertMediaFile(MediaFileRequest requestMediaFile) {
-            var sql = @"IF not EXISTS(SELECT 1 from Media_File where EntityId = @EntityId and  EntityTypeId = @EntityTypeId )
+            var sql = @"IF not EXISTS(SELECT 1 from Media_File where EntityId = @EntityId and  EntityTypeId = @EntityTypeId  )
 
 BEGIN
 INSERT INTO Media_File	 
@@ -80,7 +80,7 @@ INSERT INTO Media_File
             @FileName,
             @BlobLink,
             @MediaTypeId,
-            @DocUsageType,
+      
             Getdate())         
 end
 else
@@ -111,7 +111,7 @@ end
         public bool UpdateMediaImage(MediaFileRequest obj) {
 
             var sql = @"
-                        UPDATE Media_File  set DocUsageType = @DocUsageType
+                        UPDATE Media_File  set DocUsageType = @1
                         where  EntityTypeId =@EntityTypeId and 
                         EntityId = @EntityId and 
                         FileName = @FileName and 
@@ -124,8 +124,19 @@ end
             return true;
         }
 
-    
 
+        public bool MediaFileExists(int entityId, int entityTypeId,string fileName) {
+            var sql = "SELECT COUNT(1) FROM Media_File WHERE EntityId = @EntityId AND EntityTypeId = @EntityTypeId and fileName=@fileName ";
+            var result = ExecuteScalar<int>(sql, new { EntityId = entityId, EntityTypeId = entityTypeId,fileName=fileName });
+            return result > 0;
+        }
+
+
+   
+        public bool DeleteMediaFIle( int entityId,int entityTypeId) {
+            var sql = @" delete from Media_File where EntityTypeId=@entityTypeId and EntityId=@entityId ";
+            return ExecuteScalar<bool>(sql, new {entityId, entityTypeId});  
+        }
     }
 }
 

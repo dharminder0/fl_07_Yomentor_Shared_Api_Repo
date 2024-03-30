@@ -4,6 +4,7 @@ using Core.Business.Entities.ResponseModels;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
+using Core.Data.Repositories.Concrete;
 
 namespace Core.Business.Sevices.Concrete {
     public class AssignmentsService : IAssignmentsService {
@@ -13,15 +14,17 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IBatchStudentsRepository _batchStudentsRepository;
         private readonly IGradeRepository _gradeRepository;
         public  readonly  ISubjectRepository _subjectRepository; 
-        public AssignmentsService(IAssignmentsRepository assignmentsRepo, IStudentAssignmentsRepository studentAssignmentsRepo, IBatchRepository batchRepository, IBatchStudentsRepository batchStudentsRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) {
+        private readonly IMediaFileRepository _mediaFileRepository;
+        public AssignmentsService(IAssignmentsRepository assignmentsRepo, IStudentAssignmentsRepository studentAssignmentsRepo, IBatchRepository batchRepository, IBatchStudentsRepository batchStudentsRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository) {
             _assignmentsRepo = assignmentsRepo;
             _studentAssignmentsRepo = studentAssignmentsRepo;
             _batchRepository = batchRepository;
             _batchStudentsRepository = batchStudentsRepository;
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
+            _mediaFileRepository = mediaFileRepository;
         }
-        public async Task<ActionMassegeResponse> InsertOrUpdateAssignments(AssignmentsRequest assignmentsRequest) {
+        public async Task<ActionMassegeResponse> InsertOrUpdateAssignmentsV2(AssignmentsRequest assignmentsRequest) {
             if (assignmentsRequest == null) {
                 return new ActionMassegeResponse { Response = false };
             }
@@ -138,6 +141,51 @@ namespace Core.Business.Sevices.Concrete {
                        
            return res;  
         }
+        public async Task<ActionMessageResponse> InsertOrUpdateAssignments(AssignmentsRequest assignmentsRequest) {
+            if (assignmentsRequest == null) {
+                return new ActionMessageResponse { Success = false };
+            }
+
+            Assignments assignments = new Assignments {
+                Title = assignmentsRequest.Title,
+                Description = assignmentsRequest.Description,
+                Id = assignmentsRequest.Id,
+                Teacherid = assignmentsRequest.Teacherid,
+                Isdeleted = assignmentsRequest.Isdeleted,
+                Subjectid = assignmentsRequest.Subjectid,
+                GradeId = assignmentsRequest.GradeId,
+                Isfavorite = assignmentsRequest.Isfavorite,
+            };
+
+            int id = assignments.Id == 0
+                ? await _assignmentsRepo.InsertAssignment(assignments)
+                : await _assignmentsRepo.UpdateAssignment(assignments);
+
+            try {
+                if (assignmentsRequest.uploadedFiles != null && assignmentsRequest.uploadedFiles.Any()) {
+                    await ProcessUploadedFiles(id, assignmentsRequest.uploadedFiles);
+                }
+            } catch (Exception) {
+                throw;
+            }
+
+            string message = assignments.Id == 0 ? "Assignment_created" : "Assignment_Updated";
+            return new ActionMessageResponse { Content = id, Message = message, Success = true };
+        }
+
+        private async Task ProcessUploadedFiles(int entityId, List<FileUploadResponse> uploadedFiles) {
+            _mediaFileRepository.DeleteMediaFIle(entityId, (int)Entities.DTOs.Enum.MediaEntityType.Assignment)
+            foreach (var item in uploadedFiles) {
+                MediaFileRequest mediaFile = new MediaFileRequest {
+                    FileName = item.FileName,
+                    Bloblink = item.FileLink,
+                    EntityId = entityId,
+                    EntityTypeId = Entities.DTOs.Enum.MediaEntityType.Assignment
+                };
+                _mediaFileRepository.InsertInMediaFile(mediaFile);
+            }
+        }
+
     }
 
 }
