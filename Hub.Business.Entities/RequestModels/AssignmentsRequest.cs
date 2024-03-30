@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Business.Entities.ResponseModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace Core.Business.Entities.RequestModels {
         public int Subjectid { get; set; }
         public bool Isfavorite { get; set; } = true;
         public bool Isdeleted { get; set; }= false;
+        public List<FileUploadResponse> uploadedFiles { get; set; }
     }
 }

@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Core.Business.Sevices.Abstract {
     public interface IAssignmentsService {
-        Task<ActionMassegeResponse> InsertOrUpdateAssignments(AssignmentsRequest assignmentsRequest);
+
+        Task<ActionMessageResponse> InsertOrUpdateAssignments(AssignmentsRequest assignmentsRequest);
         IEnumerable<Assignments> GetAssignment(int id);
         Task<List<AssignmentsResponse>> GetAllAssignments(StudentProgressRequestV2 request);
         Task<ActionMassegeResponse> AssignStudentAssignments(StudentAssignmentsRequestV2 request);

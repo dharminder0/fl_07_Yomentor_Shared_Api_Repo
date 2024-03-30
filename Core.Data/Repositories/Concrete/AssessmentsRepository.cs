@@ -63,11 +63,11 @@ namespace Core.Data.Repositories.Concrete {
                 Title = @Title,
                 Description = @Description,
                 GradeId = @GradeId,
-                SubjcetId = @SubjcetId,
+                subjectid = @Subjectid,
                 Maxmark = @Maxmark,
-                isfavorite = @isfavorite,
-                isdeleted = @isdeleted,
-                UpdatedDate = @UpdatedDate
+                isfavorite = @IsFavorite,
+                isdeleted = @IsDeleted,
+                updatedate = GetUtcDate()
             WHERE
                 Id = @Id;
 
