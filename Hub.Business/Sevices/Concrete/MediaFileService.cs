@@ -36,8 +36,7 @@ namespace Core.Business.Services.Concrete {
                     return false;
                 }
 
-           
-           
+         
                 
                     requestMediaFile.FileName = GenerateSuitableFilename(requestMediaFile.FileName);
                     var response = GetMediaType(requestMediaFile.FileName);

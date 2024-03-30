@@ -19,15 +19,17 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IStudentAssessmentRepository _studentAssessmentRepository;
         private readonly IGradeRepository _gradeRepository;
         private readonly ISubjectRepository _subjectRepository;
-        public AssessmentsService(IAssessmentsRepository assessmentsRepository, IBatchStudentsRepository batchStudentsRepository, IStudentAssessmentRepository studentAssessmentRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository)
+        private readonly IMediaFileRepository _mediaFileRepository;
+        public AssessmentsService(IAssessmentsRepository assessmentsRepository, IBatchStudentsRepository batchStudentsRepository, IStudentAssessmentRepository studentAssessmentRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository)
         {
             _assessmentsRepository = assessmentsRepository;
             _batchStudentsRepository= batchStudentsRepository; 
             _studentAssessmentRepository= studentAssessmentRepository;
             _gradeRepository= gradeRepository;
             _subjectRepository= subjectRepository;
+            _mediaFileRepository= mediaFileRepository;  
         }
-        public async Task<ActionMessageResponse> InsertOrUpdateAssessments(AssessmentsRequest assessmentsRequest) {
+        public async Task<ActionMessageResponse> InsertOrUpdateAssessmentsV2(AssessmentsRequest assessmentsRequest) {
             if (assessmentsRequest == null) {
                 return new ActionMessageResponse { Success = false };
             }
@@ -46,12 +48,100 @@ namespace Core.Business.Sevices.Concrete {
 
             if (assessmentsRequest.Id == 0) {
                 int insertedId = await _assessmentsRepository.InsertAssessments(assessments);
+                try {
+                    if (assessmentsRequest.uploadedFiles != null && assessmentsRequest.uploadedFiles.Any()) {
+                        foreach (var item in assessmentsRequest.uploadedFiles)
+                        {
+                            MediaFileRequest mediaFile = new MediaFileRequest();
+                            mediaFile.FileName = item.FileName;
+                            mediaFile.Bloblink = item.FileLink;
+                            mediaFile.EntityId = insertedId;
+                            mediaFile.EntityTypeId = Entities.DTOs.Enum.MediaEntityType.Assessment;
+                            _mediaFileRepository.UpsertMediaFile(mediaFile);
+
+
+                        }
+                        
+
+                    }
+
+                } catch (Exception) {
+
+                    throw;
+                }
+               
                 return new ActionMessageResponse { Content = insertedId, Message = "Assignment_created", Success = true };
             }
 
             int id = await _assessmentsRepository.UpdateAssessments(assessments);
+            try {
+                if (assessmentsRequest.uploadedFiles != null && assessmentsRequest.uploadedFiles.Any()) {
+                    foreach (var item in assessmentsRequest.uploadedFiles) {
+                        MediaFileRequest mediaFile = new MediaFileRequest();
+                        mediaFile.FileName = item.FileName;
+                        mediaFile.Bloblink = item.FileLink;
+                        mediaFile.EntityId = id;
+                        mediaFile.EntityTypeId = Entities.DTOs.Enum.MediaEntityType.Assessment;
+                        _mediaFileRepository.UpsertMediaFile(mediaFile);
+
+
+                    }
+
+
+                }
+
+            } catch (Exception) {
+
+                throw;
+            }
             return new ActionMessageResponse { Content = id, Message = "Assignment_Updated", Success = true };
         }
+        public async Task<ActionMessageResponse> InsertOrUpdateAssessments(AssessmentsRequest assessmentsRequest) {
+            if (assessmentsRequest == null) {
+                return new ActionMessageResponse { Success = false };
+            }
+
+            Assessments assessments = new Assessments {
+                Title = assessmentsRequest.Title,
+                Description = assessmentsRequest.Description,
+                Id = assessmentsRequest.Id,
+                TeacherId = assessmentsRequest.TeacherId,
+                IsDeleted = assessmentsRequest.Isdeleted,
+                Subjectid = assessmentsRequest.SubjectId,
+                GradeId = assessmentsRequest.GradeId,
+                IsFavorite = assessmentsRequest.Isfavorite,
+                Createdate = assessmentsRequest.Createdate,
+                Updatedate = assessmentsRequest.UpdatedDate
+            };
+
+            int id = assessments.Id == 0
+                ? await _assessmentsRepository.InsertAssessments(assessments)
+                : await _assessmentsRepository.UpdateAssessments(assessments);
+
+            try {
+                if (assessmentsRequest.uploadedFiles != null && assessmentsRequest.uploadedFiles.Any()) {
+                    await ProcessUploadedFiles(id, assessmentsRequest.uploadedFiles);
+                }
+            } catch (Exception) {
+                throw;
+            }
+
+            string message = assessments.Id == 0 ? "Assignment_created" : "Assignment_Updated";
+            return new ActionMessageResponse { Content = id, Message = message, Success = true };
+        }
+
+        private async Task ProcessUploadedFiles(int entityId, List<FileUploadResponse> uploadedFiles) {
+            foreach (var item in uploadedFiles) {
+                MediaFileRequest mediaFile = new MediaFileRequest {
+                    FileName = item.FileName,
+                    Bloblink = item.FileLink,
+                    EntityId = entityId,
+                    EntityTypeId = Entities.DTOs.Enum.MediaEntityType.Assessment
+                };
+                 _mediaFileRepository.UpsertMediaFile(mediaFile);
+            }
+        }
+
 
         public IEnumerable<Assessments> GetAssessmentsList(int id)
         {
