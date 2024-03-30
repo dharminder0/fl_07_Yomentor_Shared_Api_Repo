@@ -88,7 +88,7 @@ namespace Core.Business.Services.Concrete {
             }
 
             if (userId == 0) {
-                userId = _userRepository.InsertUser(obj, hashedPassword, salt);
+                userId = _userRepository.UpsertUser(obj, hashedPassword, salt);
 
                 return new ActionMessageResponse { Success = true, Content = userId };
             }

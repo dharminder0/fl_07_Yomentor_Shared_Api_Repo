@@ -32,11 +32,11 @@ namespace Core.Business.Sevices.Concrete {
             assignments.Title = assignmentsRequest.Title;
             assignments.Description = assignmentsRequest.Description;
             assignments.Id = assignmentsRequest.Id;
-            assignments.Teacherid = assignmentsRequest.Teacherid;
-            assignments.Isdeleted = assignmentsRequest.Isdeleted;
-            assignments.Subjectid = assignmentsRequest.Subjectid;
+            assignments.Teacherid = assignmentsRequest.TeacherId;
+            assignments.Isdeleted = assignmentsRequest.IsDeleted;
+            assignments.Subjectid = assignmentsRequest.SubjectId;
             assignments.GradeId = assignmentsRequest.GradeId;
-            assignments.Isfavorite = assignmentsRequest.Isfavorite;
+            assignments.Isfavorite = assignmentsRequest.IsFavorite;
             if (assignmentsRequest.Id == 0) {
                 int InsertedId = await _assignmentsRepo.InsertAssignment(assignments);
                 return new ActionMassegeResponse { Content = InsertedId, Message = "Assignment_created", Response = true };
@@ -58,11 +58,11 @@ namespace Core.Business.Sevices.Concrete {
                 obj.Id = item.Id;
                 obj.Title = item.Title;
                 obj.Description = item.Description;
-                obj.Updatedate = item.UpdateDate;
-                obj.Createdate = item.CreateDate;
+                obj.UpdateDate = item.UpdateDate;
+                obj.CreateDate = item.CreateDate;
                 obj.AssignedDate = item.AssignedDate;
                 obj.GradeId = item.GradeId;
-                obj.Subjectid=item.Subjectid;
+                obj.SubjectId=item.Subjectid;
                 obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
                 obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
                 try {
@@ -105,11 +105,11 @@ namespace Core.Business.Sevices.Concrete {
 
                     obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
                     obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
-                    obj.Subjectid = item.Subjectid;
-                    obj.Teacherid = item.Teacherid;
+                    obj.SubjectId = item.Subjectid;
+                    obj.TeacherId = item.Teacherid;
                     obj.Title = item.Title;
                     obj.Description = item.Description;
-                    obj.Isfavorite = item.Isfavorite;
+                    obj.IsFavorite = item.Isfavorite;
                     obj.GradeId = item.GradeId;
                     obj.Id = item.Id;
                     obj.CreateDate = item.CreateDate;
@@ -164,11 +164,11 @@ namespace Core.Business.Sevices.Concrete {
                 AssignmentsResponse obj = new AssignmentsResponse();
                 obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
                 obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
-                obj.Subjectid = item.Subjectid; 
-                obj.Teacherid=item.Teacherid;   
+                obj.SubjectId = item.Subjectid; 
+                obj.TeacherId=item.Teacherid;   
                 obj.Title = item.Title; 
                 obj.Description = item.Description;
-                obj.Isfavorite  = item.Isfavorite;
+                obj.IsFavorite  = item.Isfavorite;
                 obj.GradeId = item.GradeId;
                 obj.Id= item.Id;  
                 obj.CreateDate = item.CreateDate;
@@ -190,11 +190,11 @@ namespace Core.Business.Sevices.Concrete {
                 Title = assignmentsRequest.Title,
                 Description = assignmentsRequest.Description,
                 Id = assignmentsRequest.Id,
-                Teacherid = assignmentsRequest.Teacherid,
-                Isdeleted = assignmentsRequest.Isdeleted,
-                Subjectid = assignmentsRequest.Subjectid,
+                Teacherid = assignmentsRequest.TeacherId,
+                Isdeleted = assignmentsRequest.IsDeleted,
+                Subjectid = assignmentsRequest.SubjectId,
                 GradeId = assignmentsRequest.GradeId,
-                Isfavorite = assignmentsRequest.Isfavorite,
+                Isfavorite = assignmentsRequest.IsFavorite,
             };
 
             int id = assignments.Id == 0
@@ -202,8 +202,8 @@ namespace Core.Business.Sevices.Concrete {
                 : await _assignmentsRepo.UpdateAssignment(assignments);
 
             try {
-                if (assignmentsRequest.uploadedFiles != null && assignmentsRequest.uploadedFiles.Any()) {
-                    await ProcessUploadedFiles(id, assignmentsRequest.uploadedFiles);
+                if (assignmentsRequest.UploadedFiles != null && assignmentsRequest.UploadedFiles.Any()) {
+                    await ProcessUploadedFiles(id, assignmentsRequest.UploadedFiles);
                 }
             } catch (Exception) {
                 throw;
