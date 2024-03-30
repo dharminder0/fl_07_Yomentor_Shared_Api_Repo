@@ -43,7 +43,7 @@ namespace Core.Data.Repositories.Concrete
             WHERE B.teacherId = @userId";
             }
             if (request.UserType == 3 && !request.IsFavourite) {
-                sql += " LEFT JOIN batch_students BS ON B.id = BS.batchid  WHERE BS.studentId = @userId ";
+                sql += " LEFT JOIN batch_students BS ON B.id = BS.batchid  WHERE BS.studentId = @userId  and BS.enrollmentstatus<>0 ";
 
             }
             if (request.StatusId != null) {
