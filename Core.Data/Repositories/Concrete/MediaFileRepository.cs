@@ -21,7 +21,7 @@ namespace Core.Data.Repositories.Concrete {
             if (mediaTypeid != MediaType.None) {
                 sql += $@" and MediaTypeId ={(int)mediaTypeid}";
             }
-            sql += " order by isdefault desc ";
+            sql += " order by 1 desc   ";
             return Query<MediaFile>(sql, new { objectId, entityTypeId });
         }
         public MediaFile GetImage(int objectId, MediaEntityType entityTypeId) {

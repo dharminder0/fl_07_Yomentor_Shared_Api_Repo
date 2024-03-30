@@ -13,21 +13,20 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Business.Sevices.Concrete {
-    public class AssessmentsService:IAssessmentsService {
+    public class AssessmentsService : IAssessmentsService {
         private readonly IAssessmentsRepository _assessmentsRepository;
         private readonly IBatchStudentsRepository _batchStudentsRepository;
         private readonly IStudentAssessmentRepository _studentAssessmentRepository;
         private readonly IGradeRepository _gradeRepository;
         private readonly ISubjectRepository _subjectRepository;
         private readonly IMediaFileRepository _mediaFileRepository;
-        public AssessmentsService(IAssessmentsRepository assessmentsRepository, IBatchStudentsRepository batchStudentsRepository, IStudentAssessmentRepository studentAssessmentRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository)
-        {
+        public AssessmentsService(IAssessmentsRepository assessmentsRepository, IBatchStudentsRepository batchStudentsRepository, IStudentAssessmentRepository studentAssessmentRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository) {
             _assessmentsRepository = assessmentsRepository;
-            _batchStudentsRepository= batchStudentsRepository; 
-            _studentAssessmentRepository= studentAssessmentRepository;
-            _gradeRepository= gradeRepository;
-            _subjectRepository= subjectRepository;
-            _mediaFileRepository= mediaFileRepository;  
+            _batchStudentsRepository = batchStudentsRepository;
+            _studentAssessmentRepository = studentAssessmentRepository;
+            _gradeRepository = gradeRepository;
+            _subjectRepository = subjectRepository;
+            _mediaFileRepository = mediaFileRepository;
         }
         public async Task<ActionMessageResponse> InsertOrUpdateAssessmentsV2(AssessmentsRequest assessmentsRequest) {
             if (assessmentsRequest == null) {
@@ -50,8 +49,7 @@ namespace Core.Business.Sevices.Concrete {
                 int insertedId = await _assessmentsRepository.InsertAssessments(assessments);
                 try {
                     if (assessmentsRequest.uploadedFiles != null && assessmentsRequest.uploadedFiles.Any()) {
-                        foreach (var item in assessmentsRequest.uploadedFiles)
-                        {
+                        foreach (var item in assessmentsRequest.uploadedFiles) {
                             MediaFileRequest mediaFile = new MediaFileRequest();
                             mediaFile.FileName = item.FileName;
                             mediaFile.Bloblink = item.FileLink;
@@ -61,7 +59,7 @@ namespace Core.Business.Sevices.Concrete {
 
 
                         }
-                        
+
 
                     }
 
@@ -69,7 +67,7 @@ namespace Core.Business.Sevices.Concrete {
 
                     throw;
                 }
-               
+
                 return new ActionMessageResponse { Content = insertedId, Message = "Assignment_created", Success = true };
             }
 
@@ -139,26 +137,71 @@ namespace Core.Business.Sevices.Concrete {
                     EntityId = entityId,
                     EntityTypeId = Entities.DTOs.Enum.MediaEntityType.Assessment
                 };
-             _mediaFileRepository.InsertInMediaFile(mediaFile);
+                _mediaFileRepository.InsertInMediaFile(mediaFile);
             }
         }
- 
-        public IEnumerable<Assessments> GetAssessmentsList(int id)
-        {
-            if (id <= 0)
-            {
+
+        public  List<AssessmentResponse> GetAssessmentsList(int id) {
+            if (id <= 0) {
                 throw new ArgumentOutOfRangeException("id is null or blank");
             }
-            try
-            {
-                var res = _assessmentsRepository.GetAssessmentsList(id);
-                return res;
+
+            List<AssessmentResponse> assessmentResponses = new List<AssessmentResponse>();
+            List<FileUploadResponse> ros = new List<FileUploadResponse>();
+
+
+            var item =  _assessmentsRepository.GetAssessments(id);
+
+
+                AssessmentResponse obj = new AssessmentResponse()
+;
+                obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+                obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
+                obj.Id = item.Id;
+                obj.TeacherId = item.TeacherId;
+                obj.Title = item.Title;
+                obj.Description = item.Description;
+                obj.GradeId = item.GradeId;
+                obj.IsFavorite = item.IsFavorite;
+                obj.Id = item.Id;
+                obj.Createdate = item.Createdate;
+                obj.Updatedate = item.Updatedate;
+                obj.Maxmark = item.Maxmark;
+                obj.Subjectid = item.Subjectid;
+
+
+                try {
+                    var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assessment);
+
+                    foreach (var fileItem in files) {
+                        FileUploadResponse fileUpload = new FileUploadResponse {
+                            FileLink = fileItem.BlobLink,
+                            FileName = fileItem.FileName,
+                            FileIdentifier=fileItem.FileName,
+                        };
+                       ros.Add(fileUpload); 
+                    obj.UploadFiles=ros;
+
+
+                    }
+                assessmentResponses.Add(obj);
+                return assessmentResponses;
+
+                } catch (Exception) {
+
+
+                }
+
+            return null;
             }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+              
+
+                
+
+
+            
+    
+        
         public async Task<List<AssessmentResponse>> GetAssessmentsAllList(StudentProgressRequestV2 request)
         {
             try

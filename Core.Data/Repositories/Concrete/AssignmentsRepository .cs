@@ -79,10 +79,10 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<int>(sql, assignment);
         }
 
-        public IEnumerable<Assignments> GetAssignments(int id)
+        public  async Task<Assignments> GetAssignments(int id)
         {
             var sql = $@"Select * from Assignments where Id=@id";
-            return Query<Assignments>(sql,new {id});
+            return QueryFirst<Assignments>(sql, new { id });
         }
 
         public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequestV2 request) {

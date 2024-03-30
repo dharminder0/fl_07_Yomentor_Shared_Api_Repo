@@ -45,16 +45,51 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMassegeResponse { Content = id, Message = "Assignment_Updated", Response = true };
         }
 
-        public IEnumerable<Assignments> GetAssignment(int id) {
-            if (id <= 0) return Enumerable.Empty<Assignments>();
-            try {
-                var res = _assignmentsRepo.GetAssignments(id);
-                return res;
-            } catch (Exception ex) {
-                return Enumerable.Empty<Assignments>();
-            }
+        public async Task<List<AssessmentResponse>> GetAssignment(int id) {
 
-        }
+      
+                List<AssessmentResponse> assessmentResponses = new List<AssessmentResponse>();  
+
+                List<FileUploadResponse> UploadFiles = new List<FileUploadResponse>();
+                var item = await _assignmentsRepo.GetAssignments(id);
+            if (item != null) {
+
+                AssessmentResponse obj = new AssessmentResponse();
+                obj.Id = item.Id;
+                obj.Title = item.Title;
+                obj.Description = item.Description;
+                obj.Updatedate = item.UpdateDate;
+                obj.Createdate = item.CreateDate;
+                obj.AssignedDate = item.AssignedDate;
+                obj.GradeId = item.GradeId;
+                try {
+                    var files = _mediaFileRepository.GetEntityMediaFile(id, Entities.DTOs.Enum.MediaEntityType.Assignment);
+                    foreach (var item1 in files) {
+                        FileUploadResponse fileUpload = new FileUploadResponse();
+                        fileUpload.FileLink = item1.BlobLink;
+                        fileUpload.FileName = item1.FileName;
+                        UploadFiles.Add(fileUpload);
+                        obj.UploadFiles = UploadFiles;
+
+                    }
+                } catch (Exception) {
+
+
+                }
+
+                assessmentResponses.Add(obj);
+                return assessmentResponses;
+            }
+            return null;
+
+
+
+
+
+
+
+
+            }
 
         public async Task<List<AssignmentsResponse>> GetAllAssignments(StudentProgressRequestV2 request) {
             try {
@@ -76,7 +111,9 @@ namespace Core.Business.Sevices.Concrete {
                     obj.Id = item.Id;
                     obj.CreateDate = item.CreateDate;
                     obj.UpdateDate = item.UpdateDate;
-                 
+                    obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+                    obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
+
                     res.Add(obj);
 
                 }
@@ -174,7 +211,7 @@ namespace Core.Business.Sevices.Concrete {
         }
 
         private async Task ProcessUploadedFiles(int entityId, List<FileUploadResponse> uploadedFiles) {
-            _mediaFileRepository.DeleteMediaFIle(entityId, (int)Entities.DTOs.Enum.MediaEntityType.Assignment)
+            _mediaFileRepository.DeleteMediaFIle(entityId, (int)Entities.DTOs.Enum.MediaEntityType.Assignment);
             foreach (var item in uploadedFiles) {
                 MediaFileRequest mediaFile = new MediaFileRequest {
                     FileName = item.FileName,
