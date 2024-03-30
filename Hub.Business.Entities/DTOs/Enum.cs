@@ -38,10 +38,10 @@ namespace Core.Business.Entities.DTOs
         }
         public enum Enrollmentstatus
         {
-             Pending=1,
+             Enrolled=1,
              Accepted=2,
              Rejected=3,
-             Abandoned=4
+             Withdrawn=4
         }
 
         public enum AttendanceStatus

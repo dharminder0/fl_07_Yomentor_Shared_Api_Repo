@@ -61,7 +61,7 @@ INSERT INTO Media_File
         }
 
         public bool UpsertMediaFile(MediaFileRequest requestMediaFile) {
-            var sql = @"IF not EXISTS(SELECT 1 from Media_File where EntityId = @EntityId and  EntityTypeId = @EntityTypeId and MediaTypeId=@mediaTypeId)
+            var sql = @"IF not EXISTS(SELECT 1 from Media_File where EntityId = @EntityId and  EntityTypeId = @EntityTypeId )
 
 BEGIN
 INSERT INTO Media_File	 
@@ -71,20 +71,21 @@ INSERT INTO Media_File
             FileName,
             BlobLink,
             MediaTypeId,
-            BrandId,
-            DocUsageType)
+            UpdatedOn
+        
+          )
      VALUES(
             @EntityTypeId,
             @EntityId,
             @FileName,
             @BlobLink,
             @MediaTypeId,
-            @BrandId,
-            @DocUsageType)    
+            @DocUsageType,
+            Getdate())         
 end
 else
 begin
-update Media_File  set  BlobLink=@BlobLink , FileName= @FileName where  EntityId = @EntityId and  EntityTypeId = @EntityTypeId and MediaTypeId=@mediaTypeId
+update Media_File  set  BlobLink=@BlobLink , FileName= @FileName where  EntityId = @EntityId and  EntityTypeId = @EntityTypeId 
 end 
 ";
             return Execute(sql, new {

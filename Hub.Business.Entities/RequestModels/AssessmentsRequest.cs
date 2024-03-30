@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Business.Entities.ResponseModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,6 @@ namespace Core.Business.Entities.RequestModels {
         public string Description { get; set; }
         public DateTime Createdate { get; set; }
         public DateTime UpdatedDate { get; set; }
+        public List<FileUploadResponse> uploadedFiles { get; set; }
     }
 }
