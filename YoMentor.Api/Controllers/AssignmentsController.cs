@@ -29,9 +29,9 @@ namespace YoMentor.Api.Controllers {
         [HttpGet]
         [Route("GetAssignment/{id}")]
 
-        public IActionResult GetAssignment(int id)
+        public async Task<IActionResult> GetAssignment(int id)
         {
-            var response= _assignmentsService.GetAssignment(id);
+            var response=await  _assignmentsService.GetAssignment(id);
             return JsonExt(response);
         }
         /// <summary>

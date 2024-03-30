@@ -62,6 +62,9 @@ namespace Core.Business.Sevices.Concrete {
                 obj.Createdate = item.CreateDate;
                 obj.AssignedDate = item.AssignedDate;
                 obj.GradeId = item.GradeId;
+                obj.Subjectid=item.Subjectid;
+                obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+                obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
                 try {
                     var files = _mediaFileRepository.GetEntityMediaFile(id, Entities.DTOs.Enum.MediaEntityType.Assignment);
                     foreach (var item1 in files) {
