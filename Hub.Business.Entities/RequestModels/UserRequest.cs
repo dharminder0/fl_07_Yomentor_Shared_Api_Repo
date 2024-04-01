@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Business.Entities.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Core.Business.Entities.RequestModels {
         public string? Gender { get; set; }
         public string Password { get; set; }
         public int ? Rank { get; set; }
-
+        public TeacherProfile TeacherProfile { get; set; }
         public string?  Address { get; set; }
     }
     public class AuthenticationRequest {
