@@ -5,6 +5,7 @@ using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using Core.Data.Repositories.Concrete;
+using static Slapper.AutoMapper;
 
 namespace Core.Business.Sevices.Concrete {
     public class AssignmentsService : IAssignmentsService {
@@ -46,10 +47,11 @@ namespace Core.Business.Sevices.Concrete {
         }
 
         public async Task<List<AssignmentsResponse>> GetAssignment(int id) {
-
+         
       
-                List<AssignmentsResponse> assessmentResponses = new List<AssignmentsResponse>();  
+                List<AssignmentsResponse> assessmentResponses = new List<AssignmentsResponse>();
 
+            var files = new List<MediaFile>();
                 List<FileUploadResponse> UploadFiles = new List<FileUploadResponse>();
                 var item = await _assignmentsRepo.GetAssignments(id);
             if (item != null) {
@@ -66,7 +68,7 @@ namespace Core.Business.Sevices.Concrete {
                 obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
                 obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
                 try {
-                    var files = _mediaFileRepository.GetEntityMediaFile(id, Entities.DTOs.Enum.MediaEntityType.Assignment);
+                     files = _mediaFileRepository.GetEntityMediaFile(id, Entities.DTOs.Enum.MediaEntityType.Assignment).ToList();
                     foreach (var item1 in files) {
                         FileUploadResponse fileUpload = new FileUploadResponse();
                         fileUpload.FileLink = item1.BlobLink;
@@ -79,6 +81,7 @@ namespace Core.Business.Sevices.Concrete {
 
 
                 }
+                obj.FIlesCount = files.Count();
 
                 assessmentResponses.Add(obj);
                 return assessmentResponses;
@@ -116,6 +119,13 @@ namespace Core.Business.Sevices.Concrete {
                     obj.UpdateDate = item.UpdateDate;
                     obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
                     obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
+                    try {
+                        var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assignment).Count();
+                        obj.FIlesCount = files; 
+                    } catch (Exception) {
+
+                   
+                    }
 
                     res.Add(obj);
 
@@ -173,8 +183,15 @@ namespace Core.Business.Sevices.Concrete {
                 obj.Id= item.Id;  
                 obj.CreateDate = item.CreateDate;
                 obj.UpdateDate = item.UpdateDate;
-                obj.AssignedDate= item.AssignedDate;    
-                    
+                obj.AssignedDate= item.AssignedDate;
+                try {
+                    var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assignment).Count();
+                    obj.FIlesCount = files;
+                } catch (Exception) {
+
+
+                }
+
                 res.Add(obj);   
 
             }

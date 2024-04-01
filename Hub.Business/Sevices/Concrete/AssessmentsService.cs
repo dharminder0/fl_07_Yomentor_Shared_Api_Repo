@@ -181,9 +181,11 @@ namespace Core.Business.Sevices.Concrete {
                         };
                        ros.Add(fileUpload); 
                     obj.UploadedFiles=ros;
+                 
 
 
                     }
+                obj.FilesCount = files.Count();
                 assessmentResponses.Add(obj);
                 return assessmentResponses;
 
@@ -223,7 +225,13 @@ namespace Core.Business.Sevices.Concrete {
                     obj.CreateDate = item.Createdate;
                     obj.UpdateDate = item.Updatedate;
                     obj.MaxMark= item.Maxmark;  
-                    obj.SubjectId = item.Subjectid; 
+                    obj.SubjectId = item.Subjectid;
+                    try {
+                        var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assessment).Count();
+                        obj.FilesCount= files;  
+                    } catch (Exception) {
+
+                    }
                     res.Add(obj);
 
                 }
@@ -281,6 +289,13 @@ namespace Core.Business.Sevices.Concrete {
                 obj.CreateDate = item.Createdate;
                 obj.UpdateDate = item.Updatedate;
                 obj.AssignedDate = item.AssignedDate;
+                try {
+                    var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assessment).Count();
+                    obj.FilesCount = files; 
+                } catch (Exception) {
+
+                   
+                }
                 res.Add(obj);
 
             }
