@@ -25,15 +25,17 @@ namespace Core.Business.Sevices.Concrete {
         private readonly ISubjectRepository _subjectRepository;
         private readonly IBatchStudentsRepository _batchStudentsRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IFavouriteBatchRepository _favouriteBatchRepository;   
-        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository, IFavouriteBatchRepository favouriteBatchRepository)
+        private readonly IFavouriteBatchRepository _favouriteBatchRepository;
+        private readonly IMediaFileRepository _mediaFileRepository;
+        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository, IFavouriteBatchRepository favouriteBatchRepository, IMediaFileRepository mediaFileRepository)
         {
             _batchRepository = batchRepository;         
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
             _batchStudentsRepository = batchStudentsRepository;
             _userRepository = userRepository;
-            _favouriteBatchRepository= favouriteBatchRepository;    
+            _favouriteBatchRepository= favouriteBatchRepository;  
+            _mediaFileRepository= mediaFileRepository;
         }
         public async Task<List<BatchDto>> BatchDetails(BatchRequest request)
         {
@@ -188,6 +190,17 @@ namespace Core.Business.Sevices.Concrete {
                         batchStudentDetailsDto.Phone = user.Phone;
                         batchStudentDetailsDto.Name = user.Firstname.Replace(" ", "") + ' ' + user.Lastname.Replace(" ", "");
                         batchStudentDetailsDto.Email = user.Email == null ? null : user.Email.ToLower();
+                        try {
+                            var media = _mediaFileRepository.GetImage(user.Id, MediaEntityType.Users);
+                            if (media != null) {
+                                batchStudentDetailsDto.Image = media.BlobLink;
+                            }
+
+                        } catch (Exception) {
+
+                          
+                        }
+                 
 
                         listBatchStudentDetails.Add(batchStudentDetailsDto);
                     }

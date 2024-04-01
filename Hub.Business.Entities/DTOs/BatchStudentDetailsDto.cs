@@ -17,5 +17,6 @@ namespace Core.Business.Entities.DTOs
         public string SubjectName { get; set; } 
         public string EnrollmentStatus { get; set; }
         public int enrollmentstatus {  get; set; }
+        public string  Image { get; set; }
     }
 }

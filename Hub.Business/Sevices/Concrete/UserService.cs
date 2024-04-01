@@ -41,22 +41,7 @@ namespace Core.Business.Services.Concrete {
 
                     var hashedPassword = Hasher.HashPassword(saltBytes, password);
                     if (hashedPassword == dbUser.Password) {
-                        user = MapUserToUserBasicDto(dbUser);
-                        user.Parentid = dbUser.Parentid;
-                        user.Id = dbUser.Id;
-                        user.Firstname = dbUser.Firstname;
-                        user.Lastname = dbUser.Lastname;
-                        user.Email = dbUser.Email;
-                        user.Type = dbUser.Type;
-
-                        user.Address = dbUser.Address;
-                        user.CreateDate = dbUser.CreateDate;
-                        user.UpdateDate = dbUser.UpdateDate;
-                        user.DateOfBirth = dbUser.DateOfBirth;
-                        user.Gender = dbUser.Gender;
-                        user.Phone = dbUser.Phone;
-
-
+                        user = MapUserToUserBasicDto(dbUser);                       
                         if (user.AuthenticationStatus == true) {
                             await _userRepository.UpdateLastlogin(user.Id);
                             return new ActionMessageResponse { Success = true, Message = "Successfully_Login", Content = user };
@@ -96,6 +81,7 @@ namespace Core.Business.Services.Concrete {
 
             return new ActionMessageResponse { Success = true, Content = userId };
         }
+
         public async Task<ActionMessageResponse> ChangePassword(ChangePasswordRequest model) {
             try {
                 if (model == null && string.IsNullOrWhiteSpace(model.Phone) && string.IsNullOrWhiteSpace(model.CurrentPassword) && string.IsNullOrWhiteSpace(model.NewPassword)) {
@@ -201,7 +187,10 @@ namespace Core.Business.Services.Concrete {
 
             var user = new UserAuthenticationDto();
 
-
+            var files = _mediaFileRepository.GetEntityMediaFile(dbUser.Id, MediaEntityType.Users);
+            if (files != null && files.Any()) {
+                user.Image = files.First().BlobLink;
+            }
             user.Id = dbUser.Id;
             user.Firstname = dbUser.Firstname;
             user.Lastname = dbUser.Lastname;
