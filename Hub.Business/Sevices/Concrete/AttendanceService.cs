@@ -19,10 +19,12 @@ namespace Core.Business.Sevices.Concrete
         private readonly IAttendanceRepository _attendanceRepository;
         private readonly IUserRepository _userRepository;
         private readonly IBatchStudentsRepository _batchStudents;
-        public AttendanceService(IAttendanceRepository attendanceRepository, IUserRepository userRepository, IBatchStudentsRepository batchStudents) {
+        private readonly IMediaFileRepository _mediaFile;
+        public AttendanceService(IAttendanceRepository attendanceRepository, IUserRepository userRepository, IBatchStudentsRepository batchStudents, IMediaFileRepository mediaFile) {
             _attendanceRepository = attendanceRepository;
             _userRepository = userRepository;
             _batchStudents = batchStudents;
+            _mediaFile = mediaFile;
         }
         public async Task<ActionMassegeResponse> InsertAttendance(Attendance attendance)
         {
@@ -81,6 +83,7 @@ namespace Core.Business.Sevices.Concrete
             var obj = new List<AttendanceResponse>();
             foreach (var item in response) {
                 var info = await _userRepository.GetUser(item.StudentId);
+                var image = _mediaFile.GetImage(item.StudentId, Entities.DTOs.Enum.MediaEntityType.Users);
                 if (info != null) {
                     var attendance = new AttendanceResponse {
                         Id = item.Id,
@@ -92,7 +95,10 @@ namespace Core.Business.Sevices.Concrete
                         BatchId = item.BatchId,
                         FirstName = info.Firstname,
                         LastName = info.Lastname,
-                        Phone = info.Phone
+                        Phone = info.Phone,
+                        Image = image != null ? image.BlobLink : null
+
+
                     };
                     obj.Add(attendance);
                 }
@@ -100,6 +106,7 @@ namespace Core.Business.Sevices.Concrete
 
             foreach (var batch in batchStudents) {
                 var info = await _userRepository.GetUser(batch.StudentId);
+                var image = _mediaFile.GetImage(batch.StudentId, Entities.DTOs.Enum.MediaEntityType.Users);
                 if (info != null) {
                     var res = new AttendanceResponse {
                         Id = batch.Id,
@@ -109,7 +116,9 @@ namespace Core.Business.Sevices.Concrete
                         BatchId = batch.BatchId,
                         FirstName = info.Firstname,
                         LastName = info.Lastname,
-                        Phone = info.Phone
+                        Phone = info.Phone,
+                        Image = image != null ? image.BlobLink : null
+
                     };
                     obj.Add(res);
                 }
