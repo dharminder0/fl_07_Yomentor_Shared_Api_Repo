@@ -81,6 +81,29 @@ namespace Core.Business.Services.Concrete {
 
             return new ActionMessageResponse { Success = true, Content = userId };
         }
+        public int UpsertUser(UserRequest obj, string hashedPassword, string salt) {
+            int userId = _userRepository.VerifyUserByUsername(obj.Phone);
+
+            if (userId > 0) {
+              
+                _userRepository.UpsertUser(obj, hashedPassword, salt);
+            }
+            else {
+                
+                userId = _userRepository.UpsertUser(obj, hashedPassword, salt);
+            }
+
+            if (obj.Type == 1) {
+                TeacherProfile teacher = new TeacherProfile();
+                teacher.About=obj.TeacherProfile.About;
+                teacher.TeacherId = obj.TeacherProfile.TeacherId;
+                teacher.Experience = obj.TeacherProfile.Experience;
+                teacher.Education= obj.TeacherProfile.Education;  
+                _userRepository.UpsertTeacherProfile(teacher);
+            }
+
+            return userId;
+        }
 
         public async Task<ActionMessageResponse> ChangePassword(ChangePasswordRequest model) {
             try {
