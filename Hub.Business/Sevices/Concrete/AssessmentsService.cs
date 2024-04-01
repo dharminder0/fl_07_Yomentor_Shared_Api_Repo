@@ -109,7 +109,8 @@ namespace Core.Business.Sevices.Concrete {
                 GradeId = assessmentsRequest.GradeId,
                 IsFavorite = assessmentsRequest.Isfavorite,
                 Createdate = assessmentsRequest.Createdate,
-                Updatedate = assessmentsRequest.UpdatedDate
+                Updatedate = assessmentsRequest.UpdatedDate,
+                Maxmark=assessmentsRequest.Maxmark,
             };
 
             int id = assessments.Id == 0
