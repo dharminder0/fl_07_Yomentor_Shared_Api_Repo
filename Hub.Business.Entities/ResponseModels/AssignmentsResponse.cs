@@ -19,6 +19,7 @@ namespace Core.Business.Entities.ResponseModels {
         public string  GradeName { get; set; }
         public string  SubjectName { get; set; }
         public DateTime AssignedDate { get; set; }
+        public List<FileUploadResponse> UploadedFiles { get; set; }
     }
 
 }

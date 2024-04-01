@@ -45,16 +45,16 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMassegeResponse { Content = id, Message = "Assignment_Updated", Response = true };
         }
 
-        public async Task<List<AssessmentResponse>> GetAssignment(int id) {
+        public async Task<List<AssignmentsResponse>> GetAssignment(int id) {
 
       
-                List<AssessmentResponse> assessmentResponses = new List<AssessmentResponse>();  
+                List<AssignmentsResponse> assessmentResponses = new List<AssignmentsResponse>();  
 
                 List<FileUploadResponse> UploadFiles = new List<FileUploadResponse>();
                 var item = await _assignmentsRepo.GetAssignments(id);
             if (item != null) {
 
-                AssessmentResponse obj = new AssessmentResponse();
+                AssignmentsResponse obj = new AssignmentsResponse();
                 obj.Id = item.Id;
                 obj.Title = item.Title;
                 obj.Description = item.Description;
