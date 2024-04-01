@@ -299,7 +299,7 @@ namespace Core.Business.Sevices.Concrete {
                             var enrollmentstatus = await _batchStudentsRepository.GetEnrollmentStatus(BatchId, request.StudentId);
                             batch.Enrollmentstatus = System.Enum.GetName(typeof(Enrollmentstatus), enrollmentstatus.Enrollmentstatus);
                         batch.EnrollmentstatusId=enrollmentstatus.Enrollmentstatus;
-                        var favBatch=await  _favouriteBatchRepository.GetFavouriteStatus(BatchId, request.StudentId);
+                        var favBatch=await  _favouriteBatchRepository.GetFavouriteStatus(request.StudentId, BatchId);
                         batch.IsFavourite = favBatch.IsFavourite;
                         
 
