@@ -81,7 +81,7 @@ namespace Core.Business.Sevices.Concrete {
 
 
                 }
-                obj.FIlesCount = files.Count();
+                obj.FilesCount = files.Count();
 
                 assessmentResponses.Add(obj);
                 return assessmentResponses;
@@ -121,7 +121,7 @@ namespace Core.Business.Sevices.Concrete {
                     obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
                     try {
                         var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assignment).Count();
-                        obj.FIlesCount = files; 
+                        obj.FilesCount = files; 
                     } catch (Exception) {
 
                    
@@ -186,7 +186,7 @@ namespace Core.Business.Sevices.Concrete {
                 obj.AssignedDate= item.AssignedDate;
                 try {
                     var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assignment).Count();
-                    obj.FIlesCount = files;
+                    obj.FilesCount = files;
                 } catch (Exception) {
 
 
