@@ -14,11 +14,28 @@ namespace YoMentor.Api.Controllers {
         {
             _addressService = addressService;
         }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Upsert")]
         public IActionResult UpsertAddress(AddressRequest address) {
           var response=  _addressService.UpsertAddress(address); 
             return JsonExt(response);   
+
+        }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetAddress")]
+        public IActionResult GetUserAddress(int userId) {
+            var response = _addressService.GetUserAddress(userId);
+            return JsonExt(response);
 
         }
 
