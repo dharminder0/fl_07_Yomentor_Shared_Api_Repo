@@ -15,50 +15,55 @@ namespace Core.Data.Repositories.Concrete {
             return await  ExecuteScalarAsync<bool>(sql, new { status, Id,batchId });   
         }
 
-        public  async Task<int> InsertBatchStudent(BatchStudents batchStudent) {
-        
+        public async Task<int> InsertBatchStudent(BatchStudents batchStudent) {
+            var sql = $@"
+        IF NOT EXISTS (SELECT 1 FROM Batch_Students WHERE StudentId = @StudentId AND BatchId = @BatchId)
+        BEGIN
+            INSERT INTO Batch_Students
+            (
+                StudentId,
+                BatchId,
+                Enrollmentstatus,
+                CreateDate,
+                UpdateDate,
+                IsDeleted
+            )
+            VALUES
+            (
+                @StudentId,
+                @BatchId,
+                @Enrollmentstatus,
+                @CreateDate,
+                @UpdateDate,
+                @IsDeleted
+            );
+
+            SELECT SCOPE_IDENTITY();
+        END
+        ELSE
+        BEGIN
+            UPDATE Batch_Students
+            SET Enrollmentstatus = @Enrollmentstatus,
+                CreateDate = @CreateDate,
+                UpdateDate = @UpdateDate,
+                IsDeleted = @IsDeleted
+            WHERE StudentId = @StudentId AND BatchId = @BatchId;
             
-                    var sql = $@"
-                IF NOT EXISTS (SELECT 1 FROM Batch_Students WHERE StudentId = @StudentId AND BatchId = @BatchId)
-                BEGIN
-                    INSERT INTO Batch_Students
-                    (
-                        StudentId,
-                        BatchId,
-                        Enrollmentstatus,
-                        CreateDate,
-                        UpdateDate,
-                        IsDeleted
-                    )
-                    VALUES
-                    (
-                        @StudentId,
-                        @BatchId,
-                        @Enrollmentstatus,
-                        @CreateDate,
-                        @UpdateDate,
-                        @IsDeleted
-                    );
+            SELECT SCOPE_IDENTITY();
+        END";
 
-                    SELECT SCOPE_IDENTITY();
-                END
-                ELSE
+            var parameters = new {
+                StudentId = batchStudent.StudentId,
+                BatchId = batchStudent.BatchId,
+                Enrollmentstatus = batchStudent.Enrollmentstatus,
+                CreateDate = batchStudent.CreateDate,
+                UpdateDate = batchStudent.UpdateDate,
+                IsDeleted = batchStudent.IsDeleted
+            };
 
-                BEGIN
-                    Update Batch_Students set Enrollmentstatus=1  WHERE StudentId = @StudentId AND BatchId = @BatchId  ;
-                END";
+            return await ExecuteScalarAsync<int>(sql, parameters);
+        }
 
-                    var parameters = new {
-                        StudentId = batchStudent.StudentId,
-                        BatchId = batchStudent.BatchId,
-                        Enrollmentstatus = batchStudent.Enrollmentstatus,
-                        CreateDate = batchStudent.CreateDate,
-                        UpdateDate = batchStudent.UpdateDate,
-                        IsDeleted = batchStudent.IsDeleted
-                    };
-
-                    return  await ExecuteScalarAsync<int>(sql, parameters);
-                }
 
         public async Task<bool> DeleteBatchStudents(int batchId, DateTime date) {
             string datestring = date.ToString("yyyy/MM/dd");
