@@ -132,6 +132,24 @@ namespace Core.Web.API.Controllers {
             var response = await _teacherSpeciality.TeacherSpeciality(request);
             return JsonExt(response);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/User/ProfileUpsert")]
+        public async Task<IActionResult> UpsertTeacherProfile(TeacherProfileRequest obj) {
+            try {
+
+                var response = await _userService.UpsertTeacherProfile(obj);
+                return JsonExt(response);
+            } catch (Exception ex) {
+                return JsonExt(ex.Message);
+
+
+            }
+        }
     }
     
 }

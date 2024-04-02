@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
+using Core.Business.Entities.ResponseModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +33,10 @@ namespace Core.Business.Entities.Dto {
             public string  Image { get; set; }
             public int AverageRating { get; set; }
             public int ReviewCount { get; set; }
+            public TeacherSpecialityResponse TeacherSpeciality { get; set; }
+            public TeacherProfileResponse TeacherProfile { get; set; }
+            public int StudentGradeId { get; set; }
+
 
     }
     public class UserAuthenticationDto : UserDto {

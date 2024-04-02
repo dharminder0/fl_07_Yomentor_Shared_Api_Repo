@@ -35,5 +35,9 @@ namespace Core.Data.Repositories.Abstract {
             var sql = @"  delete from teacher_speciality where teacherId=@teacherId ";
             return await  ExecuteScalarAsync<int>(sql, new { teacherId });
         }
+        public async Task<IEnumerable<TeacherSpeciality>> GetTeacherSpeciality(int userid) {
+            var sql = @" select * from Teacher_Speciality where teacherId=@userid ";
+            return await QueryAsync<TeacherSpeciality>(sql, new { userid });
+        }
     }
 }

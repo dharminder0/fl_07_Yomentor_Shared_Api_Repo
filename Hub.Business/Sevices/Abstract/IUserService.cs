@@ -15,6 +15,7 @@ namespace Core.Business.Services.Abstract {
         Task<ActionMessageResponse> ResetUserPassword(ResetPasswordRequest model);
         Task<List<UserResponse>> UserInfo(UserSearchRequest listRequest);
         Task<UserDto> GetUserInfo(int userid, int type);
+        Task<ActionMessageResponse> UpsertTeacherProfile(TeacherProfileRequest profileRequest);
 
 
 
