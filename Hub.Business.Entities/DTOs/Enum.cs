@@ -38,6 +38,7 @@ namespace Core.Business.Entities.DTOs
         }
         public enum Enrollmentstatus
         {
+             Pending=0,
              Enrolled=1,
              Accepted=2,
              Rejected=3,
