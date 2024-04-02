@@ -78,6 +78,9 @@ namespace Core.Data.Repositories.Concrete {
             });
         }
 
-       
-    }
+       public Address GetUserAddress(int userId) {
+            var sql = @" select * from Address  where userId=@userId";
+            return  QueryFirst<Address>(sql, new { userId });
+        }
+    } 
 }

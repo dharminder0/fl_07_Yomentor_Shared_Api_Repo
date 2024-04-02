@@ -36,5 +36,8 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMassegeResponse { Content = content ,Message="Upsert Successfully",Response=true};
 
         }
+        public   Address GetUserAddress(int userId) {
+            return  _addressRepository.GetUserAddress(userId);     
+        }
     }
 }
