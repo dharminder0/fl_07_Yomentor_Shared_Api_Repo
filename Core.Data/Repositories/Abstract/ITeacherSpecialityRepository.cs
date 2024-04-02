@@ -5,5 +5,6 @@ namespace Core.Data.Repositories.Abstract {
     public interface ITeacherSpecialityRepository : IDataRepository<TeacherSpeciality> {
         Task<int> InsertTeacherSpeciality(TeacherSpeciality teacherSpeciality);
         Task<int> DeleteTeacherSpeciality(int teacherId);
+        Task<IEnumerable<TeacherSpeciality>> GetTeacherSpeciality(int userid);
     }
 }

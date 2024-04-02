@@ -22,12 +22,19 @@ namespace Core.Business.Services.Concrete {
         private static string _jwtAudience = GlobalSettings.JwtAudience;
         private readonly IReviewsRepository _reviewsRepository;
         private readonly IMediaFileRepository _mediaFileRepository;
+        private readonly ITeacherSpecialityRepository _teacherSpecialityRepository;
+        private readonly IGradeRepository _gradeRepository; 
+        private readonly ISubjectRepository _subjectRepository; 
+        
 
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository) {
+        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository, ITeacherSpecialityRepository teacherSpecialityRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) {
             _userRepository = usersRepository;
             _reviewsRepository = reviewsRepository;
             _mediaFileRepository = mediaFileRepository;
+            _teacherSpecialityRepository = teacherSpecialityRepository; 
+            _gradeRepository = gradeRepository; 
+            _subjectRepository = subjectRepository; 
 
 
         }
@@ -63,47 +70,27 @@ namespace Core.Business.Services.Concrete {
 
         public async Task<ActionMessageResponse> RegisterNewUser(UserRequest obj) {
             var salt = Hasher.GenerateSalt();
-
             var hashedPassword = Hasher.HashPassword(salt, obj.Password);
+            int userId = 0;
+           
 
-            int userId = _userRepository.VerifyUserByUsername(obj.Phone);
+            if (obj.Id > 0) {
 
-            if (userId > 0) {
-                return new ActionMessageResponse { Success = false, Message = $@"user already exists ", Content = userId };
+                userId= _userRepository.UpdateUser(obj, hashedPassword, salt);
+
+                return new ActionMessageResponse { Success = false, Content = userId, Message = "User alreadyExsist." };
             }
 
-            if (userId == 0) {
-                userId = _userRepository.UpsertUser(obj, hashedPassword, salt);
-
-                return new ActionMessageResponse { Success = true, Content = userId };
+            if (obj.Id == 0) {
+               
+                userId = _userRepository.InsertUser(obj, hashedPassword, salt);
+                return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
             }
 
-
-            return new ActionMessageResponse { Success = true, Content = userId };
+            return new ActionMessageResponse { Success = false, Message = "Failed to register user." };
         }
-        public int UpsertUser(UserRequest obj, string hashedPassword, string salt) {
-            int userId = _userRepository.VerifyUserByUsername(obj.Phone);
 
-            if (userId > 0) {
-              
-                _userRepository.UpsertUser(obj, hashedPassword, salt);
-            }
-            else {
-                
-                userId = _userRepository.UpsertUser(obj, hashedPassword, salt);
-            }
-
-            if (obj.Type == 1) {
-                TeacherProfile teacher = new TeacherProfile();
-                teacher.About=obj.TeacherProfile.About;
-                teacher.TeacherId = obj.TeacherProfile.TeacherId;
-                teacher.Experience = obj.TeacherProfile.Experience;
-                teacher.Education= obj.TeacherProfile.Education;  
-                _userRepository.UpsertTeacherProfile(teacher);
-            }
-
-            return userId;
-        }
+   
 
         public async Task<ActionMessageResponse> ChangePassword(ChangePasswordRequest model) {
             try {
@@ -352,6 +339,11 @@ namespace Core.Business.Services.Concrete {
 
         public async Task<UserDto> GetUserInfo(int userid, int type) {
             UserDto userDto = new UserDto();
+             
+            TeacherSpecialityResponse teacher = new TeacherSpecialityResponse();
+            teacher.GradeSubjectList = new List<GradeSubjectResponse>();
+            GradeSubjectResponse grade = new GradeSubjectResponse();
+            List<GradeSubjectResponse> GradeSubjectList = null;
             var response = await _userRepository.GetUserInfo(userid, type);
 
 
@@ -361,9 +353,39 @@ namespace Core.Business.Services.Concrete {
                 if (response.Type == (int)UserType.Teacher) {
                     var teacherInfo = await _userRepository.GetTeacherProfile(response.Id);
                     if (teacherInfo != null) {
-                        userDto.Experience = teacherInfo.Experience;
-                        userDto.About = teacherInfo.About;
-                        userDto.Education = teacherInfo.Education;
+
+                        TeacherProfileResponse teacherobj = new TeacherProfileResponse();
+                        teacherobj.Experience = teacherInfo.Experience;
+                        teacherobj.About = teacherInfo.About;
+                        teacherobj.Education = teacherInfo.Education;
+                        teacherobj.TeacherId=teacherInfo.TeacherId;    
+                        userDto.TeacherProfile= teacherobj;
+                        try {
+                            var teacherrSpeciality= await   _teacherSpecialityRepository.GetTeacherSpeciality(userid);
+                            foreach (var item in teacherrSpeciality) {
+                                
+                               
+                                teacher.TeacherId = item.TeacherId;
+                               
+                                grade.GradeId = item.GradeId;
+                                grade.SubjectId=item.SubjectId;
+                                grade.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+                                grade.SubjectName = _subjectRepository.GetSubjectName(item.SubjectId);
+                                teacher.TeacherId=item.TeacherId;
+
+
+                                teacher.GradeSubjectList.Add(grade);
+
+
+                            }
+                               
+
+                            userDto.TeacherSpeciality = teacher;
+
+                        } catch (Exception) {
+
+                           
+                        }
 
                     }
                 }
@@ -386,6 +408,7 @@ namespace Core.Business.Services.Concrete {
                 userDto.Id = response.Id;
                 userDto.Type = response.Type;
                 userDto.Address = response.Address;
+                userDto.StudentGradeId = response.GradeId;
                 userDto.DateOfBirth = response.DateOfBirth;
                 if (userDto.Type == (int)UserType.Teacher) {
                     var review = await _reviewsRepository.GetReviewsForTeacher(userDto.Id);
@@ -407,6 +430,18 @@ namespace Core.Business.Services.Concrete {
             }
             return userDto;
         }
+        public  async Task<ActionMessageResponse> UpsertTeacherProfile(TeacherProfileRequest profileRequest) {
+            if (profileRequest == null) {
+                return new ActionMessageResponse { Success = false };
 
+            }
+            TeacherProfile teacherProfile = new TeacherProfile();
+            teacherProfile.About = profileRequest.About;    
+            teacherProfile.Education= profileRequest.Education; 
+            teacherProfile.TeacherId= profileRequest.TeacherId; 
+            teacherProfile.Experience= profileRequest.Experience;
+            int  id= await  _userRepository.UpsertTeacherProfile(teacherProfile);
+            return new ActionMessageResponse { Success = true,Content=id };    
+        }
     }
 }

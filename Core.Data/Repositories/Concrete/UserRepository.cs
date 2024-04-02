@@ -294,6 +294,125 @@ u.id
 
             return await ExecuteScalarAsync<int>(sql, parameters);
         }
+        public int InsertUser(UserRequest ob, string password, string passwordSalt) {
+            if (string.IsNullOrWhiteSpace(ob.Gender)) {
+                ob.Gender = null;
+            }
+
+            if (ob != null && ob.DateOfBirth > DateTime.MinValue && ob.DateOfBirth < DateTime.MaxValue) {
+                ob.DateOfBirth = ob.DateOfBirth?.Date;
+            }
+
+            var sql = @"
+        INSERT INTO Users
+        (
+            FirstName,
+            LastName,
+            Password,
+            PasswordSalt,
+            Token,
+            Email,
+            Phone,
+            Address,
+            Type,
+            DateOfBirth,
+            Gender,
+            ParentId,
+            CreateDate,
+            IsDeleted,
+            Rank
+        )
+        VALUES
+        (
+            @FirstName,
+            @LastName,
+            @Password,
+            @PasswordSalt,
+            @Token,
+            @Email,
+            @Phone,
+            @Address,
+            @Type,
+            @DateOfBirth,
+            @Gender,
+            @ParentId,
+            GETDATE(),
+            0,
+            @Rank
+        );
+
+        SELECT SCOPE_IDENTITY();
+    ";
+
+            ob.Firstname = ob.Firstname.Trim();
+            return ExecuteScalar<int>(sql, new {
+                FirstName = ob.Firstname,
+                LastName = ob.Lastname,
+                Password = password,
+                PasswordSalt = passwordSalt,
+                Token = Guid.NewGuid(),
+                Email = ob.Email,
+                Phone = ob.Phone,
+                Type = ob.Type,
+                DateOfBirth = ob.DateOfBirth,
+                Gender = ob.Gender,
+                ParentId = ob.Parentid,
+                Address = ob.Address,
+                Rank = ob.Rank
+            });
+        }
+        public int UpdateUser(UserRequest ob, string password, string passwordSalt) {
+            if (string.IsNullOrWhiteSpace(ob.Gender)) {
+                ob.Gender = null;
+            }
+
+            if (ob != null && ob.DateOfBirth > DateTime.MinValue && ob.DateOfBirth < DateTime.MaxValue) {
+                ob.DateOfBirth = ob.DateOfBirth?.Date;
+            }
+
+            var sql = @"
+        UPDATE Users
+        SET
+            FirstName = @FirstName,
+            LastName = @LastName,
+            Password = @Password,
+            PasswordSalt = @PasswordSalt,
+            Token = @Token,
+            Email = @Email,
+            Address = @Address,
+            Type = @Type,
+            DateOfBirth = @DateOfBirth,
+            Gender = @Gender,
+            ParentId = @ParentId,
+            Rank = @Rank,
+            CreateDate = GETDATE(),
+            IsDeleted = 0,
+            GradeId=@GradeId
+        WHERE id = @Id;
+
+        SELECT Id FROM Users WHERE Phone = @Phone;
+    ";
+
+            ob.Firstname = ob.Firstname.Trim();
+            return ExecuteScalar<int>(sql, new {
+                FirstName = ob.Firstname,
+                LastName = ob.Lastname,
+                Password = password,
+                PasswordSalt = passwordSalt,
+                Token = Guid.NewGuid(),
+                Email = ob.Email,
+                Phone = ob.Phone,
+                Type = ob.Type,
+                DateOfBirth = ob.DateOfBirth,
+                Gender = ob.Gender,
+                ParentId = ob.Parentid,
+                Address = ob.Address,
+                Rank = ob.Rank,
+                GradeId=ob.GradeId,
+                Id=ob.Id    
+            });
+        }
+      
 
     }
 }
