@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.ResponseModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
@@ -53,7 +54,11 @@ namespace Core.Data.Repositories.Concrete {
                 Timestamp = message.TimeStamp
             }) > 0;
         }
+        public async Task<IEnumerable<Conversations_Messages>> GetConversation(int conversationId) {
+            var sql = @" select * from conversations_messages where ConversationId=@conversationId  order by Timestamp asc";
+            return await QueryAsync<Conversations_Messages>(sql, new { conversationId });
 
-        
+
+        }
     }
 }
