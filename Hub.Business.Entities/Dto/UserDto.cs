@@ -35,7 +35,9 @@ namespace Core.Business.Entities.Dto {
             public int ReviewCount { get; set; }
             public TeacherSpecialityResponse TeacherSpeciality { get; set; }
             public TeacherProfileResponse TeacherProfile { get; set; }
+            public Address UserAddress { get; set; }
             public int StudentGradeId { get; set; }
+
 
 
     }
