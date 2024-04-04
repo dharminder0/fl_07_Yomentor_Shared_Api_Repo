@@ -364,31 +364,24 @@ namespace Core.Business.Services.Concrete {
                         teacherobj.TeacherId=teacherInfo.TeacherId;    
                         userDto.TeacherProfile= teacherobj;
                         try {
-                            var teacherrSpeciality= await   _teacherSpecialityRepository.GetTeacherSpeciality(userid);
-                            foreach (var item in teacherrSpeciality) {
+                            var teacherSpeciality = await _teacherSpecialityRepository.GetTeacherSpeciality(userid);
+                            foreach (var item in teacherSpeciality) {
+                                var newGrade = new GradeSubjectResponse(); 
+
+                                newGrade.GradeId = item.GradeId;
+                                newGrade.SubjectId = item.SubjectId;
+                                newGrade.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+                                newGrade.SubjectName = _subjectRepository.GetSubjectName(item.SubjectId);
                                 
-                               
-                                teacher.TeacherId = item.TeacherId;
-                               
-                                grade.GradeId = item.GradeId;
-                                grade.SubjectId=item.SubjectId;
-                                grade.GradeName = _gradeRepository.GetGradeName(item.GradeId);
-                                grade.SubjectName = _subjectRepository.GetSubjectName(item.SubjectId);
-                                teacher.TeacherId=item.TeacherId;
 
-
-                                teacher.GradeSubjectList.Add(grade);
-
-
+                                teacher.GradeSubjectList.Add(newGrade); 
                             }
-                               
 
                             userDto.TeacherSpeciality = teacher;
-
                         } catch (Exception) {
-
-                           
+                            // Handle exceptions here if needed
                         }
+
 
                     }
                 }
