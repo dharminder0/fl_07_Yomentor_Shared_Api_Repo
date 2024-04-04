@@ -25,16 +25,18 @@ namespace Core.Business.Services.Concrete {
         private readonly ITeacherSpecialityRepository _teacherSpecialityRepository;
         private readonly IGradeRepository _gradeRepository; 
         private readonly ISubjectRepository _subjectRepository; 
+        private readonly IAddressRepository _addressRepository; 
         
 
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository, ITeacherSpecialityRepository teacherSpecialityRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) {
+        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository, ITeacherSpecialityRepository teacherSpecialityRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IAddressRepository addressRepository) {
             _userRepository = usersRepository;
             _reviewsRepository = reviewsRepository;
             _mediaFileRepository = mediaFileRepository;
             _teacherSpecialityRepository = teacherSpecialityRepository; 
             _gradeRepository = gradeRepository; 
             _subjectRepository = subjectRepository; 
+            _addressRepository = addressRepository; 
 
 
         }
@@ -352,6 +354,7 @@ namespace Core.Business.Services.Concrete {
             if (response != null) {
                 if (response.Type == (int)UserType.Teacher) {
                     var teacherInfo = await _userRepository.GetTeacherProfile(response.Id);
+                    
                     if (teacherInfo != null) {
 
                         TeacherProfileResponse teacherobj = new TeacherProfileResponse();
@@ -389,11 +392,28 @@ namespace Core.Business.Services.Concrete {
 
                     }
                 }
+                
                 var image = _mediaFileRepository.GetImage(userid, MediaEntityType.Users);
                 if (image != null) {
                     userDto.Image = image.BlobLink;
                 }
+              var addressInfo=  _addressRepository.GetUserAddress(userid);
+                if (addressInfo != null) {
+                    Address address = new Address();
+                    address.Address1 = addressInfo.Address1;    
+                    address.Address2 = addressInfo.Address2;    
+                    address.UserId = addressInfo.UserId;
+                    address.StateId = addressInfo.StateId;  
+                    address.Latitude = addressInfo.Latitude;    
+                    address.Longitude = addressInfo.Longitude;  
+                    address.City = addressInfo.City;
+                    address.IsDeleted = addressInfo.IsDeleted;  
+                    address.Id = addressInfo.Id;    
+                    address.Pincode = addressInfo.Pincode;  
+                    address.UpdateDate = addressInfo.UpdateDate;
+                  userDto.UserAddress = address;    
 
+                }
                 userDto.IsDeleted = response.IsDeleted;
                 userDto.UpdateDate = response.UpdateDate;
                 userDto.Firstname = response.Firstname;

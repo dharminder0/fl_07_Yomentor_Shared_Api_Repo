@@ -50,7 +50,7 @@ namespace Core.Data.Repositories.Concrete {
                 ConversationId = message.ConversationId,
                 SenderId = message.SenderId,
                 Content = message.Content,
-                Timestamp = message.Timestamp
+                Timestamp = message.TimeStamp
             }) > 0;
         }
 
