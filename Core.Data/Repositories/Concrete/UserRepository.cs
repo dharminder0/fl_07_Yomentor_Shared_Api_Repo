@@ -318,7 +318,8 @@ u.id
             ParentId,
             CreateDate,
             IsDeleted,
-            Rank
+            Rank,
+            GradeId
         )
         VALUES
         (
@@ -335,7 +336,8 @@ u.id
             @ParentId,
             GETDATE(),
             0,
-            @Rank
+            @Rank,
+            @GradeId
         );
 
         SELECT SCOPE_IDENTITY();
@@ -354,7 +356,8 @@ u.id
                 DateOfBirth = ob.DateOfBirth,
                 Gender = ob.Gender,
                 ParentId = ob.Parentid,
-                Rank = ob.Rank
+                Rank = ob.Rank,
+                GradeId=ob.GradeId,
             });
         }
         public int UpdateUser(UserRequest ob) {
