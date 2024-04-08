@@ -180,7 +180,7 @@ u.id
 ,u.Password
 ,u.PasswordSalt
 ,u.Token
-,u.Address
+
 ,u.Gender
 ,u.DateOfBirth
 ,u.Rank
@@ -234,9 +234,11 @@ u.id
             else {
                 sqlString = " ORDER BY u.id DESC";
             }
-            sql += $@"
+            if (listRequest.pageIndex > 0 && listRequest.PageSize >0) {
+                sql += $@"
        {sqlString}
         OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+            }
 
             return await QueryAsync<Users>(sql, listRequest);
         }
