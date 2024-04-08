@@ -11,5 +11,6 @@ namespace Core.Business.Sevices.Abstract {
     public interface IAddressService {
         ActionMassegeResponse UpsertAddress(AddressRequest request);
         Address GetUserAddress(int userId);
+        List<State> GetState();
     }
 }

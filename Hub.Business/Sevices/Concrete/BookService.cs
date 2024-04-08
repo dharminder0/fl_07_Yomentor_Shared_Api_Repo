@@ -101,8 +101,6 @@ namespace Core.Business.Sevices.Concrete {
             }
         return books;   
         }
-        public List<State> GetState() {
-            return _address.GetStateList().ToList(); 
-        }
+        
     }
 }
