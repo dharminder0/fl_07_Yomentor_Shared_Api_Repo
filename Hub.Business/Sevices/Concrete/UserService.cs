@@ -85,8 +85,8 @@ namespace Core.Business.Services.Concrete {
             }
 
             if (obj.Id == 0) {
-                var userinfo = _userRepository.GetUsersInfoByUserName(obj.Phone);
-                if (userinfo == null) {
+                var userinfo = _userRepository.GetUsersInfoByUserName(obj.Phone).ToList();
+                if (!userinfo.Any()) {
 
                     userId = _userRepository.InsertUser(obj, hashedPassword, salt);
                     return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
