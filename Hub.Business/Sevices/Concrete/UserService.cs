@@ -208,12 +208,12 @@ namespace Core.Business.Services.Concrete {
                 user.Image = files.First().BlobLink;
             }
             user.Id = dbUser.Id;
-            user.Firstname = dbUser.Firstname;
-            user.Lastname = dbUser.Lastname;
+            user.FirstName = dbUser.Firstname;
+            user.LastName = dbUser.Lastname;
 
             user.Phone = dbUser.Phone;
             user.Token = GenerateUserJwtEncryptedToken(dbUser.Token);
-            user.Parentid = dbUser.Parentid;          
+            user.ParentId = dbUser.Parentid;          
             user.Type = dbUser.Type;
             user.AuthenticationStatus = true;
 
@@ -274,6 +274,14 @@ namespace Core.Business.Services.Concrete {
                     address.Id = addressInfo.Id;
                     address.Pincode = addressInfo.Pincode;
                     address.UpdateDate = addressInfo.UpdateDate;
+                    try {
+                        var stateName = _addressRepository.GetState(address.StateId);
+                        address.StateName = stateName.Name;
+
+                    } catch (Exception) {
+
+
+                    }
                     res.UserAddress = address;
 
                 }
@@ -425,19 +433,28 @@ namespace Core.Business.Services.Concrete {
                     address.Id = addressInfo.Id;    
                     address.Pincode = addressInfo.Pincode;  
                     address.UpdateDate = addressInfo.UpdateDate;
-                  userDto.UserAddress = address;    
+                    try {
+                        var stateName = _addressRepository.GetState(address.StateId);
+                        address.StateName = stateName.Name;
+
+                    } catch (Exception) {
+
+                     
+                    }
+                  userDto.UserAddress = address;  
+                   
 
                 }
                 userDto.IsDeleted = response.IsDeleted;
                 userDto.UpdateDate = response.UpdateDate;
-                userDto.Firstname = response.Firstname;
+                userDto.FirstName = response.Firstname;
                 userDto.LastLoginDate = response.LastLoginDate;
                 userDto.Email = response.Email;
-                userDto.Lastname = response.Lastname;
+                userDto.LastName = response.Lastname;
                
                 userDto.Phone = response.Phone;
                 userDto.DateOfBirth = response.DateOfBirth;
-                userDto.Parentid = response.Parentid;
+                userDto.ParentId = response.Parentid;
                 userDto.CreateDate = response.CreateDate;
                 userDto.Id = response.Id;
                 userDto.Type = response.Type;

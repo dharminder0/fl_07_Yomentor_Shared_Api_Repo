@@ -49,6 +49,19 @@ namespace YoMentor.Api.Controllers {
             return Ok(response);
 
         }
-       
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="statusId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("updateStatus")]
+        public  IActionResult UpdateStatus( int id, int statusId) {
+            var response =  bookService.UpdateStatus(id,statusId);
+            return JsonExt(response);
+
+        }
+
     }
 }

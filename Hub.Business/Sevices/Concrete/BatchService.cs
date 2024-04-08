@@ -216,6 +216,14 @@ namespace Core.Business.Sevices.Concrete {
                             address.Id = addressInfo.Id;
                             address.Pincode = addressInfo.Pincode;
                             address.UpdateDate = addressInfo.UpdateDate;
+                            try {
+                                var stateName = _addressRepository.GetState(address.StateId);
+                                address.StateName = stateName.Name;
+
+                            } catch (Exception) {
+
+
+                            }
                             batchStudentDetailsDto.UserAddress = address;
 
                         }

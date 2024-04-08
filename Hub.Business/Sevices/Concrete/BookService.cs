@@ -94,6 +94,14 @@ namespace Core.Business.Sevices.Concrete {
                     address.Id = addressInfo.Id;
                     address.Pincode = addressInfo.Pincode;
                     address.UpdateDate = addressInfo.UpdateDate;
+                    try {
+                        var stateName = _address.GetState(address.StateId);
+                        address.StateName = stateName.Name;
+
+                    } catch (Exception) {
+
+
+                    }
                     res.UserAddress = address;
 
                 }
@@ -101,6 +109,10 @@ namespace Core.Business.Sevices.Concrete {
             }
         return books;   
         }
-        
+        public bool UpdateStatus(int id, int status) {
+            return _book.UpdateStatus(id, status);  
+        }
+
+
     }
 }
