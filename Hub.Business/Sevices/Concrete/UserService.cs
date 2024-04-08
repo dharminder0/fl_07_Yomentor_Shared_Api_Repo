@@ -80,7 +80,7 @@ namespace Core.Business.Services.Concrete {
 
                 userId= _userRepository.UpdateUser(obj);
 
-                return new ActionMessageResponse { Success = false, Content = userId, Message = "User alreadyExsist." };
+                return new ActionMessageResponse { Success = false, Content = userId, Message = "Update_Suucessfully." };
             }
 
             if (obj.Id == 0) {
