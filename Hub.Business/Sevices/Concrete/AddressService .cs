@@ -39,5 +39,8 @@ namespace Core.Business.Sevices.Concrete {
         public   Address GetUserAddress(int userId) {
             return  _addressRepository.GetUserAddress(userId);     
         }
+        public List<State> GetState() {
+            return _addressRepository.GetStateList().ToList();
+        }
     }
 }

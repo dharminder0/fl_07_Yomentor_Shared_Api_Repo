@@ -38,6 +38,17 @@ namespace YoMentor.Api.Controllers {
             return JsonExt(response);
 
         }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("StateList")]
+        public IActionResult GetStateList() {
+            var response = _addressService.GetState();
+            return Ok(response);
+
+        }
 
     }
 }
