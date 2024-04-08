@@ -34,6 +34,7 @@ namespace Core.Business.Entities.Dto {
             public TeacherProfileResponse TeacherProfile { get; set; }
             public Address UserAddress { get; set; }
             public int StudentGradeId { get; set; }
+            public int Rank { get; set; }
 
 
 

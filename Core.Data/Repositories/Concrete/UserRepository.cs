@@ -357,7 +357,7 @@ u.id
                 Rank = ob.Rank
             });
         }
-        public int UpdateUser(UserRequest ob, string password, string passwordSalt) {
+        public int UpdateUser(UserRequest ob) {
             if (string.IsNullOrWhiteSpace(ob.Gender)) {
                 ob.Gender = null;
             }
@@ -370,9 +370,7 @@ u.id
         UPDATE Users
         SET
             FirstName = @FirstName,
-            LastName = @LastName,
-            Password = @Password,
-            PasswordSalt = @PasswordSalt,
+            LastName = @LastName,         
             Token = @Token,
             Email = @Email,
           
@@ -393,8 +391,6 @@ u.id
             return ExecuteScalar<int>(sql, new {
                 FirstName = ob.FirstName,
                 LastName = ob.LastName,
-                Password = password,
-                PasswordSalt = passwordSalt,
                 Token = Guid.NewGuid(),
                 Email = ob.Email,
                 Phone = ob.Phone,
