@@ -27,7 +27,8 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IUserRepository _userRepository;
         private readonly IFavouriteBatchRepository _favouriteBatchRepository;
         private readonly IMediaFileRepository _mediaFileRepository;
-        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository, IFavouriteBatchRepository favouriteBatchRepository, IMediaFileRepository mediaFileRepository)
+        private readonly IAddressRepository _addressRepository; 
+        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository, IFavouriteBatchRepository favouriteBatchRepository, IMediaFileRepository mediaFileRepository, IAddressRepository addressRepository)
         {
             _batchRepository = batchRepository;         
             _gradeRepository = gradeRepository;
@@ -36,6 +37,7 @@ namespace Core.Business.Sevices.Concrete {
             _userRepository = userRepository;
             _favouriteBatchRepository= favouriteBatchRepository;  
             _mediaFileRepository= mediaFileRepository;
+            _addressRepository = addressRepository;
         }
         public async Task<List<BatchDto>> BatchDetails(BatchRequest request)
         {
@@ -186,7 +188,7 @@ namespace Core.Business.Sevices.Concrete {
                         batchStudentDetailsDto.EnrollmentStatus = System.Enum.GetName(typeof(Enrollmentstatus), batchStudent.Enrollmentstatus);
                         batchStudentDetailsDto.enrollmentstatus = batchStudent.Enrollmentstatus;
                         batchStudentDetailsDto.StudentId = user.Id;
-                        batchStudentDetailsDto.Address = user.Address;
+                       // batchStudentDetailsDto.Address = user.Address;
                         batchStudentDetailsDto.Phone = user.Phone;
                         batchStudentDetailsDto.Name = user.Firstname.Replace(" ", "") + ' ' + user.Lastname.Replace(" ", "");
                         batchStudentDetailsDto.Email = user.Email == null ? null : user.Email.ToLower();
@@ -200,7 +202,23 @@ namespace Core.Business.Sevices.Concrete {
 
                           
                         }
-                 
+                        var addressInfo = _addressRepository.GetUserAddress(user.Id);
+                        if (addressInfo != null) {
+                            Address address = new Address();
+                            address.Address1 = addressInfo.Address1;
+                            address.Address2 = addressInfo.Address2;
+                            address.UserId = addressInfo.UserId;
+                            address.StateId = addressInfo.StateId;
+                            address.Latitude = addressInfo.Latitude;
+                            address.Longitude = addressInfo.Longitude;
+                            address.City = addressInfo.City;
+                            address.IsDeleted = addressInfo.IsDeleted;
+                            address.Id = addressInfo.Id;
+                            address.Pincode = addressInfo.Pincode;
+                            address.UpdateDate = addressInfo.UpdateDate;
+                            batchStudentDetailsDto.UserAddress = address;
+
+                        }
 
                         listBatchStudentDetails.Add(batchStudentDetailsDto);
                     }

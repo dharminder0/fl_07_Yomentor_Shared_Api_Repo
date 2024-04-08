@@ -10,6 +10,7 @@ using Core.Data.Repositories.Concrete;
 using Hub.Common.Settings;
 using RLV.Security.Lib;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using static Core.Business.Entities.DTOs.Enum;
 
@@ -84,12 +85,15 @@ namespace Core.Business.Services.Concrete {
             }
 
             if (obj.Id == 0) {
-               
-                userId = _userRepository.InsertUser(obj, hashedPassword, salt);
-                return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
-            }
+                var userinfo = _userRepository.GetUsersInfoByUserName(obj.Phone);
+                if (userinfo == null) {
 
-            return new ActionMessageResponse { Success = false, Message = "Failed to register user." };
+                    userId = _userRepository.InsertUser(obj, hashedPassword, salt);
+                    return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
+                }
+            }
+           
+            return new ActionMessageResponse { Success = false, Message = "User_already_exsist" };
         }
 
    
@@ -209,8 +213,7 @@ namespace Core.Business.Services.Concrete {
 
             user.Phone = dbUser.Phone;
             user.Token = GenerateUserJwtEncryptedToken(dbUser.Token);
-            user.Parentid = dbUser.Parentid;
-            user.Address = dbUser.Address;
+            user.Parentid = dbUser.Parentid;          
             user.Type = dbUser.Type;
             user.AuthenticationStatus = true;
 
@@ -413,14 +416,14 @@ namespace Core.Business.Services.Concrete {
                 userDto.LastLoginDate = response.LastLoginDate;
                 userDto.Email = response.Email;
                 userDto.Lastname = response.Lastname;
-                userDto.Address = response.Address;
+               
                 userDto.Phone = response.Phone;
                 userDto.DateOfBirth = response.DateOfBirth;
                 userDto.Parentid = response.Parentid;
                 userDto.CreateDate = response.CreateDate;
                 userDto.Id = response.Id;
                 userDto.Type = response.Type;
-                userDto.Address = response.Address;
+              
                 userDto.StudentGradeId = response.GradeId;
                 userDto.DateOfBirth = response.DateOfBirth;
                 if (userDto.Type == (int)UserType.Teacher) {

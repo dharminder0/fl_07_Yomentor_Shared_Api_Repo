@@ -55,7 +55,6 @@ namespace Core.Data.Repositories.Concrete {
                 PasswordSalt = @PasswordSalt,
                 Token = @Token,
                 Email = @Email,
-                Address = @Address,
                 Type = @Type,
                 DateOfBirth = @DateOfBirth,
                 Gender = @Gender,
@@ -78,7 +77,6 @@ namespace Core.Data.Repositories.Concrete {
                 Token,
                 Email,
                 Phone,
-                Address,
                 Type,
                 DateOfBirth,
                 Gender,
@@ -96,7 +94,6 @@ namespace Core.Data.Repositories.Concrete {
                 @Token,
                 @Email,
                 @Phone,
-                @Address,
                 @Type,
                 @DateOfBirth,
                 @Gender,
@@ -123,7 +120,7 @@ namespace Core.Data.Repositories.Concrete {
                 DateOfBirth = ob.DateOfBirth,
                 Gender = ob.Gender,
                 ParentId = ob.Parentid,
-                Address = ob.Address,
+           
                 Rank = ob.Rank
             });
         }
@@ -313,7 +310,6 @@ u.id
             Token,
             Email,
             Phone,
-            Address,
             Type,
             DateOfBirth,
             Gender,
@@ -331,7 +327,6 @@ u.id
             @Token,
             @Email,
             @Phone,
-            @Address,
             @Type,
             @DateOfBirth,
             @Gender,
@@ -357,7 +352,6 @@ u.id
                 DateOfBirth = ob.DateOfBirth,
                 Gender = ob.Gender,
                 ParentId = ob.Parentid,
-                Address = ob.Address,
                 Rank = ob.Rank
             });
         }
@@ -379,7 +373,7 @@ u.id
             PasswordSalt = @PasswordSalt,
             Token = @Token,
             Email = @Email,
-            Address = @Address,
+          
             Type = @Type,
             DateOfBirth = @DateOfBirth,
             Gender = @Gender,
@@ -406,7 +400,7 @@ u.id
                 DateOfBirth = ob.DateOfBirth,
                 Gender = ob.Gender,
                 ParentId = ob.Parentid,
-                Address = ob.Address,
+             
                 Rank = ob.Rank,
                 GradeId=ob.GradeId,
                 Id=ob.Id    
