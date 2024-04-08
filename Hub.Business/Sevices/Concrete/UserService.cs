@@ -260,6 +260,23 @@ namespace Core.Business.Services.Concrete {
                 if (image != null) {
                     res.ProfilePicture = image.BlobLink;
                 }
+                var addressInfo = _addressRepository.GetUserAddress(item.Id);
+                if (addressInfo != null) {
+                    Address address = new Address();
+                    address.Address1 = addressInfo.Address1;
+                    address.Address2 = addressInfo.Address2;
+                    address.UserId = addressInfo.UserId;
+                    address.StateId = addressInfo.StateId;
+                    address.Latitude = addressInfo.Latitude;
+                    address.Longitude = addressInfo.Longitude;
+                    address.City = addressInfo.City;
+                    address.IsDeleted = addressInfo.IsDeleted;
+                    address.Id = addressInfo.Id;
+                    address.Pincode = addressInfo.Pincode;
+                    address.UpdateDate = addressInfo.UpdateDate;
+                    res.UserAddress = address;
+
+                }
                 if (item.Type == (int)UserType.Teacher) {
 
                     var review = await _reviewsRepository.GetReviewsForTeacher(item.Id);
@@ -327,6 +344,7 @@ namespace Core.Business.Services.Concrete {
                         res.Education = teacherInfo.Education;
                     }
                 }
+           
                 responses.Add(res);
             }
 
