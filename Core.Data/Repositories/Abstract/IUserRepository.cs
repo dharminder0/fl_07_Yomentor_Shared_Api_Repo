@@ -7,8 +7,8 @@ namespace Core.Data.Repositories.Abstract {
         Task UpdateLastlogin(long id);
         Users GetUsersDetailsByToken(string accessToken);
         IEnumerable<Users> GetUsersDetailsByUniqueCode(string uniqueCode);
-        IEnumerable<Users> GetUsersInfoById(int id,int brandId);
-        int InsertUser(UserRequest ob, string password, string passwordSalt);
+
+      
         IEnumerable<Users> GetUsersInfoByUserName(string userName);
         Task<bool> UpdatePassword(string password, string userName);
    
@@ -18,6 +18,13 @@ namespace Core.Data.Repositories.Abstract {
         IEnumerable<Users> GetStudentUser(List<int> studentId);
         Task<Users> GetUser(int Id);
         Task<IEnumerable<Users>> UserInfo(UserSearchRequest listRequest);
+         Task<Users> GetUserInfo(int Id, int type);
+        Task<TeacherProfile> GetTeacherProfile(int userId);
+        Task<int> UpsertTeacherProfile(TeacherProfile teacherProfile);
+        int UpdateUser(UserRequest ob);
+        int InsertUser(UserRequest ob, string password, string passwordSalt);
+        
+
 
 
 

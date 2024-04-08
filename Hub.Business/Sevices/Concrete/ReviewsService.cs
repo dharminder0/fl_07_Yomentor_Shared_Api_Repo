@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Sevices.Concrete
 {
@@ -16,10 +17,15 @@ namespace Core.Business.Sevices.Concrete
     {
         private readonly IReviewsRepository _reviewsRepository;
         private readonly IBatchRepository _batchRepository;
-        public ReviewsService(IReviewsRepository reviewsRepository, IBatchRepository batchRepository)
+        private readonly IMediaFileRepository _mediaFileRepository; 
+        private readonly IUserRepository _userRepository;   
+        public ReviewsService(IReviewsRepository reviewsRepository, IBatchRepository batchRepository, IMediaFileRepository mediaFileRepository, IUserRepository userRepository)
         {
             _reviewsRepository = reviewsRepository;
             _batchRepository = batchRepository;
+            _mediaFileRepository = mediaFileRepository;
+            _userRepository = userRepository;
+
         }
         public async Task<ActionMessageResponse> InsertOrUpdateReviews(Reviews reviews)
         {
@@ -45,6 +51,7 @@ namespace Core.Business.Sevices.Concrete
             try
             {
                 var res = await _reviewsRepository.GetReviewResponse(reviewRequest);
+
                 if(res == null)
                 {
                     return null;
@@ -54,13 +61,52 @@ namespace Core.Business.Sevices.Concrete
                 foreach(var item  in res)
                 {
                     review = new ReviewResponse();
-                    review.Id = item.Id;
-                    review.AddedForUserId = item.AddedForUserId;
-                    review.AddedByUserId= item.AddedByUserId;
-                    review.AddedForFirstName = item.AddedForFirstName;
-                    review.AddedForLastName = item.AddedForLastName;
-                    review.AddedByFirstName = item.AddedByFirstName;
-                    review.AddedByLastName= item.AddedByLastName;
+                    try {
+                        if (item.AddedBy > 0) {
+                            var studentImage = _mediaFileRepository.GetImage(item.AddedBy, MediaEntityType.Users);
+                            if (studentImage != null) {
+                                review.StudentImage = studentImage.BlobLink;
+                            }
+                                }
+;                    } catch (Exception) {
+
+                      
+                    }
+                    try {
+                        if (item.AddedFor > 0) {
+                            var teacherImage = _mediaFileRepository.GetImage(item.AddedFor, MediaEntityType.Users);
+                            if (teacherImage != null) {
+                                review.TeacherImage = teacherImage.BlobLink;
+                            }
+                        }
+                    } catch (Exception) {
+
+                    }
+                    try {
+                        if (item.AddedFor > 0) {
+                            var teacherInfo = await _userRepository.GetUser(item.AddedFor);
+                            review.AddedForFirstName = teacherInfo.Firstname;
+                            review.AddedForLastName = teacherInfo.Lastname;
+                            review.AddedForUserId = teacherInfo.Id;
+                        }
+
+                    } catch (Exception) {
+
+                        throw;
+                    }
+                    try {
+                        if (item.AddedBy > 0) {
+                            var studentInfo = await _userRepository.GetUser(item.AddedBy);
+                            review.AddedByFirstName = studentInfo.Firstname;
+                            review.AddedByLastName = studentInfo.Lastname;
+                            review.AddedByUserId = studentInfo.Id;
+                        }
+                    } catch (Exception) {
+
+                        throw;
+                    }
+                  
+                 
                     var batchDetails = _batchRepository.GetBatchNamebybatchId(item.BatchId);
                     review.BatchId = item.BatchId;
                     review.BatchTitle= batchDetails.ElementAt(0);

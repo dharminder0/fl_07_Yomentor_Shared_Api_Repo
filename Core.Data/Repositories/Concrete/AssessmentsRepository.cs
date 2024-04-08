@@ -1,5 +1,6 @@
 ﻿using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
+using Core.Business.Entities.ResponseModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
@@ -63,11 +64,11 @@ namespace Core.Data.Repositories.Concrete {
                 Title = @Title,
                 Description = @Description,
                 GradeId = @GradeId,
-                SubjcetId = @SubjcetId,
+                subjectid = @Subjectid,
                 Maxmark = @Maxmark,
-                isfavorite = @isfavorite,
-                isdeleted = @isdeleted,
-                UpdatedDate = @UpdatedDate
+                isfavorite = @IsFavorite,
+                isdeleted = @IsDeleted,
+                updatedate = GetUtcDate()
             WHERE
                 Id = @Id;
 
@@ -81,13 +82,12 @@ namespace Core.Data.Repositories.Concrete {
 
             return await ExecuteScalarAsync<int>(sql, assignment);
         }
-
-        public IEnumerable<Assessments> GetAssessmentsList(int id)
-        {
-            var sql = @"select * from [dbo].[assessments] where id=@id";
-            return Query<Assessments>(sql, new { id }).ToList();
+        public Assessments GetAssessments(int id) {
+            var sql = @"SELECT * FROM [dbo].[assessments] WHERE id = @id";
+            return   QueryFirst<Assessments>(sql, new { id });
+            
         }
-
+     
         public async Task<List<Assessments>> GetAssessmentsAllList(StudentProgressRequestV2 request  )
         {
             var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid";

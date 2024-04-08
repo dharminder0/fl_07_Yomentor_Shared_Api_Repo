@@ -23,7 +23,7 @@ namespace Core.Business.Entities.DTOs
             Parent = 2,
             Student = 3
         }
-        public enum Status {
+        public enum BatchStatus {
             Open = 1,
             Active = 2,
             Close = 3,
@@ -38,10 +38,11 @@ namespace Core.Business.Entities.DTOs
         }
         public enum Enrollmentstatus
         {
-             Pending=1,
+             Pending=0,
+             Enrolled=1,
              Accepted=2,
              Rejected=3,
-             Abandoned=4
+             Withdrawn=4
         }
 
         public enum AttendanceStatus
@@ -62,5 +63,24 @@ namespace Core.Business.Entities.DTOs
             Pdf=4,
 
         }
+        public enum FavouriteEntityType {
+            None=0,
+            Batch=1,
+            Teacher=2
+        }
+        public enum TaskStatus {
+            Assign=1,
+            Complete=2
+        }
+        public enum BookExchangeStatus {
+            Pending,
+            Requested,
+            Accepted,
+            Declined,
+            Completed,
+            Cancelled,
+            
+        }
+
     }
 }

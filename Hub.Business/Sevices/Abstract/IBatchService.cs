@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Business.Entities.Dto;
 
 namespace Core.Business.Sevices.Abstract
 {
@@ -21,7 +22,17 @@ namespace Core.Business.Sevices.Abstract
 
         List<BatchStudentDetailsDto> GetStudentDetailsbyBatchId(int batchId);
         Task<List<BatchDto>> BatchDetails(BatchRequest request);
-        
+        Task<ActionMassegeResponse> UpdateBatchStatus(int batchStatus, int batchId);
+        Task<ActionMassegeResponse> UpdateEnrollmentStatus(int status, int Id, int batchId);
+        Task<ActionMassegeResponse> AssignBatchStudents(BatchStudentsRequest request);
+        Task<ActionMassegeResponse> InsertOrUpdateFavouriteBatch(FavouriteBatchRequest batch);
+        Task<ActionMassegeResponse> UpdateFavouriteStatus(int userId, int entityId);
+        Task<List<BatchDto>> BatchDetails(BatchRequestV2 request);
+
+
+
+
+
 
     }
 }

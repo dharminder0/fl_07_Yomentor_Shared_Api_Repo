@@ -14,8 +14,9 @@ namespace Core.Data.Repositories.Concrete {
         public string GetSubjectName(int subjectId)
         {
             var sql = $"select name from dbo.Subject where Id=@subjectId";
-            var res = Query<string>(sql, new { subjectId });
-            return res.FirstOrDefault(); 
+            var res = QueryFirst<string>(sql, new { subjectId });
+            return res;
+          
         }
     }
 }

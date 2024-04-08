@@ -4,7 +4,10 @@ namespace Core.Business.Entities.DTOs {
         public int Id { get; set; }
         public string Description { get; set; }
         public string BatchName { get; set; }
-        public string ClassName { get; set; }
+        public int GradeId { get; set; }
+       
+        public string GradeName { get; set; }
+       public   int SubjectId { get; set; }
         public string SubjectName { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
@@ -18,6 +21,9 @@ namespace Core.Business.Entities.DTOs {
         public string Status { get; set; }
         public int StatusId { get; set; }
         public TeacherInformation TeacherInformation { get; set; }
+        public string Enrollmentstatus { get; set; }
+        public bool IsFavourite { get; set; }
+        public int EnrollmentstatusId { get; set; }
 
 
     }

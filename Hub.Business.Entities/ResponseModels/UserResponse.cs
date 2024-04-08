@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Business.Entities.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,13 @@ namespace Core.Business.Entities.ResponseModels {
         public string  FirstName { get; set; }
         public string  LastName { get; set; }
         public string  Phone { get; set; }
+        public Address UserAddress { get; set; }
         public int AverageRating { get; set; }
         public int ReviewCount { get; set; }
         public string  ProfilePicture { get; set; }
+        public string About { get; set; }
+        public string Education { get; set; }
+        public string Experience { get; set; }
+        public int Rank { get; set; }
     }
 }

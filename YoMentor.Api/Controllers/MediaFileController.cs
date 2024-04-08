@@ -66,7 +66,7 @@ namespace YoMentor.Api.Controllers
 
         [HttpPost]
         [Route("DeleteMediaFile")]
-        [RequireAuthorization]
+   
         public IActionResult DeleteMediaFile(object deleteMediaFileRequest)
         {
             List<DeleteMediaFileRequest> deleteMediaFileRequestList = new List<DeleteMediaFileRequest>();

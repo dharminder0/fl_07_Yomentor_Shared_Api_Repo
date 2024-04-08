@@ -16,16 +16,16 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public IEnumerable<MediaFile> GetEntityMediaFile(int objectId, MediaEntityType entityTypeId,  MediaType mediaTypeid = MediaType.None) {
-            var sql = $@"SELECT * FROM MediaFile where EntityId = @objectId and  EntityTypeId = @entityTypeId";
+            var sql = $@"SELECT * FROM Media_File where EntityId = @objectId and  EntityTypeId = @entityTypeId";
         
             if (mediaTypeid != MediaType.None) {
                 sql += $@" and MediaTypeId ={(int)mediaTypeid}";
             }
-            sql += " order by isdefault desc ";
+            sql += " order by 1 desc   ";
             return Query<MediaFile>(sql, new { objectId, entityTypeId });
         }
         public MediaFile GetImage(int objectId, MediaEntityType entityTypeId) {
-            var sql = $@"SELECT * FROM MediaFile where EntityId = @objectId and  EntityTypeId = @entityTypeId";
+            var sql = $@"SELECT * FROM Media_File where EntityId = @objectId and  EntityTypeId = @entityTypeId";
             return QueryFirst<MediaFile>(sql, new { objectId, entityTypeId });
         }
 
@@ -33,7 +33,7 @@ namespace Core.Data.Repositories.Concrete {
 
             var sql = @"
 
-INSERT INTO MediaFile	 
+INSERT INTO Media_File	 
 		   (
             EntityTypeId,
             EntityId,
@@ -61,30 +61,31 @@ INSERT INTO MediaFile
         }
 
         public bool UpsertMediaFile(MediaFileRequest requestMediaFile) {
-            var sql = @"IF not EXISTS(SELECT 1 from MediaFile where EntityId = @EntityId and  EntityTypeId = @EntityTypeId and MediaTypeId=@mediaTypeId)
+            var sql = @"IF not EXISTS(SELECT 1 from Media_File where EntityId = @EntityId and  EntityTypeId = @EntityTypeId  )
 
 BEGIN
-INSERT INTO MediaFile	 
+INSERT INTO Media_File	 
 		   ( 
             EntityTypeId,
             EntityId,
             FileName,
             BlobLink,
             MediaTypeId,
-            BrandId,
-            DocUsageType)
+            UpdatedOn
+        
+          )
      VALUES(
             @EntityTypeId,
             @EntityId,
             @FileName,
             @BlobLink,
             @MediaTypeId,
-            @BrandId,
-            @DocUsageType)    
+      
+            Getdate())         
 end
 else
 begin
-update MediaFile  set  BlobLink=@BlobLink , FileName= @FileName where  EntityId = @EntityId and  EntityTypeId = @EntityTypeId and MediaTypeId=@mediaTypeId
+update Media_File  set  BlobLink=@BlobLink , FileName= @FileName where  EntityId = @EntityId and  EntityTypeId = @EntityTypeId 
 end 
 ";
             return Execute(sql, new {
@@ -102,7 +103,7 @@ end
 
 
         public bool DeleteMediaFile(int entityId, int entityTypeId, string bloblink) {
-            var sql = $@" DELETE FROM MediaFile where EntityId = @EntityId and  EntityTypeId = @EntityTypeId and bloblink = @bloblink ";
+            var sql = $@" DELETE FROM Media_File where EntityId = @EntityId and  EntityTypeId = @EntityTypeId and bloblink = @bloblink ";
 
             return Execute(sql, new { entityId, entityTypeId, bloblink }) > 0;
         }
@@ -110,7 +111,7 @@ end
         public bool UpdateMediaImage(MediaFileRequest obj) {
 
             var sql = @"
-                        UPDATE MediaFile  set DocUsageType = @DocUsageType
+                        UPDATE Media_File  set DocUsageType = @1
                         where  EntityTypeId =@EntityTypeId and 
                         EntityId = @EntityId and 
                         FileName = @FileName and 
@@ -123,8 +124,19 @@ end
             return true;
         }
 
-    
 
+        public bool MediaFileExists(int entityId, int entityTypeId,string fileName) {
+            var sql = "SELECT COUNT(1) FROM Media_File WHERE EntityId = @EntityId AND EntityTypeId = @EntityTypeId and fileName=@fileName ";
+            var result = ExecuteScalar<int>(sql, new { EntityId = entityId, EntityTypeId = entityTypeId,fileName=fileName });
+            return result > 0;
+        }
+
+
+   
+        public bool DeleteMediaFIle( int entityId,int entityTypeId) {
+            var sql = @" delete from Media_File where EntityTypeId=@entityTypeId and EntityId=@entityId ";
+            return ExecuteScalar<bool>(sql, new {entityId, entityTypeId});  
+        }
     }
 }
 
