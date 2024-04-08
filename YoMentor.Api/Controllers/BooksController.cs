@@ -49,5 +49,16 @@ namespace YoMentor.Api.Controllers {
             return Ok(response);
 
         }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("StateList")]
+        public  IActionResult GetStateList() {
+            var response =  bookService.GetState();
+            return Ok(response);
+
+        }
     }
 }
