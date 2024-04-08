@@ -82,5 +82,9 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select * from Address  where userId=@userId";
             return  QueryFirst<Address>(sql, new { userId });
         }
+        public IEnumerable<State> GetStateList() {
+            var sql = @" select * from state ";
+            return  Query<State>(sql);
+        }
     } 
 }

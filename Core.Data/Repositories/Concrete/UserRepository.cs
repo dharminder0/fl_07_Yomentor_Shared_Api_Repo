@@ -107,10 +107,10 @@ namespace Core.Data.Repositories.Concrete {
         END
     ";
 
-            ob.Firstname = ob.Firstname.Trim();
+            ob.FirstName = ob.FirstName.Trim();
             return ExecuteScalar<int>(sql, new {
-                FirstName = ob.Firstname,
-                LastName = ob.Lastname,
+                FirstName = ob.FirstName,
+                LastName = ob.LastName,
                 Password = password,
                 PasswordSalt = passwordSalt,
                 Token = Guid.NewGuid(),
@@ -341,10 +341,10 @@ u.id
         SELECT SCOPE_IDENTITY();
     ";
 
-            ob.Firstname = ob.Firstname.Trim();
+            ob.FirstName = ob.FirstName.Trim();
             return ExecuteScalar<int>(sql, new {
-                FirstName = ob.Firstname,
-                LastName = ob.Lastname,
+                FirstName = ob.FirstName,
+                LastName = ob.LastName,
                 Password = password,
                 PasswordSalt = passwordSalt,
                 Token = Guid.NewGuid(),
@@ -389,10 +389,10 @@ u.id
         SELECT Id FROM Users WHERE Phone = @Phone;
     ";
 
-            ob.Firstname = ob.Firstname.Trim();
+            ob.FirstName = ob.FirstName.Trim();
             return ExecuteScalar<int>(sql, new {
-                FirstName = ob.Firstname,
-                LastName = ob.Lastname,
+                FirstName = ob.FirstName,
+                LastName = ob.LastName,
                 Password = password,
                 PasswordSalt = passwordSalt,
                 Token = Guid.NewGuid(),
