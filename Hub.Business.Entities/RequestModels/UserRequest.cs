@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core.Business.Entities.RequestModels {
     public class UserRequest {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string ? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Phone { get; set; }

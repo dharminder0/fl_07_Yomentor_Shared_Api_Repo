@@ -72,14 +72,13 @@ namespace Core.Business.Services.Concrete {
 
 
         public async Task<ActionMessageResponse> RegisterNewUser(UserRequest obj) {
-            var salt = Hasher.GenerateSalt();
-            var hashedPassword = Hasher.HashPassword(salt, obj.Password);
+          
             int userId = 0;
            
 
             if (obj.Id > 0) {
 
-                userId= _userRepository.UpdateUser(obj, hashedPassword, salt);
+                userId= _userRepository.UpdateUser(obj);
 
                 return new ActionMessageResponse { Success = false, Content = userId, Message = "User alreadyExsist." };
             }
@@ -87,7 +86,8 @@ namespace Core.Business.Services.Concrete {
             if (obj.Id == 0) {
                 var userinfo = _userRepository.GetUsersInfoByUserName(obj.Phone).ToList();
                 if (!userinfo.Any()) {
-
+                    var salt = Hasher.GenerateSalt();
+                    var hashedPassword = Hasher.HashPassword(salt, obj.Password);
                     userId = _userRepository.InsertUser(obj, hashedPassword, salt);
                     return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
                 }
@@ -458,6 +458,7 @@ namespace Core.Business.Services.Concrete {
                 userDto.CreateDate = response.CreateDate;
                 userDto.Id = response.Id;
                 userDto.Type = response.Type;
+                userDto.Rank=response.Rank; 
               
                 userDto.StudentGradeId = response.GradeId;
                 userDto.DateOfBirth = response.DateOfBirth;

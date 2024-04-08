@@ -21,7 +21,7 @@ namespace Core.Data.Repositories.Abstract {
          Task<Users> GetUserInfo(int Id, int type);
         Task<TeacherProfile> GetTeacherProfile(int userId);
         Task<int> UpsertTeacherProfile(TeacherProfile teacherProfile);
-        int UpdateUser(UserRequest ob, string password, string passwordSalt);
+        int UpdateUser(UserRequest ob);
         int InsertUser(UserRequest ob, string password, string passwordSalt);
         
 

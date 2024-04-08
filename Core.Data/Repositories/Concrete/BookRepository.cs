@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
@@ -123,7 +124,11 @@ namespace Core.Data.Repositories.Concrete {
             return ExecuteScalar<bool>(sql,new { id, status }); 
 
         }
-        //public IEnumerable<BookExchange> GetBooks() { }
+        //public IEnumerable<BookExchange> GetBooks(BookExchangeRequest bookExchange) {
+
+        //    var sq
+
+        //}
 
     }
 }
