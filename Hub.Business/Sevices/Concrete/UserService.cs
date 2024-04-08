@@ -83,14 +83,14 @@ namespace Core.Business.Services.Concrete {
                 return new ActionMessageResponse { Success = false, Content = userId, Message = "Update_Suucessfully." };
             }
 
-            if (obj.Id == 0) {
+           
                 var userinfo = _userRepository.GetUsersInfoByUserName(obj.Phone).ToList();
                 if (!userinfo.Any()) {
                     var salt = Hasher.GenerateSalt();
                     var hashedPassword = Hasher.HashPassword(salt, obj.Password);
                     userId = _userRepository.InsertUser(obj, hashedPassword, salt);
                     return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
-                }
+                
             }
            
             return new ActionMessageResponse { Success = false, Message = "User_already_exsist" };
