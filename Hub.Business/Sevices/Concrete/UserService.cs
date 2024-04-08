@@ -458,10 +458,11 @@ namespace Core.Business.Services.Concrete {
                 userDto.CreateDate = response.CreateDate;
                 userDto.Id = response.Id;
                 userDto.Type = response.Type;
-                userDto.Rank=response.Rank; 
-              
+                userDto.Rank=response.Rank;
+                userDto.Gender = response.Gender;
+ 
                 userDto.StudentGradeId = response.GradeId;
-                userDto.DateOfBirth = response.DateOfBirth;
+           
                 if (userDto.Type == (int)UserType.Teacher) {
                     var review = await _reviewsRepository.GetReviewsForTeacher(userDto.Id);
                     if (review != null && review.Any()) {
