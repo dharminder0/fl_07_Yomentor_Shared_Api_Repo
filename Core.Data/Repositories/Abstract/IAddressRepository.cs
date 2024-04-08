@@ -12,5 +12,6 @@ namespace Core.Data.Repositories.Abstract {
         int UpsertAddress(Business.Entities.DataModels.Address address);
        Business.Entities.DataModels.Address GetUserAddress(int userId);
         IEnumerable<State> GetStateList();
+        State GetState(int Id); 
     }
 }

@@ -13,5 +13,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> InsertBookExchange(BookExchange exchange);
         Task<int> UpdateBookExchange(BookExchange exchange);
         Task<IEnumerable<Books>> GetBooksList();
+        bool UpdateStatus(int id, int status);
     }
 }

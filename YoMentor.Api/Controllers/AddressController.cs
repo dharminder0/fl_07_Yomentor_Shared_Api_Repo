@@ -46,7 +46,7 @@ namespace YoMentor.Api.Controllers {
         [Route("StateList")]
         public IActionResult GetStateList() {
             var response = _addressService.GetState();
-            return Ok(response);
+            return JsonExt(response);
 
         }
 

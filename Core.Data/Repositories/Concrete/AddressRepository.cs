@@ -86,5 +86,9 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select * from state ";
             return  Query<State>(sql);
         }
+        public State  GetState(int Id) {
+            var sql = " select  name  from state where id=@Id";
+            return QueryFirst<State>(sql, new { Id});
+        }
     } 
 }

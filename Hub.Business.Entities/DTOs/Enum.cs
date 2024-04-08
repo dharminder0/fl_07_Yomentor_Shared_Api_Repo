@@ -72,5 +72,15 @@ namespace Core.Business.Entities.DTOs
             Assign=1,
             Complete=2
         }
+        public enum BookExchangeStatus {
+            Pending,
+            Requested,
+            Accepted,
+            Declined,
+            Completed,
+            Cancelled,
+            
+        }
+
     }
 }

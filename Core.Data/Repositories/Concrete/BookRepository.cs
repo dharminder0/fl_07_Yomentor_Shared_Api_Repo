@@ -115,9 +115,15 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<int>(sql, exchange);
         }
        public async Task<IEnumerable<Books>> GetBooksList() {
-            var sql = @"select * from books where Available=1 and  IsDeleted=1 ";
+            var sql = @"select * from books where Available=1 and  IsDeleted=0 ";
             return await  QueryAsync<Books>(sql);
         }
+        public  bool UpdateStatus(int id, int status) {
+            var sql = @" update Book_Exchange set status=@status where id=@id";
+            return ExecuteScalar<bool>(sql,new { id, status }); 
+
+        }
+        //public IEnumerable<BookExchange> GetBooks() { }
 
     }
 }
