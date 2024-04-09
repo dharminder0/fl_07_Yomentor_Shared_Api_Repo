@@ -93,8 +93,8 @@ namespace Core.Business.Sevices.Concrete
                         UpdateDate = item.UpdateDate,
                         CreateDate = item.CreateDate,
                         BatchId = item.BatchId,
-                        FirstName = info.Firstname,
-                        LastName = info.Lastname,
+                        FirstName = info.FirstName,
+                        LastName = info.LastName,
                         Phone = info.Phone,
                         Image = image != null ? image.BlobLink : null
 
@@ -114,8 +114,8 @@ namespace Core.Business.Sevices.Concrete
                         CreateDate = batch.CreateDate,
                         UpdateDate = batch.UpdateDate,
                         BatchId = batch.BatchId,
-                        FirstName = info.Firstname,
-                        LastName = info.Lastname,
+                        FirstName = info.FirstName,
+                        LastName = info.LastName,
                         Phone = info.Phone,
                         Image = image != null ? image.BlobLink : null
 

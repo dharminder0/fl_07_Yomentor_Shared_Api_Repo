@@ -208,8 +208,8 @@ namespace Core.Business.Services.Concrete {
                 user.Image = files.First().BlobLink;
             }
             user.Id = dbUser.Id;
-            user.FirstName = dbUser.Firstname;
-            user.LastName = dbUser.Lastname;
+            user.FirstName = dbUser.FirstName;
+            user.LastName = dbUser.LastName;
 
             user.Phone = dbUser.Phone;
             user.Token = GenerateUserJwtEncryptedToken(dbUser.Token);
@@ -252,8 +252,8 @@ namespace Core.Business.Services.Concrete {
                 }
                 UserResponse res = new UserResponse();
                 res.Id = item.Id;
-                res.FirstName = item.Firstname;
-                res.LastName = item.Lastname;
+                res.FirstName = item.FirstName;
+                res.LastName = item.LastName;
                 res.Phone = item.Phone;
                 res.Rank = item.Rank;
                 var image = _mediaFileRepository.GetImage(item.Id, MediaEntityType.Users);
@@ -326,8 +326,8 @@ namespace Core.Business.Services.Concrete {
             foreach (var item in response) {
                 UserResponse res = new UserResponse();
                 res.Id = item.Id;
-                res.FirstName = item.Firstname;
-                res.LastName = item.Lastname;
+                res.FirstName = item.FirstName;
+                res.LastName = item.LastName;
                 res.Phone = item.Phone;
                 res.Rank = item.Rank;
 
@@ -447,10 +447,10 @@ namespace Core.Business.Services.Concrete {
                 }
                 userDto.IsDeleted = response.IsDeleted;
                 userDto.UpdateDate = response.UpdateDate;
-                userDto.FirstName = response.Firstname;
+                userDto.FirstName = response.FirstName;
                 userDto.LastLoginDate = response.LastLoginDate;
                 userDto.Email = response.Email;
-                userDto.LastName = response.Lastname;
+                userDto.LastName = response.LastName;
                
                 userDto.Phone = response.Phone;
                 userDto.DateOfBirth = response.DateOfBirth;
