@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> UpdateBookExchange(BookExchange exchange);
         Task<IEnumerable<Books>> GetBooksList();
         bool UpdateStatus(int id, int status);
+        Task<IEnumerable<BookExchange>> GetBooks(BookExchangeRequest bookExchange);
+        string GetBookName(int id);
     }
 }

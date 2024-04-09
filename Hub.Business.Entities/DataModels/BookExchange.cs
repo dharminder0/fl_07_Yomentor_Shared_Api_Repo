@@ -9,8 +9,8 @@ namespace Core.Business.Entities.DataModels {
         public int Id { get; set; }
         public int SenderId { get; set; }
         public int  ReceiverId { get; set; }
-        public int ? BookId { get; set; }
+        public int  BookId { get; set; }
         public DateTime CreateDate { get; set; }
-        public int ? Status { get; set; }
+        public int  Status { get; set; }
     }
 }

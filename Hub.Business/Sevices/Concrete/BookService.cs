@@ -10,16 +10,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Sevices.Concrete {
     public class BookService: IBookService {
         private readonly  IBookRepository _book;
         private readonly IAddressRepository _address;
+        private readonly IUserRepository _user; 
 
-        public BookService(IBookRepository book, IAddressRepository address)
+        public BookService(IBookRepository book, IAddressRepository address, IUserRepository user)
         {
             _book = book;  
             _address = address; 
+            _user=user;
                 
         }
         public async Task<ActionMessageResponse> UpsertBook(BookRequest book) {
@@ -111,6 +114,68 @@ namespace Core.Business.Sevices.Concrete {
         }
         public bool UpdateStatus(int id, int status) {
             return _book.UpdateStatus(id, status);  
+        }
+        public async Task<List<BookExchangeResponse>> GetBookExchangeList(BookExchangeRequest bookExchange) {
+            if (bookExchange == null) {
+                return null;
+            }
+
+            var bookExchangObj = await _book.GetBooks(bookExchange);
+            var res = new List<BookExchangeResponse>();
+
+            foreach (var book in bookExchangObj) {
+                var obj = new BookExchangeResponse {
+                    Id = book.Id,
+                    SenderId = book.SenderId,
+                    ReceiverId = book.ReceiverId,
+                    StatusId = book.Status,
+                    CreatedDate = book.CreateDate,
+                    BookId = book.BookId,
+                    BookName = _book.GetBookName(book.BookId)
+                };
+
+                await PopulateUserInfo(obj, bookExchange.SenderId);
+                await PopulateUserInfo(obj, bookExchange.ReceiverId);
+
+                obj.StatusName = Enum.GetName(typeof(BookExchangeStatus), book.Status);
+                res.Add(obj);
+            }
+
+            return res;
+        }
+
+        private async Task PopulateUserInfo(BookExchangeResponse obj, int userId) {
+            if (userId <= 0) return;
+
+            var userInfo = await _user.GetUser(userId);
+            if (userInfo == null) return;
+
+            var user = new UserBasic {
+                FirstName = userInfo.FirstName,
+                LastName = userInfo.LastName,
+                Email = userInfo.Email,
+                Phone = userInfo.Phone
+            };
+
+            var addressInfo = _address.GetUserAddress(userId);
+            if (addressInfo != null) {
+                var address = new Address {
+                    Address1 = addressInfo.Address1,
+                    Address2 = addressInfo.Address2,
+                    UserId = addressInfo.UserId,
+                    StateId = addressInfo.StateId,
+                    Latitude = addressInfo.Latitude,
+                    Longitude = addressInfo.Longitude,
+                    City = addressInfo.City,
+                    IsDeleted = addressInfo.IsDeleted,
+                    Id = addressInfo.Id,
+                    Pincode = addressInfo.Pincode,
+                    UpdateDate = addressInfo.UpdateDate
+                };
+                user.UserAddress = address;
+            }
+
+            obj.UserInfo = user;
         }
 
 

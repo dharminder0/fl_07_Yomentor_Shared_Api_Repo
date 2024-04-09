@@ -62,6 +62,13 @@ namespace YoMentor.Api.Controllers {
             return JsonExt(response);
 
         }
+        [HttpPost]
+        [Route("BookExchnageList")]
+        public async Task<IActionResult> GetBookExchnageList(BookExchangeRequest bookExchange) {
+            var response = await  bookService.GetBookExchangeList(bookExchange);
+            return JsonExt(response);
+
+        }
 
     }
 }

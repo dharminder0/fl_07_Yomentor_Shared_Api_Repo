@@ -42,4 +42,11 @@ namespace Core.Business.Entities.Dto {
     public class UserAuthenticationDto : UserDto {
         public bool AuthenticationStatus { get; set; }
     }
+   public class UserBasic {
+        public string  FirstName { get; set; }
+        public string  LastName { get; set; }
+        public string  Phone { get; set; }
+        public string  Email { get; set; }
+        public Address UserAddress { get; set; }
+    }
 }

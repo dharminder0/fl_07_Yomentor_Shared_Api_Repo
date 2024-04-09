@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Core.Business.Entities.RequestModels {
     public class BookExchangeRequest {
-        public int UserId { get; set; }
-        public int UserType { get; set; }
+        public int SenderId { get; set; }
+        public int ReceiverId { get; set; }
         public List<int>? StatusId { get; set; }
         public int? PageSize { get; set; }
         public int? PageIndex { get; set; }
