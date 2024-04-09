@@ -97,8 +97,8 @@ namespace Core.Business.Sevices.Concrete {
                         var teacherdetails = await _userRepository.GetUser(row.TeacherId);
                         if (teacherdetails != null) {
                             teacher.Id = teacherdetails.Id;
-                            teacher.FirstName = teacherdetails.Firstname;
-                            teacher.LastName = teacherdetails.Lastname;
+                            teacher.FirstName = teacherdetails.FirstName;
+                            teacher.LastName = teacherdetails.LastName;
                             teacher.Phone = teacherdetails.Phone;
                             batch.TeacherInformation = teacher;
                         }
@@ -190,7 +190,7 @@ namespace Core.Business.Sevices.Concrete {
                         batchStudentDetailsDto.StudentId = user.Id;
                        // batchStudentDetailsDto.Address = user.Address;
                         batchStudentDetailsDto.Phone = user.Phone;
-                        batchStudentDetailsDto.Name = user.Firstname.Replace(" ", "") + ' ' + user.Lastname.Replace(" ", "");
+                        batchStudentDetailsDto.Name = user.FirstName.Replace(" ", "") + ' ' + user.LastName.Replace(" ", "");
                         batchStudentDetailsDto.Email = user.Email == null ? null : user.Email.ToLower();
                         try {
                             var media = _mediaFileRepository.GetImage(user.Id, MediaEntityType.Users);
@@ -360,8 +360,8 @@ namespace Core.Business.Sevices.Concrete {
                         var teacherdetails = await _userRepository.GetUser(row.TeacherId);
                         if (teacherdetails != null) {
                             teacher.Id = teacherdetails.Id;
-                            teacher.FirstName = teacherdetails.Firstname;
-                            teacher.LastName = teacherdetails.Lastname;
+                            teacher.FirstName = teacherdetails.FirstName;
+                            teacher.LastName = teacherdetails.LastName;
                             teacher.Phone = teacherdetails.Phone;
                             batch.TeacherInformation = teacher;
                         }

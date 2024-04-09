@@ -85,8 +85,8 @@ namespace Core.Business.Sevices.Concrete
                     try {
                         if (item.AddedFor > 0) {
                             var teacherInfo = await _userRepository.GetUser(item.AddedFor);
-                            review.AddedForFirstName = teacherInfo.Firstname;
-                            review.AddedForLastName = teacherInfo.Lastname;
+                            review.AddedForFirstName = teacherInfo.FirstName;
+                            review.AddedForLastName = teacherInfo.LastName;
                             review.AddedForUserId = teacherInfo.Id;
                         }
 
@@ -97,8 +97,8 @@ namespace Core.Business.Sevices.Concrete
                     try {
                         if (item.AddedBy > 0) {
                             var studentInfo = await _userRepository.GetUser(item.AddedBy);
-                            review.AddedByFirstName = studentInfo.Firstname;
-                            review.AddedByLastName = studentInfo.Lastname;
+                            review.AddedByFirstName = studentInfo.FirstName;
+                            review.AddedByLastName = studentInfo.LastName;
                             review.AddedByUserId = studentInfo.Id;
                         }
                     } catch (Exception) {
