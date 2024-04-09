@@ -10,58 +10,69 @@ using static Core.Business.Entities.DTOs.Enum;
 using Task = System.Threading.Tasks.Task;
 
 namespace Core.Business.Services.Concrete {
-    public class MediaFileService : IMediaFileService
-    {
-       
+    public class MediaFileService : IMediaFileService {
+
         private readonly IUserRepository _userRepository;
         private readonly BlobStorageService _blobStorageService = new BlobStorageService();
-      
+
         private readonly static string _blobContainerName = GlobalSettings.BlobContainerName;
         private readonly static string _blobStorageAccount = GlobalSettings.BlobStorageAccount;
         private readonly IMediaFileRepository _repository;
-        public MediaFileService(IUserRepository userRepository, IMediaFileRepository repository)
-        {
-        
+        public MediaFileService(IUserRepository userRepository, IMediaFileRepository repository) {
+
             _userRepository = userRepository;
             _repository = repository;
 
         }
 
-        public bool CreateMediaFile(MediaFileRequest requestMediaFile)
-        {
-            try
-            {
-                if (requestMediaFile == null || (int)requestMediaFile.EntityTypeId == 0 || requestMediaFile.EntityId == 0 || string.IsNullOrWhiteSpace(requestMediaFile.FileName) || string.IsNullOrWhiteSpace(requestMediaFile.Bloblink))
-                {
+        public bool CreateMediaFile(MediaFileRequest requestMediaFile) {
+            try {
+                if (requestMediaFile == null || (int)requestMediaFile.EntityTypeId == 0 || requestMediaFile.EntityId == 0 || string.IsNullOrWhiteSpace(requestMediaFile.FileName) || string.IsNullOrWhiteSpace(requestMediaFile.Bloblink)) {
                     return false;
                 }
 
-         
-                
-                    requestMediaFile.FileName = GenerateSuitableFilename(requestMediaFile.FileName);
-                    var response = GetMediaType(requestMediaFile.FileName);
-                    requestMediaFile.MediaTypeId = response;
-                    return _repository.InsertInMediaFile(requestMediaFile);
-                
+
+
+                requestMediaFile.FileName = GenerateSuitableFilename(requestMediaFile.FileName);
+                var response = GetMediaType(requestMediaFile.FileName);
+                requestMediaFile.MediaTypeId = response;
+                return _repository.UpsertMediaFile(requestMediaFile);
+
 
 
                 throw new Exception("required parameter");
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 throw new Exception(ex.Message);
             }
         }
 
 
-        public IEnumerable<MediaFile> GetMediaFile(int entityId, MediaEntityType mediaEntityType, MediaType type)
-        {
+        public IEnumerable<MediaFile> GetMediaFile(int entityId, MediaEntityType mediaEntityType, MediaType type) {
 
             var list = _repository.GetEntityMediaFile(entityId, mediaEntityType, type);
             return list;
 
         }
+        public ActionMessageResponse DeleteMediaFileV2(string blobLink, int entityId, int EnitityTypeId) {
+            bool isResponse = false;
+            try {
 
+                isResponse = _repository.DeleteMediaFileV2(entityId, EnitityTypeId, blobLink);
+
+                if (isResponse) {
+                    var isFileDeleted = _blobStorageService.DeleteFileToBlobAsync(blobLink);
+                }
+                else {
+                    return new ActionMessageResponse { Content = "", Message = "DeletedFailed", Success = true };
+                }
+                return new ActionMessageResponse { Content = isResponse, Message = "Delete_Successfully", Success = true };
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+   
+        
         public ActionMessageResponse DeleteMediaFile(List<DeleteMediaFileRequest> deleteMediaFileRequest)
         {
             bool isResponse = false;

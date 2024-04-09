@@ -66,32 +66,40 @@ namespace YoMentor.Api.Controllers
 
         [HttpPost]
         [Route("DeleteMediaFile")]
-   
-        public IActionResult DeleteMediaFile(object deleteMediaFileRequest)
-        {
+
+        public IActionResult DeleteMediaFile(object deleteMediaFileRequest) {
             List<DeleteMediaFileRequest> deleteMediaFileRequestList = new List<DeleteMediaFileRequest>();
-            if (deleteMediaFileRequest != null && deleteMediaFileRequest.GetType().Name.EqualsCI("JArray"))
-            {
-                deleteMediaFileRequestList = JsonConvert.DeserializeObject<List<DeleteMediaFileRequest>>(deleteMediaFileRequest.ToString());
-            }
-            else if (deleteMediaFileRequest != null && deleteMediaFileRequest.GetType().Name.EqualsCI("JObject"))
-            {
-                var deleteMediaFileRequestobject = JsonConvert.DeserializeObject<DeleteMediaFileRequest>(deleteMediaFileRequest.ToString());
-                if (deleteMediaFileRequestobject != null)
-                {
-                    deleteMediaFileRequestList.Add(deleteMediaFileRequestobject);
+
+            if (deleteMediaFileRequest != null) {
+                if (deleteMediaFileRequest is JArray) {
+                    deleteMediaFileRequestList = JsonConvert.DeserializeObject<List<DeleteMediaFileRequest>>(deleteMediaFileRequest.ToString());
+                }
+                else if (deleteMediaFileRequest is JObject) {
+                    var deleteMediaFileRequestobject = JsonConvert.DeserializeObject<DeleteMediaFileRequest>(deleteMediaFileRequest.ToString());
+                    if (deleteMediaFileRequestobject != null) {
+                        deleteMediaFileRequestList.Add(deleteMediaFileRequestobject);
+                    }
+                }
+                else if (deleteMediaFileRequest is string) {
+                    // Handle the case where deleteMediaFileRequest is a string
+                    var stringRequest = new DeleteMediaFileRequest { Bloblink = deleteMediaFileRequest.ToString() }; // Assuming DeleteMediaFileRequest has a property for string data
+                    deleteMediaFileRequestList.Add(stringRequest);
+                }
+                else {
+                    // Handle any other unexpected types of deleteMediaFileRequest
+                    return JsonExt("Invalid request format: unsupported object type.");
                 }
             }
-            try
-            {
+
+            try {
                 var response = _mediaFileService.DeleteMediaFile(deleteMediaFileRequestList);
                 return JsonExt(response);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return JsonExt(ex.Message);
             }
         }
+
+        /// <summary>
         [HttpPost]
         [Route("Blob/UploadFile")]
     
@@ -131,7 +139,23 @@ namespace YoMentor.Api.Controllers
                 }
             } catch (Exception ex) {
                 return JsonExt(new { data = (string)null, message = ex.ExtractInnerException() });
+          
             }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="blobLink"></param>
+        /// <param name="entityId"></param>
+        /// <param name="entityTypeId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("DeleteMediaFileV2")]
+
+        public IActionResult DeleteMediaFile(string blobLink, int entityId,int entityTypeId) {
+        var response=_mediaFileService.DeleteMediaFileV2(blobLink, entityId, entityTypeId); 
+            return JsonExt(response);   
+            
         }
     }
 }
