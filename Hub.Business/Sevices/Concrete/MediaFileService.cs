@@ -41,7 +41,7 @@ namespace Core.Business.Services.Concrete {
                     requestMediaFile.FileName = GenerateSuitableFilename(requestMediaFile.FileName);
                     var response = GetMediaType(requestMediaFile.FileName);
                     requestMediaFile.MediaTypeId = response;
-                    return _repository.InsertInMediaFile(requestMediaFile);
+                    return _repository.UpsertMediaFile(requestMediaFile);
                 
 
 
