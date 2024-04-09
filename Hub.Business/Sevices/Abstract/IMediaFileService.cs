@@ -17,5 +17,6 @@ namespace Core.Business.Services.Abstract {
         MediaType GetMediaType(string filename);
         string UploadDocumentV2(List<FileRequest> files, int objectId, MediaEntityType mediaEntityType, int brandId,MediaType mediaType = MediaType.Image);
         bool DeleteFile(string fileName);
+        ActionMessageResponse DeleteMediaFileV2(string blobLink, int entityId, int EnitityTypeId);
     }
 }

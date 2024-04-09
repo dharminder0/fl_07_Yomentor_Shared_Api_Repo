@@ -11,7 +11,7 @@ namespace Core.Data.Repositories.Abstract {
         bool UpsertMediaFile(MediaFileRequest requestMediaFile);
         bool DeleteMediaFile(int entityId, int entityTypeId, string bloblink);
         public bool UpdateMediaImage(MediaFileRequest obj);
-
+        bool DeleteMediaFileV2(int entityId, int entityTypeId, string bloblink);
         bool DeleteMediaFIle(int entityId, int entityTypeId);
 
 

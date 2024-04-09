@@ -107,6 +107,11 @@ end
 
             return Execute(sql, new { entityId, entityTypeId, bloblink }) > 0;
         }
+        public bool DeleteMediaFileV2(int entityId, int entityTypeId, string bloblink) {
+            var sql = $@" DELETE FROM Media_File where  bloblink = @bloblink and entityId=@entityId and entityTypeId=@entityTypeId ";
+
+            return Execute(sql, new { entityId, entityTypeId, bloblink }) > 0;
+        }
 
         public bool UpdateMediaImage(MediaFileRequest obj) {
 

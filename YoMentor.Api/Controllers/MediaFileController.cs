@@ -139,7 +139,23 @@ namespace YoMentor.Api.Controllers
                 }
             } catch (Exception ex) {
                 return JsonExt(new { data = (string)null, message = ex.ExtractInnerException() });
+          
             }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="blobLink"></param>
+        /// <param name="entityId"></param>
+        /// <param name="entityTypeId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("DeleteMediaFileV2")]
+
+        public IActionResult DeleteMediaFile(string blobLink, int entityId,int entityTypeId) {
+        var response=_mediaFileService.DeleteMediaFileV2(blobLink, entityId, entityTypeId); 
+            return JsonExt(response);   
+            
         }
     }
 }
