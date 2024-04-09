@@ -15,7 +15,7 @@ namespace Core.Data.Repositories.Concrete {
         }
 
 
-        public IEnumerable<MediaFile> GetEntityMediaFile(int objectId, MediaEntityType entityTypeId,  MediaType mediaTypeid = MediaType.None) {
+        public IEnumerable<MediaFile> GetEntityMediaFile(int objectId, MediaEntityType entityTypeId,  MediaType mediaTypeid ) {
             var sql = $@"SELECT * FROM Media_File where EntityId = @objectId and  EntityTypeId = @entityTypeId";
         
             if (mediaTypeid != MediaType.None) {
