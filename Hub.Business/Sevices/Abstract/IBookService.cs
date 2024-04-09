@@ -12,7 +12,8 @@ namespace Core.Business.Sevices.Abstract {
         Task<ActionMessageResponse> UpsertBook(BookRequest book);
         Task<ActionMessageResponse> UpsertBookExchange(BookExchange book);
         Task<List<BooksResponse>> GetBooksList();
-        bool UpdateStatus(int id, int status);
+        bool UpdateStatus(int id, int status);   
+        Task<List<BookExchangeResponse>> GetBookExchangeList(BookExchangeRequest bookExchange);
 
 
     }

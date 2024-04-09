@@ -124,11 +124,31 @@ namespace Core.Data.Repositories.Concrete {
             return ExecuteScalar<bool>(sql,new { id, status }); 
 
         }
-        //public IEnumerable<BookExchange> GetBooks(BookExchangeRequest bookExchange) {
+        public async  Task<IEnumerable<BookExchange>> GetBooks(BookExchangeRequest bookExchange) {
 
-        //    var sq
+            var sql = @" select * from Book_Exchange where 1=1 ";
+            if(bookExchange.SenderId > 0) {
+                sql += " and senderid=@SenderId ";
+            }
+            if (bookExchange.ReceiverId > 0) {
+                sql += " and receiverid=@ReceiverId ";
+             }
+            if( bookExchange.StatusId.Any()) {
+                sql += " and status in @statusid";
 
-        //}
+            }
+            if (bookExchange.PageIndex > 0 && bookExchange.PageSize > 0) {
+                sql += @"
+            ORDER BY Id
+            OFFSET @PageSize * (@PageIndex - 1) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+            }
+            return await  QueryAsync<BookExchange>(sql, bookExchange); 
+
+        }
+        public string GetBookName(int id) {
+            var sql = @" select Title from books where id=@id ";
+            return QueryFirst<string>(sql,new { id }); 
+        }
 
     }
 }
