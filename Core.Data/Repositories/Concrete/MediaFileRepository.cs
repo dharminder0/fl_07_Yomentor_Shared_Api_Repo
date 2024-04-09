@@ -103,7 +103,7 @@ end
 
 
         public bool DeleteMediaFile(int entityId, int entityTypeId, string bloblink) {
-            var sql = $@" DELETE FROM Media_File where EntityId = @EntityId and  EntityTypeId = @EntityTypeId and bloblink = @bloblink ";
+            var sql = $@" DELETE FROM Media_File where  bloblink = @bloblink ";
 
             return Execute(sql, new { entityId, entityTypeId, bloblink }) > 0;
         }
