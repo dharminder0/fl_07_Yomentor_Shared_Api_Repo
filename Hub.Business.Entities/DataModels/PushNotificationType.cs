@@ -10,7 +10,7 @@ namespace Core.Business.Entites.DataModels {
         public string  Type { get; set; }
         public string  Title { get; set; }
         public string  Message { get; set; }
-        public int BrandId { get; set; }
+  
         public DateTime  CreatedDate { get; set; }
     }
 }

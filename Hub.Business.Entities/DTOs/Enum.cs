@@ -75,19 +75,28 @@ namespace Core.Business.Entities.DTOs
             Complete= 2
         }
         public enum BookExchangeStatus {
-            Pending = 1,
-            Requested = 2,
-            Accepted = 3,
-            Declined = 4,
-            Completed = 5,
-            Cancelled = 6,
-
+            Requested = 1,
+            Accepted = 2,
+            Declined = 3,
+            Delivered = 4,
+            Cancelled = 5
         }
+
         public enum BookActionType {
            IsRequested =1,
            IsCreated =2
 
     }
+        public enum NotificationStatus {
+            NotSent = 1,
+            Sent = 2
+        }
+        public enum Status {
+            Pending = 1,
+            Delivered = 2,
+            Failed = 3,
+            DeviceNotFound = 4,
+        }
 
     }
 }

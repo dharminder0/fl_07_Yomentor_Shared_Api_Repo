@@ -191,7 +191,7 @@ namespace Core.Data.Repositories.Concrete {
             if (book.UserId > 0 && book.ActionType==(int)BookActionType.IsRequested) {
                 sql += @"
             JOIN book_Exchange be ON b.id = be.bookId
-            WHERE be.status = 2 AND be.receiverid = @UserId
+            WHERE be.status = 1 AND be.receiverid = @UserId
         ";
                 parameters.Add("@UserId", book.UserId); 
             }
