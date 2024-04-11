@@ -97,6 +97,12 @@ namespace Core.Business.Entities.DTOs
             Failed = 3,
             DeviceNotFound = 4,
         }
+        public enum NotificationType {
+            student_enrolled=1,
+            enrollment_status_update=2,
+            assignment_assigned=3,
+            assessment_assigned=4
 
+        }
     }
 }

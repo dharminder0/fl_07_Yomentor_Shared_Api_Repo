@@ -1,6 +1,7 @@
 ﻿using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
+using Core.Business.Services.Abstract;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
@@ -16,7 +17,8 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IGradeRepository _gradeRepository;
         public  readonly  ISubjectRepository _subjectRepository; 
         private readonly IMediaFileRepository _mediaFileRepository;
-        public AssignmentsService(IAssignmentsRepository assignmentsRepo, IStudentAssignmentsRepository studentAssignmentsRepo, IBatchRepository batchRepository, IBatchStudentsRepository batchStudentsRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository) {
+        private readonly IUserService _userService;
+        public AssignmentsService(IAssignmentsRepository assignmentsRepo, IStudentAssignmentsRepository studentAssignmentsRepo, IBatchRepository batchRepository, IBatchStudentsRepository batchStudentsRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository, IUserService userService) {
             _assignmentsRepo = assignmentsRepo;
             _studentAssignmentsRepo = studentAssignmentsRepo;
             _batchRepository = batchRepository;
@@ -24,6 +26,7 @@ namespace Core.Business.Sevices.Concrete {
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
             _mediaFileRepository = mediaFileRepository;
+            _userService = userService;
         }
         public async Task<ActionMassegeResponse> InsertOrUpdateAssignmentsV2(AssignmentsRequest assignmentsRequest) {
             if (assignmentsRequest == null) {
@@ -158,6 +161,12 @@ namespace Core.Business.Sevices.Concrete {
             };
                
                  res = await _studentAssignmentsRepo.InsertStudentAssignment(student);
+                try {
+                    _userService.PushNotifications(Entities.DTOs.Enum.NotificationType.assignment_assigned, item.StudentId, request.AssignmentId);
+                } catch (Exception) {
+
+              
+                }
             }
 
             

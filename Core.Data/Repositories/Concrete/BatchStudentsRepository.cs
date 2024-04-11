@@ -75,5 +75,9 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select enrollmentstatus from batch_students where batchId=@batchId and studentId=@studentId ";
             return await QueryFirstAsync<BatchStudents>(sql, new { batchId, studentId });
         }
+        public  int GetTeacherId(int batchId) {
+            var sql = @" select teacherid from batch  where id=@batchId ";
+            return ExecuteScalar<int>(sql, new { batchId });    
+        }
     }
 }

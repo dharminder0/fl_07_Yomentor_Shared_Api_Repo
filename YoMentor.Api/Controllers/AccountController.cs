@@ -150,7 +150,37 @@ namespace Core.Web.API.Controllers {
 
             }
         }
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pazeSize"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/User/PushNotifications")]
+      
+        public IActionResult GetPushNotifications(int pazeSize, int pageIndex, int userid) {
+
+            var response = _userService.GetPushNotifications(pazeSize, pageIndex, userid);
+            return JsonExt(response);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/User/PushNotifications/Count")]
     
+        public IActionResult GetPushNotificationCount(int userId) {
+
+            var response = _userService.GetPushNotificationCount(userId);
+            return JsonExt(response);
+
+        }
+    }
+
 }
   

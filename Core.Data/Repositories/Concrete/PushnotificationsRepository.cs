@@ -51,5 +51,27 @@ select SCOPE_IDENTITY()
             return await ExecuteScalarAsync<bool>(sql, new { id, status });
 
         }
+        public PushNotificationType pushNotificationType(string type) {
+            var sql = @" select * from PushNotification_Type where type=@type ";
+            return QueryFirst<PushNotificationType>(sql, new { type });
+
+        }
+        public IEnumerable<PushNotifications> GetPushNotifications(int pazeSize, int pazeInedx, int userId) {
+            var sql = @" select * from Push_Notifications where userId=@userId  ";
+            if (pazeSize > 0 && pazeInedx > 0) {
+
+                sql += $@" ORDER BY id DESC
+                 OFFSET(@pazeSize * (@pazeInedx - 1)) ROWS FETCH NEXT @pazeSize ROWS ONLY; ";
+            }
+
+
+            return Query<PushNotifications>(sql, new { pazeSize, pazeInedx, userId });
+
+        }
+        public int GetPushNotificationsCount(int userId) {
+            var sql = @" select count(*) from Push_Notifications where userid=@userid  and IsRead=0  ";
+            return ExecuteScalar<int>(sql, new { userId });
+
+        }
     }
 }

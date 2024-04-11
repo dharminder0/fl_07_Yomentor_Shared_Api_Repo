@@ -14,6 +14,7 @@ namespace Core.Data.Repositories.Abstract
         Task<int> InsertBatchStudent(BatchStudents batchStudent);
         Task<bool> DeleteBatchStudents(int batchId, DateTime date);
         Task<BatchStudents> GetEnrollmentStatus(int batchId, int studentId);
+        int GetTeacherId(int batchId);
 
 
 

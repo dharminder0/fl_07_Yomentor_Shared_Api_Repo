@@ -12,5 +12,8 @@ namespace Core.Data.Repositories.Abstract {
         int AddPushNotifications(int NotificationTypeId, int UserId, string Notificationtitle, string NotificationMessage, DateTime NotificationDateTime, DateTime CreatedDate, int status, int notificationStatus, int EntityId, bool IsRead);
         Task<bool> UpdateStatus(int id, Status status, int notificationType);
         Task<bool> UpdateNotificationStatus(int id, NotificationStatus status);
+        PushNotificationType pushNotificationType(string type);
+        IEnumerable<PushNotifications> GetPushNotifications(int pazeSize, int pazeInedx, int userId);
+        int GetPushNotificationsCount(int userId);
     }
 }

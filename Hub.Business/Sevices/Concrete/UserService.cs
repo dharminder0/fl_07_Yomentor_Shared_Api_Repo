@@ -1,4 +1,6 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using Core.Business.Entites.DataModels;
+using Core.Business.Entites.RequestModels;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
@@ -27,17 +29,19 @@ namespace Core.Business.Services.Concrete {
         private readonly IGradeRepository _gradeRepository; 
         private readonly ISubjectRepository _subjectRepository; 
         private readonly IAddressRepository _addressRepository; 
+        private  readonly IPushnotificationsRepository _ushnotificationsRepository; 
         
 
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository, ITeacherSpecialityRepository teacherSpecialityRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IAddressRepository addressRepository) {
+        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository, ITeacherSpecialityRepository teacherSpecialityRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IAddressRepository addressRepository, IPushnotificationsRepository ushnotificationsRepository) {
             _userRepository = usersRepository;
             _reviewsRepository = reviewsRepository;
             _mediaFileRepository = mediaFileRepository;
             _teacherSpecialityRepository = teacherSpecialityRepository; 
             _gradeRepository = gradeRepository; 
             _subjectRepository = subjectRepository; 
-            _addressRepository = addressRepository; 
+            _addressRepository = addressRepository;
+            _ushnotificationsRepository = ushnotificationsRepository;   
 
 
         }
@@ -510,5 +514,53 @@ namespace Core.Business.Services.Concrete {
             int  id= await  _userRepository.UpsertTeacherProfile(teacherProfile);
             return new ActionMessageResponse { Success = true,Content=id };    
         }
+        public int  PushNotifications(NotificationType type, int userId, int Id) {
+            PushNotificationRequest pushNotifications = new PushNotificationRequest();
+            var notification = _ushnotificationsRepository.pushNotificationType(type.ToString());
+
+        
+            pushNotifications.NotificationMessage = notification.Message;
+            pushNotifications.Notificationtitle = notification.Title;
+            pushNotifications.NotificationTypeId = notification.Id;
+  
+            pushNotifications.NotificationDateTime = DateTime.UtcNow.AddMinutes(5);
+
+         int id=   _ushnotificationsRepository.AddPushNotifications((int)type, userId, pushNotifications.Notificationtitle, pushNotifications.NotificationMessage, pushNotifications.NotificationDateTime, DateTime.Now, (int)Status.Pending, (int)NotificationStatus.NotSent, Id, false);
+
+            return id;
+        }
+        public List<PushNotifications> GetPushNotifications(int pazeSize, int pazeInedx, int userId) {
+            var response = _ushnotificationsRepository.GetPushNotifications(pazeSize, pazeInedx, userId);
+            List<PushNotifications> app = new List<PushNotifications>();
+            foreach (var item in response) {
+
+                PushNotifications push = new PushNotifications();
+                push.Id = item.Id;
+                push.UserId = userId;
+                push.NotificationTypeId = item.NotificationTypeId;
+                push.Status = item.Status;
+                push.NotificationStatus = item.NotificationStatus;
+                push.NotificationTitle = item.NotificationTitle;
+                push.NotificationMessage = item.NotificationMessage;
+                push.CreatedDate = item.CreatedDate;
+                push.IsRead = item.IsRead;
+                push.EntityId = item.EntityId;
+                push.NotificationDateTime = item.NotificationDateTime;
+                push.NotificationTypeId = item.NotificationTypeId;
+              
+                app.Add(push);
+
+
+            }
+            return app;
+
+
+        }
+        public int GetPushNotificationCount(int userId) {
+            return _ushnotificationsRepository.GetPushNotificationsCount(userId);
+
+
+        }
+
     }
 }
