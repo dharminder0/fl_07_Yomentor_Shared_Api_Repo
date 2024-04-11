@@ -54,13 +54,15 @@ namespace Core.Business.Entities.DTOs
             None = 0,
             Assignment=1,
             Assessment=2,
-            Users=3
+            Users=3,
+            Book=4
         }
         public enum MediaType {
             None=0,
             Image=1,
             Video=2,
             Pdf=4,
+
 
         }
         public enum FavouriteEntityType {
@@ -73,12 +75,12 @@ namespace Core.Business.Entities.DTOs
             Complete=2
         }
         public enum BookExchangeStatus {
-            Pending,
-            Requested,
-            Accepted,
-            Declined,
-            Completed,
-            Cancelled,
+            Pending=1,
+            Requested=2,
+            Accepted=3,
+            Declined=4,
+            Completed=5,
+            Cancelled=6,
             
         }
 

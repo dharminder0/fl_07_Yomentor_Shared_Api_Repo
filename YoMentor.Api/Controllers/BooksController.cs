@@ -43,11 +43,11 @@ namespace YoMentor.Api.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("List")]
-        public async Task<IActionResult> GetBooks() {
-            var response = await bookService.GetBooksList();
+        [Route("BookInfo")]
+        public IActionResult GetBooks(int id) {
+            var response =  bookService.GetBooksList(id);
             return Ok(response);
-
+                 
         }
         /// <summary>
         /// /
@@ -62,10 +62,11 @@ namespace YoMentor.Api.Controllers {
             return JsonExt(response);
 
         }
+    
         [HttpPost]
-        [Route("BookExchnageList")]
-        public async Task<IActionResult> GetBookExchnageList(BookExchangeRequest bookExchange) {
-            var response = await  bookService.GetBookExchangeList(bookExchange);
+        [Route("BooKList")]
+        public async Task<IActionResult> GetBookList(BookRequestV2 bookExchange) {
+            var response = await bookService.GetBooks(bookExchange);
             return JsonExt(response);
 
         }

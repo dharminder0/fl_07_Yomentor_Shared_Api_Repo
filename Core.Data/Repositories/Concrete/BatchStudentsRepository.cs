@@ -7,7 +7,7 @@ namespace Core.Data.Repositories.Concrete {
     {
         public IEnumerable<BatchStudents> GetBatchStudentsbybatchId(int batchId)
         {
-            var sql = $@"SELECT * FROM batch_students WHERE batchId=@batchId";
+            var sql = $@"SELECT * FROM batch_students WHERE batchId=@batchId and IsDeleted=0";
             return Query<BatchStudents>(sql, new { batchId });
         }
         public async Task<bool> UpdateEnrollmentStatus(int status, int Id, int batchId) {

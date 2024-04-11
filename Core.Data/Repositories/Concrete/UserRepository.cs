@@ -157,6 +157,10 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select * from users where id=@Id";
             return await QueryFirstAsync<Users>(sql, new { Id });
         }
+        public Users GetUserInfo(int Id) {
+            var sql = @" select * from users where id=@Id";
+            return  QueryFirst<Users>(sql, new { Id });
+        }
 
         public async Task<IEnumerable<Users>> UserInfo(UserSearchRequest listRequest) {
             string sqlString = "";

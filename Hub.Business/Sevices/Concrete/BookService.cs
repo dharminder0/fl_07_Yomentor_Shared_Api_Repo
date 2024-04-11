@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using AutoMapper.Execution;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
@@ -13,48 +14,52 @@ using System.Threading.Tasks;
 using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Sevices.Concrete {
-    public class BookService: IBookService {
-        private readonly  IBookRepository _book;
+    public class BookService : IBookService {
+        private readonly IBookRepository _book;
         private readonly IAddressRepository _address;
-        private readonly IUserRepository _user; 
+        private readonly IUserRepository _user;
+        private readonly IGradeRepository _grade;
+        private readonly IMediaFileRepository _mediaFile;   
 
-        public BookService(IBookRepository book, IAddressRepository address, IUserRepository user)
-        {
-            _book = book;  
-            _address = address; 
-            _user=user;
-                
+        public BookService(IBookRepository book, IAddressRepository address, IUserRepository user, IGradeRepository grade, IMediaFileRepository mediaFile) {
+            _book = book;
+            _address = address;
+            _user = user;
+            _grade = grade;
+            _mediaFile = mediaFile;
+
         }
         public async Task<ActionMessageResponse> UpsertBook(BookRequest book) {
             int res = 0;
             if (book == null) { return new ActionMessageResponse { Success = false }; }
-            Books book1=new Books();  
+            Books book1 = new Books();
             book1.Id = book.Id;
             book1.Title = book.Title;
-            book1.ISBN = book.ISBN;    
-            book1.Author = book.Author;    
-            book1.UpdateDate = book.UpdateDate;    
-            book1.CreateDate = book.CreateDate;    
-            book1.IsDeleted = book.IsDeleted;  
-            book1.Genre = book.Genre;  
-            book1.Available = book.Available;  
-            book1.GradeId = book.GradeId;  
-            book1.UserId = book.UserId;        
-            book1.PublicationYear = book.PublicationYear;           
+            book1.ISBN = book.ISBN;
+            book1.Author = book.Author;
+            book1.UpdateDate = book.UpdateDate;
+            book1.CreateDate = book.CreateDate;
+            book1.IsDeleted = book.IsDeleted;
+            book1.Genre = book.Genre;
+            book1.Available = book.Available;
+            book1.GradeId = book.GradeId;
+            book1.UserId = book.UserId;
+            book1.PublicationYear = book.PublicationYear;
+            book1.Remark = book.Remark; 
 
             if (book.Id == 0) {
-               res= await  _book.InsertBook(book1);
-                return new ActionMessageResponse { Success = true,Content=res,Message=" Insertion_Successfully" };
+                res = await _book.InsertBook(book1);
+                return new ActionMessageResponse { Success = true, Content = res, Message = " Insertion_Successfully" };
 
             }
-          res=  await   _book.UpdateBook(book1);
+            res = await _book.UpdateBook(book1);
             return new ActionMessageResponse { Success = true, Content = res, Message = " Update_Successfully" };
         }
         public async Task<ActionMessageResponse> UpsertBookExchange(BookExchange book) {
             int res = 0;
             if (book == null) { return new ActionMessageResponse { Success = false }; }
-         
-          
+
+
 
             if (book.Id == 0) {
                 res = await _book.InsertBookExchange(book);
@@ -64,54 +69,90 @@ namespace Core.Business.Sevices.Concrete {
             res = await _book.UpdateBookExchange(book);
             return new ActionMessageResponse { Success = true, Content = res, Message = " Update_Successfully" };
         }
-        public async Task<List<BooksResponse>> GetBooksList() {
-         
-         var bookInfo=  await  _book.GetBooksList();
-            List <BooksResponse> books = new List<BooksResponse>();  
-            foreach (var item in bookInfo) {
-                BooksResponse res = new BooksResponse();
-                res.Title = item.Title; 
-                res.ISBN = item.ISBN;   
-                res.UpdateDate = item.UpdateDate;   
-                res.CreateDate = item.CreateDate;   
-                res.IsDeleted = item.IsDeleted; 
-                res.Available = item.Available; 
-                res.Genre = item.Genre; 
-                res.Author = item.Author;   
-                res.Id = item.Id;   
-                res.UserId = item.UserId;   
-                res.PublicationYear = item.PublicationYear; 
-                res.GradeId = item.GradeId; 
-                res.ImageUrl = item.ImageUrl;
-                var addressInfo = _address.GetUserAddress(item.UserId);
-                if (addressInfo != null) {
-                    Address address = new Address();
-                    address.Address1 = addressInfo.Address1;
-                    address.Address2 = addressInfo.Address2;
-                    address.UserId = addressInfo.UserId;
-                    address.StateId = addressInfo.StateId;
-                    address.Latitude = addressInfo.Latitude;
-                    address.Longitude = addressInfo.Longitude;
-                    address.City = addressInfo.City;
-                    address.IsDeleted = addressInfo.IsDeleted;
-                    address.Id = addressInfo.Id;
-                    address.Pincode = addressInfo.Pincode;
-                    address.UpdateDate = addressInfo.UpdateDate;
-                    try {
-                        var stateName = _address.GetState(address.StateId);
-                        address.StateName = stateName.Name;
+        public BooksResponse GetBooksList(int bookId) {
 
-                    } catch (Exception) {
+            var item = _book.GetBooksList(bookId);
 
 
-                    }
-                    res.UserAddress = address;
-
+            BooksResponse res = new BooksResponse();
+            res.Title = item.Title;
+            res.ISBN = item.ISBN;
+            res.UpdateDate = item.UpdateDate;
+            res.CreateDate = item.CreateDate;
+            res.IsDeleted = item.IsDeleted;
+            res.Available = item.Available;
+            res.Genre = item.Genre;
+            res.Author = item.Author;
+            res.Id = item.Id;
+            res.UserId = item.UserId;
+            res.PublicationYear = item.PublicationYear;
+            res.GradeId = item.GradeId;
+            try {
+                var Image = _mediaFile.GetImage(item.Id, MediaEntityType.Book);
+                if (Image != null) {
+                    res.ImageUrl = Image.BlobLink;
                 }
-                books.Add(res);
+
+            } catch (Exception) {
+
+         
             }
-        return books;   
+
+            int stusId = _book.GetStatusName(item.UserId, item.Id);
+            if (stusId > 0) {
+                res.Status = stusId;
+            }
+            string status = Enum.GetName(typeof(BookExchangeStatus), res.Status);
+            if (!string.IsNullOrEmpty(status)) {
+                res.StatusName = status;
+            }
+            res.Remark= item.Remark;    
+
+            var userInfo = _user.GetUserInfo(item.UserId);
+            if (userInfo == null) { return null; }
+
+
+            var user = new UserBasic {
+                FirstName = userInfo.FirstName,
+                LastName = userInfo.LastName,
+                Email = userInfo.Email,
+                Phone = userInfo.Phone
+            };
+
+            var addressInfo = _address.GetUserAddress(item.UserId);
+            if (addressInfo != null) {
+                var address = new Address {
+                    Address1 = addressInfo.Address1,
+                    Address2 = addressInfo.Address2,
+                    UserId = addressInfo.UserId,
+                    StateId = addressInfo.StateId,
+                    Latitude = addressInfo.Latitude,
+                    Longitude = addressInfo.Longitude,
+                    City = addressInfo.City,
+                    IsDeleted = addressInfo.IsDeleted,
+                    Id = addressInfo.Id,
+                    Pincode = addressInfo.Pincode,
+                    UpdateDate = addressInfo.UpdateDate
+
+                };
+                var stateName = _address.GetState(address.StateId);
+                if (stateName != null) {
+                    address.StateName = stateName.Name;
+                }
+                user.UserAddress = address;
+
+
+            
+            }
+            res.UserInfo = user;
+            return res;
         }
+            
+            
+
+        
+       
+
         public bool UpdateStatus(int id, int status) {
             return _book.UpdateStatus(id, status);  
         }
@@ -177,7 +218,48 @@ namespace Core.Business.Sevices.Concrete {
 
             obj.UserInfo = user;
         }
+        public async Task< List<BookResponseV2>> GetBooks(BookRequestV2 book) {
+            List<BookResponseV2> res = new List<BookResponseV2>();
+            var rws = await  _book.GetBookList(book);
+            foreach (var item in rws) {
+                BookResponseV2 obj=new BookResponseV2();
+                obj.UserId = item.UserId;
+                obj.Author = item.Author; 
+                obj.Title = item.Title; 
+                obj.Id=item.Id;
+                obj.PublicationYear=item.PublicationYear;
+                obj.GradeId = item.GradeId;
+                if (!book.IsRequested) {
+                    int stusId = _book.GetStatusName(item.UserId, obj.Id);
+                    if (stusId > 0) {
+                        obj.Status = stusId;
+                    }
+                }
+                else {
+                    obj.Status = item.Status;
+                }
+                string grade= _grade.GetGradeName(item.GradeId);
+                if (!string.IsNullOrEmpty(grade)) {
+                    obj.GradeName = grade;  
+                }
+                try {
+                   var Image= _mediaFile.GetImage(item.Id, MediaEntityType.Book);
+                    if (Image != null) {
+                        obj.ImageUrl = Image.BlobLink;
+                    }
 
+                } catch (Exception) {
+
+                   
+                }
+                string status = Enum.GetName(typeof(BookExchangeStatus), obj.Status);
+                if(!string.IsNullOrEmpty(status)) {
+                    obj.StatusName = status;
+                }
+                res.Add(obj);
+            }
+         return res;    
+        }
 
     }
 }

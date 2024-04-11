@@ -77,12 +77,12 @@ namespace Core.Data.Repositories.Concrete
         }
         public IEnumerable<Batch> GetBatchDetailsbybatchId(int batchId)
         {
-            var sql = $"Select * from dbo.Batch where Id=@batchId and isdeleted=0";
+            var sql = $"Select * from dbo.Batch where Id=@batchId and isdeleted=0 and isdeleted=0";
             return Query<Batch>(sql, new { batchId });
         }
         public IEnumerable<string> GetBatchNamebybatchId(int batchId)
         {
-            var sql = $"Select name  from dbo.Batch where Id=@batchId";
+            var sql = $"Select name  from dbo.Batch where Id=@batchId and isdeleted=0";
             var res= Query<string>(sql,new { batchId });
             return res;
         }

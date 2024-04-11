@@ -89,6 +89,20 @@ namespace Core.Business.Services.Concrete {
                     var salt = Hasher.GenerateSalt();
                     var hashedPassword = Hasher.HashPassword(salt, obj.Password);
                     userId = _userRepository.InsertUser(obj, hashedPassword, salt);
+                try {
+                    if(obj.Type== (int)UserType.Teacher) {
+                        TeacherProfile tch = new TeacherProfile();
+                      
+                        tch.TeacherId = userId;
+                      
+
+
+                        await _userRepository.UpsertTeacherProfile(tch);
+                    }
+                } catch (Exception) {
+
+                   
+                }
                     return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
                 
             }
