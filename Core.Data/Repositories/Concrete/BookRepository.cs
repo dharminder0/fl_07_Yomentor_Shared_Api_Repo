@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Data.Repositories.Concrete {
     public class BookRepository : DataRepository<Books>,IBookRepository {
@@ -178,7 +179,7 @@ namespace Core.Data.Repositories.Concrete {
             var status = "";
             var parameters = new DynamicParameters();
 
-            if (book.IsRequested) {
+            if (book.ActionType==(int) BookActionType.IsRequested) {
                 status = ",be.status";
             }
 
@@ -187,7 +188,7 @@ namespace Core.Data.Repositories.Concrete {
         FROM books b
     ";
 
-            if (book.UserId > 0 && book.IsRequested) {
+            if (book.UserId > 0 && book.ActionType==(int)BookActionType.IsRequested) {
                 sql += @"
             JOIN book_Exchange be ON b.id = be.bookId
             WHERE be.status = 2 AND be.receiverid = @UserId
@@ -200,7 +201,7 @@ namespace Core.Data.Repositories.Concrete {
         ";
             }
 
-            if (book.UserId > 0 && book.IsCreated) {
+            if (book.UserId > 0 && book.ActionType == (int)BookActionType.IsCreated) {
                 sql += @" AND b.userid = @UserId ";
                 parameters.Add("@UserId", book.UserId); 
             }

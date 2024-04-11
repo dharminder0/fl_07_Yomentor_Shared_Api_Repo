@@ -229,7 +229,7 @@ namespace Core.Business.Sevices.Concrete {
                 obj.Id=item.Id;
                 obj.PublicationYear=item.PublicationYear;
                 obj.GradeId = item.GradeId;
-                if (!book.IsRequested) {
+                if (book.ActionType !=(int)BookActionType.IsRequested) {
                     int stusId = _book.GetStatusName(item.UserId, obj.Id);
                     if (stusId > 0) {
                         obj.Status = stusId;
