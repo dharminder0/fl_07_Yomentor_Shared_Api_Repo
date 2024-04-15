@@ -249,10 +249,5 @@ namespace Core.Data.Repositories.Concrete {
             return ExecuteScalar<bool>(sql, new { id });
 
         }
-
-
-
-
-
     }
 }
