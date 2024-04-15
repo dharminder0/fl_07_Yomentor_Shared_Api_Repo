@@ -3,6 +3,7 @@ using Core.Business.Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,9 @@ namespace Core.Business.Entities.ResponseModels {
         public int  Status { get; set; }
         public string  StatusName { get; set; }
         public string  Remark { get; set; }
+        public int SubjectId { get; set; }
+        public string SubjectName { get; set; }
+        public string  GradeName { get; set; }
     }
     public class BookResponseV2 {
         public int Id { get; set; }
@@ -40,6 +44,8 @@ namespace Core.Business.Entities.ResponseModels {
         public string StatusName { get; set; }
         public string  ImageUrl { get; set; }
         public DateTime CreateDate { get; set; }
+        public int SubjectId { get; set; }
+        public string  SubjectName { get; set; }
 
 
     }

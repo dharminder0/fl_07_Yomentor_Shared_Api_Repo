@@ -20,5 +20,6 @@ namespace Core.Business.Entities.RequestModels {
         public DateTime  CreateDate { get; set; }
         public DateTime  UpdateDate { get; set; }
         public bool  IsDeleted { get; set; } = false;
+        public int SubjectId { get; set; }
     }
 }

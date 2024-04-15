@@ -29,7 +29,8 @@ namespace Core.Data.Repositories.Concrete {
             CreateDate,
             UpdateDate,
             Remark,
-            IsDeleted
+            IsDeleted,
+            SubjectId 
         )
         VALUES
         (
@@ -45,6 +46,8 @@ namespace Core.Data.Repositories.Concrete {
             GetUtcDate(),
             @Remark,
             @IsDeleted
+            ,@SubjectId
+            
         );
 
         SELECT SCOPE_IDENTITY();
@@ -67,7 +70,8 @@ namespace Core.Data.Repositories.Concrete {
             UserId = @UserId,
             UpdateDate = GetUtcDate(),
             Remark=@Remark,
-            IsDeleted = @IsDeleted
+            IsDeleted = @IsDeleted,
+            SubjectId=@SubjectId
         WHERE
             Id = @Id;
 

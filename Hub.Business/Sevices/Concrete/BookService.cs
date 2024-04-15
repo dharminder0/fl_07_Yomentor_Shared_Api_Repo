@@ -19,15 +19,16 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IAddressRepository _address;
         private readonly IUserRepository _user;
         private readonly IGradeRepository _grade;
-        private readonly IMediaFileRepository _mediaFile;   
+        private readonly IMediaFileRepository _mediaFile;  
+        private readonly ISubjectRepository _subject;   
 
-        public BookService(IBookRepository book, IAddressRepository address, IUserRepository user, IGradeRepository grade, IMediaFileRepository mediaFile) {
+        public BookService(IBookRepository book, IAddressRepository address, IUserRepository user, IGradeRepository grade, IMediaFileRepository mediaFile, ISubjectRepository subject) {
             _book = book;
             _address = address;
             _user = user;
             _grade = grade;
             _mediaFile = mediaFile;
-
+            _subject = subject;
         }
         public async Task<ActionMessageResponse> UpsertBook(BookRequest book) {
             int res = 0;
@@ -46,6 +47,7 @@ namespace Core.Business.Sevices.Concrete {
             book1.UserId = book.UserId;
             book1.PublicationYear = book.PublicationYear;
             book1.Remark = book.Remark; 
+            book1.SubjectId= book.SubjectId;    
 
             if (book.Id == 0) {
                 res = await _book.InsertBook(book1);
@@ -87,6 +89,15 @@ namespace Core.Business.Sevices.Concrete {
             res.UserId = item.UserId;
             res.PublicationYear = item.PublicationYear;
             res.GradeId = item.GradeId;
+            res.SubjectId = item.SubjectId;
+           string subjectname= _subject.GetSubjectName(res.SubjectId);
+            if (!string.IsNullOrEmpty(subjectname)) { 
+                res.SubjectName = subjectname;  
+            }
+            string gradeName=_grade.GetGradeName(res.GradeId);
+            if(string.IsNullOrEmpty(gradeName)) {
+                res.GradeName = gradeName;
+                    }
             try {
                 var Image = _mediaFile.GetImage(item.Id, MediaEntityType.Book);
                 if (Image != null) {
@@ -229,7 +240,12 @@ namespace Core.Business.Sevices.Concrete {
                 obj.Id=item.Id;
                 obj.PublicationYear=item.PublicationYear;
                 obj.GradeId = item.GradeId;
-                obj.CreateDate = item.CreateDate;   
+                obj.CreateDate = item.CreateDate; 
+                obj.SubjectId=item.SubjectId;
+               string subjectName= _subject.GetSubjectName(obj.SubjectId);
+                if (!string.IsNullOrEmpty(subjectName)) {
+                    obj.SubjectName = subjectName;  
+                }
                 if (book.ActionType !=(int)BookActionType.IsRequested) {
                     int stusId = _book.GetStatusName(item.UserId, obj.Id);
                     if (stusId > 0) {

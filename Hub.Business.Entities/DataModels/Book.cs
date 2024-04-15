@@ -26,6 +26,7 @@ namespace Core.Business.Entities.DataModels {
         public bool IsDeleted { get; set; }=false;
         public string  Status { get; set; }
         public string  Remark { get; set; }
+        public int SubjectId { get; set; }
 
     }
 }
