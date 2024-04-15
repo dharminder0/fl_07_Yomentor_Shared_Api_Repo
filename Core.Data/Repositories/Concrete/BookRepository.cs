@@ -198,7 +198,12 @@ namespace Core.Data.Repositories.Concrete {
             else {
                 sql += @"
             WHERE 1=1
+            
         ";
+                if (book.ActionType == 0) {
+                    sql += @" and UserId not in(select UserId from books where UserId=@UserId) ";
+                    parameters.Add("@UserId", book.UserId);
+                }
             }
 
             if (book.UserId > 0 && book.ActionType == (int)BookActionType.IsCreated) {
