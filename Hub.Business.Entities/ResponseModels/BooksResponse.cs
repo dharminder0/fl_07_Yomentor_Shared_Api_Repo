@@ -39,6 +39,7 @@ namespace Core.Business.Entities.ResponseModels {
         public int Status { get; set; }
         public string StatusName { get; set; }
         public string  ImageUrl { get; set; }
+        public DateTime CreateDate { get; set; }
 
 
     }
