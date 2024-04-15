@@ -20,5 +20,6 @@ namespace Core.Data.Repositories.Abstract {
         string GetBookName(int id);
         Task<IEnumerable<BookResponseV2>> GetBookList(BookRequestV2 book);
         int  GetStatusName(int id,int bookId);
+        bool UpdateBookStatus(int id);
     }
 }

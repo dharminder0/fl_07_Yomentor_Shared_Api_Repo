@@ -277,6 +277,8 @@ namespace Core.Business.Sevices.Concrete {
             }
          return res;    
         }
-
+        public bool UpdateBookStatus(int id) {
+            return _book.UpdateBookStatus(id);
+        }
     }
 }

@@ -244,6 +244,11 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select status  from book_exchange where senderId=@id and bookid=@bookId ";
             return QueryFirst<int >(sql,  new { id ,bookId}); 
         }
+        public bool UpdateBookStatus(int id) {
+            var sql = @" update book set available= 0  where id=@id";
+            return ExecuteScalar<bool>(sql, new { id });
+
+        }
 
 
 
