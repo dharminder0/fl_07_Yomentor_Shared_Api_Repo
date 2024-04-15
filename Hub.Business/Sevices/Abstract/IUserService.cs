@@ -1,4 +1,5 @@
 ﻿using Core.Business.Entites.DataModels;
+using Core.Business.Entites.RequestModels;
 using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
 using Core.Business.Entities.RequestModels;
@@ -21,6 +22,9 @@ namespace Core.Business.Services.Abstract {
         int PushNotifications(NotificationType type, int userId, int Id);
         List<PushNotifications> GetPushNotifications(int pazeSize, int pazeInedx, int userId);
         int GetPushNotificationCount(int userId);
+        ActionMessageResponse RemoveUsers(string deviceToekn);
+        ActionMessageResponse AddUserDevices(UserDevicesRequest deviceRefRequest);
+         Task<bool> GetPushNotification();
 
 
 

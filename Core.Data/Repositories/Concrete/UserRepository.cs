@@ -1,8 +1,10 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using Core.Business.Entites.DataModels;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using Microsoft.Owin.BuilderProperties;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Data.Repositories.Concrete {
     public class UserRepository : DataRepository<Users>, IUserRepository {
@@ -411,8 +413,68 @@ u.id
                 Id=ob.Id    
             });
         }
-      
 
+        public int AddUserDevices(int userId, string deviceToken, DateTime CreatedDate) {
+            var sql = @"
+if not Exists(Select 1 from User_Devices where UserId =@UserId  and deviceToken=@deviceToken)
+begin
+INSERT INTO UserDevices(UserId,deviceToken,CreatedDate)
+      VALUES(@UserId,@deviceToken,getutcdate())
+ select SCOPE_IDENTITY()
+end
+else
+begin
+select -2 
+end 
+";
+            return ExecuteScalar<int>(sql, new {
+                userId = userId,
+                deviceToken = deviceToken,
+                CreatedDate = CreatedDate,
+
+
+            });
+        }
+        public bool RemoveDevices(string deviceToken) {
+            var sql = @"delete from User_Devices where deviceToken =@deviceToken  ";
+            return ExecuteScalar<bool>(sql, new { deviceToken });
+        }
+
+        public async Task<UserDevices> GetUserDevices(int userId) {
+            var sql = @"select * from User_Devices where userId=@userId ";
+            return await QueryFirstAsync<UserDevices>(sql, new { userId });
+
+
+        }
+        public async Task<IEnumerable<UserDevices>> GetUserDevicesV2(int userId) {
+            var sql = @"select * from User_Devices where userId=@userId ";
+            return await QueryAsync<UserDevices>(sql, new { userId });
+
+
+        }
+        public async Task<bool> UpdateStatus(int id, Status status, int notificationType) {
+
+            var sql = @" Update Push_Notifications set status=@status  where Id=@id ";
+            return await ExecuteScalarAsync<bool>(sql, new { id, status, notificationType });
+
+        }
+        public async Task<bool> UpdateNotificationStatus(int id, NotificationStatus status) {
+
+            var sql = @" Update Push_Notifications set Notification_Status=@status where Id=@id ";
+            return await ExecuteScalarAsync<bool>(sql, new { id, status });
+
+        }
+        public async Task<IEnumerable<PushNotifications>> GetPushNotifications() {
+
+            var sql = @" SELECT top 50 *
+            FROM Push_Notifications
+        ";
+
+            return await QueryAsync<PushNotifications>(sql);
+
+
+
+        }
     }
 }
 
