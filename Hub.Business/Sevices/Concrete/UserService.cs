@@ -9,6 +9,8 @@ using Core.Common.Account;
 using Core.Common.Web;
 using Core.Data.Repositories.Abstract;
 using Core.Data.Repositories.Concrete;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
 using Hub.Common.Settings;
 using RLV.Security.Lib;
 using System.Collections.Generic;
@@ -561,6 +563,76 @@ namespace Core.Business.Services.Concrete {
 
 
         }
+        public ActionMessageResponse RemoveUsers(string deviceToekn) {
 
+            var res = _userRepository.RemoveDevices(deviceToekn);
+            return new ActionMessageResponse { Success = true, Message = "successfully deleted" };
+
+        }
+        public ActionMessageResponse AddUserDevices(UserDevicesRequest deviceRefRequest) {
+
+            try {
+
+                //   _userRepository.RemoveDevices(deviceRefRequest.DeviceToken.ToString());
+                if (deviceRefRequest != null && deviceRefRequest.UserId.Any())
+                    foreach (var item in deviceRefRequest.UserId) {
+
+                        _userRepository.AddUserDevices(item, deviceRefRequest.DeviceToken, deviceRefRequest.CreatedDate);
+
+                    }
+                return new ActionMessageResponse { Message = "Assigned successfully ", Success = true, Content = true };
+
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<bool> GetPushNotification() {
+            PushNotifications pushNotifications = new PushNotifications();
+            var response = await _userRepository.GetPushNotifications();
+
+            foreach (var notification in response) {
+                try {
+                    var deviceDetailsList = await _userRepository.GetUserDevicesV2(notification.UserId);
+                    if (deviceDetailsList != null && deviceDetailsList.Any()) {
+                        foreach (var deviceDetails in deviceDetailsList) {
+                            try {
+                                if (!string.IsNullOrWhiteSpace(deviceDetails.DeviceToken)) {
+                                    await SendPushNotificationAsync(deviceDetails.DeviceToken, notification.NotificationTitle, notification.NotificationMessage);
+                                    await _userRepository.UpdateStatus(notification.Id, Status.Delivered, notification.NotificationTypeId);
+                                    await _userRepository.UpdateNotificationStatus(notification.Id, NotificationStatus.Sent);
+                                }
+                            } catch (Exception ex) {
+                                await _userRepository.UpdateStatus(notification.Id, Status.Failed, 0);
+                            }
+                        }
+                    }
+                    else {
+                        await _userRepository.UpdateStatus(notification.Id, Status.DeviceNotFound, 0);
+                    }
+                } catch (Exception) {
+                    await _userRepository.UpdateStatus(notification.Id, Status.Failed, 0);
+                }
+            }
+            return true;
+        }
+        public async Task SendPushNotificationAsync(string registrationToken, string title, string body) {
+            try {
+                var message = new Message {
+                    Token = registrationToken,
+                    Notification = new Notification {
+                        Title = title,
+                        Body = body
+                    }
+                };
+
+                var messaging = FirebaseMessaging.DefaultInstance;
+
+
+                await messaging.SendAsync(message);
+            } catch (FirebaseException ex) {
+
+                throw;
+            }
+        }
     }
 }

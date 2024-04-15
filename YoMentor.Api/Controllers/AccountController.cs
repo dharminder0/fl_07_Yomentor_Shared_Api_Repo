@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.RequestModels;
+﻿using Core.Business.Entites.RequestModels;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Services.Abstract;
 using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
@@ -177,6 +178,34 @@ namespace Core.Web.API.Controllers {
         public IActionResult GetPushNotificationCount(int userId) {
 
             var response = _userService.GetPushNotificationCount(userId);
+            return JsonExt(response);
+
+        }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="UserRefRequest"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AddUserDevices")]
+        [RequireAuthorization]
+        public IActionResult AddUserDevices(UserDevicesRequest UserRefRequest) {
+
+            var response = _userService.AddUserDevices(UserRefRequest);
+            return JsonExt(response);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userToken"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("RemoveUserDevices")]
+        [RequireAuthorization]
+        public IActionResult AddUserDevices(string userToken) {
+
+            var response = _userService.RemoveUsers(userToken);
             return JsonExt(response);
 
         }
