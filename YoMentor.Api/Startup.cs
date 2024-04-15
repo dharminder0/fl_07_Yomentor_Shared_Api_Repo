@@ -120,6 +120,7 @@ namespace Hub.Web.Api {
             });
 
             services.AddCors(options => {
+
                 options.AddPolicy("AllowedOrigins",
                         builder => {
                             builder.AllowAnyMethod().AllowAnyHeader();
