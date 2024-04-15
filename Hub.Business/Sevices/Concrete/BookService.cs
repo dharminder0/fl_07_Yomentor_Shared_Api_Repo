@@ -95,7 +95,7 @@ namespace Core.Business.Sevices.Concrete {
                 res.SubjectName = subjectname;  
             }
             string gradeName=_grade.GetGradeName(res.GradeId);
-            if(string.IsNullOrEmpty(gradeName)) {
+            if(!string.IsNullOrEmpty(gradeName)) {
                 res.GradeName = gradeName;
                     }
             try {
@@ -120,42 +120,44 @@ namespace Core.Business.Sevices.Concrete {
             res.Remark= item.Remark;    
 
             var userInfo = _user.GetUserInfo(item.UserId);
-            if (userInfo == null) { return null; }
+            if (userInfo != null) {
 
 
-            var user = new UserBasic {
-                FirstName = userInfo.FirstName,
-                LastName = userInfo.LastName,
-                Email = userInfo.Email,
-                Phone = userInfo.Phone
-            };
-
-            var addressInfo = _address.GetUserAddress(item.UserId);
-            if (addressInfo != null) {
-                var address = new Address {
-                    Address1 = addressInfo.Address1,
-                    Address2 = addressInfo.Address2,
-                    UserId = addressInfo.UserId,
-                    StateId = addressInfo.StateId,
-                    Latitude = addressInfo.Latitude,
-                    Longitude = addressInfo.Longitude,
-                    City = addressInfo.City,
-                    IsDeleted = addressInfo.IsDeleted,
-                    Id = addressInfo.Id,
-                    Pincode = addressInfo.Pincode,
-                    UpdateDate = addressInfo.UpdateDate
-
+                var user = new UserBasic {
+                    FirstName = userInfo.FirstName,
+                    LastName = userInfo.LastName,
+                    Email = userInfo.Email,
+                    Phone = userInfo.Phone
                 };
-                var stateName = _address.GetState(address.StateId);
-                if (stateName != null) {
-                    address.StateName = stateName.Name;
-                }
-                user.UserAddress = address;
-
 
             
+            var addressInfo = _address.GetUserAddress(item.UserId);
+                if (addressInfo != null) {
+                    var address = new Address {
+                        Address1 = addressInfo.Address1,
+                        Address2 = addressInfo.Address2,
+                        UserId = addressInfo.UserId,
+                        StateId = addressInfo.StateId,
+                        Latitude = addressInfo.Latitude,
+                        Longitude = addressInfo.Longitude,
+                        City = addressInfo.City,
+                        IsDeleted = addressInfo.IsDeleted,
+                        Id = addressInfo.Id,
+                        Pincode = addressInfo.Pincode,
+                        UpdateDate = addressInfo.UpdateDate
+
+                    };
+                    var stateName = _address.GetState(address.StateId);
+                    if (stateName != null) {
+                        address.StateName = stateName.Name;
+                    }
+                    user.UserAddress = address;
+
+
+                }
+                res.UserInfo = user;
             }
-            res.UserInfo = user;
+           
             return res;
         }
             
