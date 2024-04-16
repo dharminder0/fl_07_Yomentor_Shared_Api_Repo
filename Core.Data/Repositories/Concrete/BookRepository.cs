@@ -209,6 +209,7 @@ namespace Core.Data.Repositories.Concrete {
                     parameters.Add("@UserId", book.UserId);
                 }
             }
+            sql += " and b.available= 1 and b.isdeleted= 0 ";
 
             if (book.UserId > 0 && book.ActionType == (int)BookActionType.IsCreated) {
                 sql += @" AND b.userid = @UserId ";
@@ -245,7 +246,12 @@ namespace Core.Data.Repositories.Concrete {
             return QueryFirst<int >(sql,  new { id ,bookId}); 
         }
         public bool UpdateBookStatus(int id) {
-            var sql = @" update book set available= 0  where id=@id";
+            var sql = @" update books set available= 0  where id=@id";
+            return ExecuteScalar<bool>(sql, new { id });
+
+        }
+        public bool DeleteBook(int id) {
+            var sql = @" update books set isdeleted= 1  where id=@id";
             return ExecuteScalar<bool>(sql, new { id });
 
         }

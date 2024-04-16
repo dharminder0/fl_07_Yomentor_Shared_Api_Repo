@@ -282,5 +282,8 @@ namespace Core.Business.Sevices.Concrete {
         public bool UpdateBookStatus(int id) {
             return _book.UpdateBookStatus(id);
         }
+        public bool DeleteBook(int id) {
+            return _book.DeleteBook(id);
+        }
     }
 }

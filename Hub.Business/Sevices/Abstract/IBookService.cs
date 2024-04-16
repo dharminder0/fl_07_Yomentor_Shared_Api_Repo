@@ -16,6 +16,7 @@ namespace Core.Business.Sevices.Abstract {
         Task<List<BookExchangeResponse>> GetBookExchangeList(BookExchangeRequest bookExchange);
         Task<List<BookResponseV2>> GetBooks(BookRequestV2 book);
         bool UpdateBookStatus(int id);
+        bool DeleteBook(int id);
 
 
     }
