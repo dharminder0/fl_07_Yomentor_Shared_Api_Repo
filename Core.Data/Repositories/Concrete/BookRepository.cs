@@ -184,7 +184,7 @@ namespace Core.Data.Repositories.Concrete {
             var parameters = new DynamicParameters();
 
             if (book.ActionType==(int) BookActionType.IsRequested) {
-                status = ",be.status";
+                status = ",be.status,be.createdate as  RequestedDate";
             }
 
             var sql = $@"
@@ -254,6 +254,11 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" update books set isdeleted= 1  where id=@id";
             return ExecuteScalar<bool>(sql, new { id });
 
+
+        }
+        public DateTime  GetRequestedDate(int bookId) {
+            var sql = @" select createdate from Book_Exchange where bookId=@bookId ";
+            return ExecuteScalar<DateTime>(sql, new { bookId });
         }
     }
 }

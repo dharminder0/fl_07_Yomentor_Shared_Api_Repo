@@ -31,6 +31,7 @@ namespace Core.Business.Entities.ResponseModels {
         public int SubjectId { get; set; }
         public string SubjectName { get; set; }
         public string  GradeName { get; set; }
+        public DateTime RequestedDate { get; set; }
     }
     public class BookResponseV2 {
         public int Id { get; set; }
@@ -47,6 +48,7 @@ namespace Core.Business.Entities.ResponseModels {
         public int SubjectId { get; set; }
         public string  SubjectName { get; set; }
         public bool Available { get; set; }
+        public DateTime RequestedDate { get; set; }
 
 
     }
