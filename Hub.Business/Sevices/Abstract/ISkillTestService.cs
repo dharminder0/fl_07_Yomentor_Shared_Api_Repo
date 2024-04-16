@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.RequestModels;
+﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,7 @@ namespace Core.Business.Sevices.Abstract {
     public interface ISkillTestService {
         Task<List<SkillTestResponse>> GetSkillTestList(SkillTestRequest skillTest);
         SkillTestResponse GetSkillTest(int id);
+        ActionMessageResponse UpsertAttempt(Attempt attempt);
+        Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId);
     }
 }

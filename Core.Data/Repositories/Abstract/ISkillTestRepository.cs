@@ -14,5 +14,8 @@ namespace Core.Data.Repositories.Abstract {
         SkillTest GetSkillTest(int Id);
         int GetSkillTestSumScore(int Id);
         int GetSkillTestUser(int Id);
+        int UpsertAttempt(Attempt attempt);
+        Task<IEnumerable<Question>> GetQuestions(int skillTestId);
+        Task<IEnumerable<AnswerOption>> GetAnswerOptionsForQuestion(int questionId);
     }
 }

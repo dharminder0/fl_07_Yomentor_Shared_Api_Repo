@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.RequestModels;
+﻿using Core.Business.Entities.DataModels;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +37,27 @@ namespace YoMentor.Api.Controllers {
             var response =  _skillTestService.GetSkillTest(id);
             return JsonExt(response);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attempt"></param>
+        /// <returns></returns>
+         [HttpPost]
+        [Route("UpsertAttempt")]
+        public IActionResult UpsertAttempt(Attempt attempt) {
+            var response =  _skillTestService.UpsertAttempt(attempt);
+            return JsonExt(response);
+        }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="skillTestId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("QuestionsAnswers")]
+        public  async Task<IActionResult> GetQuizQuestionsWithAnswers(int skillTestId) {
+            var response =  await _skillTestService.GetQuizQuestionsWithAnswers(skillTestId);
+            return JsonExt(response);
+        }
     }
 }
