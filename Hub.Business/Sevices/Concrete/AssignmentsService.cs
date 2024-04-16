@@ -128,7 +128,7 @@ namespace Core.Business.Sevices.Concrete {
                     } catch (Exception) {
 
                    
-                    }
+                    }  
 
                     res.Add(obj);
 
