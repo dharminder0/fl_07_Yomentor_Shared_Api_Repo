@@ -94,6 +94,10 @@ namespace Core.Business.Sevices.Concrete {
             if (!string.IsNullOrEmpty(subjectname)) { 
                 res.SubjectName = subjectname;  
             }
+            DateTime requestDate=_book.GetRequestedDate(bookId);
+            if(requestDate != DateTime.MinValue) {
+                res.RequestedDate = requestDate;    
+            }
             string gradeName=_grade.GetGradeName(res.GradeId);
             if(!string.IsNullOrEmpty(gradeName)) {
                 res.GradeName = gradeName;
@@ -245,6 +249,7 @@ namespace Core.Business.Sevices.Concrete {
                 obj.CreateDate = item.CreateDate; 
                 obj.SubjectId=item.SubjectId;
                 obj.Available=item.Available;   
+                obj.RequestedDate=item.RequestedDate;   
                string subjectName= _subject.GetSubjectName(obj.SubjectId);
                 if (!string.IsNullOrEmpty(subjectName)) {
                     obj.SubjectName = subjectName;  
