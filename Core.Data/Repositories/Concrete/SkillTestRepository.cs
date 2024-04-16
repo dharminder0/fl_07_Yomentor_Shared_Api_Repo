@@ -45,5 +45,60 @@ ORDER BY id DESC
             var sql = @" select userId from attempt  where skilltestId=@id";
             return ExecuteScalar<int>(sql, new { Id });
         }
+        public int UpsertAttempt(Attempt attempt) {
+            var sql = @"
+        IF NOT EXISTS (SELECT 1 FROM Attempt WHERE Id = @Id)
+        BEGIN
+            INSERT INTO Attempt
+            (
+                AttemptCode,
+                UserId,
+                SkillTestId,
+                StartDate,
+                CompleteDate,
+                Status,
+                Score
+            )
+            VALUES
+            (
+                @AttemptCode,
+                @UserId,
+                @SkillTestId,
+                GetUtcDate(),
+                @CompleteDate,
+                @Status,
+                @Score
+            );
+
+            SELECT SCOPE_IDENTITY();
+        END
+        ELSE
+        BEGIN
+            UPDATE Attempt
+            SET
+                AttemptCode = @AttemptCode,
+                UserId = @UserId,
+                SkillTestId = @SkillTestId,
+                CompleteDate = @CompleteDate,
+                Status = @Status,
+                Score = @Score
+            WHERE
+                Id = @Id;
+
+            SELECT Id FROM Attempt WHERE Id = @Id;
+        END;
+    ";
+
+            return  ExecuteScalar<int>(sql, attempt);
+        }
+        public async Task<IEnumerable<Question>> GetQuestions(int skillTestId) {
+            var sql = @"select * from Question where skilltestid=@skillTestId";
+            return await QueryAsync<Question>(sql, new { skillTestId });
+        }
+        public async Task<IEnumerable<AnswerOption>> GetAnswerOptionsForQuestion(int questionId) {
+            var sql = @"select * from answer_option where questionId=@questionId ";
+            return  await QueryAsync<AnswerOption>(sql, new { questionId });
+        }
+
     }
 }
