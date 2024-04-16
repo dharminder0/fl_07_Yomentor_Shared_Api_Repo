@@ -46,6 +46,7 @@ namespace Core.Business.Entities.ResponseModels {
         public DateTime CreateDate { get; set; }
         public int SubjectId { get; set; }
         public string  SubjectName { get; set; }
+        public bool Available { get; set; }
 
 
     }

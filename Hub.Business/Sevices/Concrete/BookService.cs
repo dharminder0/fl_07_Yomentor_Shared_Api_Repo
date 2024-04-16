@@ -244,6 +244,7 @@ namespace Core.Business.Sevices.Concrete {
                 obj.GradeId = item.GradeId;
                 obj.CreateDate = item.CreateDate; 
                 obj.SubjectId=item.SubjectId;
+                obj.Available=item.Available;   
                string subjectName= _subject.GetSubjectName(obj.SubjectId);
                 if (!string.IsNullOrEmpty(subjectName)) {
                     obj.SubjectName = subjectName;  
