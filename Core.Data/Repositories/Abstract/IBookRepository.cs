@@ -21,5 +21,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<IEnumerable<BookResponseV2>> GetBookList(BookRequestV2 book);
         int  GetStatusName(int id,int bookId);
         bool UpdateBookStatus(int id);
+        bool DeleteBook(int id);
     }
 }

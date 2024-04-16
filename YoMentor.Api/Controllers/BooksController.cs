@@ -86,6 +86,18 @@ namespace YoMentor.Api.Controllers {
             return JsonExt(response);
 
         }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("DeleteBook")]
+        public IActionResult DeleteBook(int id) {
+            var response = bookService.DeleteBook(id);
+            return JsonExt(response);
+
+        }
 
     }
 }
