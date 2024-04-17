@@ -96,6 +96,7 @@ namespace Core.Business.Sevices.Concrete
                         FirstName = info.FirstName,
                         LastName = info.LastName,
                         Phone = info.Phone,
+                     
                         Image = image != null ? image.BlobLink : null
 
 
@@ -117,6 +118,9 @@ namespace Core.Business.Sevices.Concrete
                         FirstName = info.FirstName,
                         LastName = info.LastName,
                         Phone = info.Phone,
+                        Date=info.CreateDate,
+
+
                         Image = image != null ? image.BlobLink : null
 
                     };
