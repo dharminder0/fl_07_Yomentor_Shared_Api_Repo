@@ -44,8 +44,8 @@ namespace YoMentor.Api.Controllers {
         /// <returns></returns>
         [HttpGet]
         [Route("BookInfo")]
-        public IActionResult GetBooks(int id) {
-            var response =  bookService.GetBooksList(id);
+        public IActionResult GetBooks(int id, int type) {
+            var response =  bookService.GetBooksList(id, type);
             return JsonExt(response);
                  
         }

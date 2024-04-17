@@ -71,7 +71,7 @@ namespace Core.Business.Sevices.Concrete {
             res = await _book.UpdateBookExchange(book);
             return new ActionMessageResponse { Success = true, Content = res, Message = " Update_Successfully" };
         }
-        public BooksResponse GetBooksList(int bookId) {
+        public BooksResponse GetBooksList(int bookId, int type) {
 
             var item = _book.GetBooksList(bookId);
             if (item == null) { return null; }
@@ -167,6 +167,66 @@ namespace Core.Business.Sevices.Concrete {
 
             }
             res.UserInfo = user;
+            if (type == 2) {
+
+               var userIds= _book.GetReciverId(bookId, item.UserId);
+                if (userIds != null && userIds.Any()) {
+                    res.ReceiverUsers = new List<UserBasic>()
+;                    foreach (var item1 in userIds) {
+                        var reciverInfo = _user.GetUserInfo(item.UserId);
+                        if (userInfo != null) {
+                            var image = _mediaFile.GetImage(item.UserId, MediaEntityType.Users);
+
+
+
+                            user.FirstName = reciverInfo.FirstName;
+                            user.LastName = reciverInfo.LastName;
+                            user.Email = reciverInfo.Email;
+                            user.Phone = reciverInfo.Phone;
+                            if (image != null) {
+                                user.UserImage = image.BlobLink;
+                            }
+
+
+                        }
+
+
+                        var reciverAddress = _address.GetUserAddress(item.UserId);
+                        if (addressInfo != null) {
+                            var address = new Address {
+                                Address1 = reciverAddress.Address1,
+                                Address2 = reciverAddress.Address2,
+                                UserId = reciverAddress.UserId,
+                                StateId = reciverAddress.StateId,
+                                Latitude = reciverAddress.Latitude,
+                                Longitude = reciverAddress.Longitude,
+                                City = reciverAddress.City,
+                                IsDeleted = reciverAddress.IsDeleted,
+                                Id = reciverAddress.Id,
+                                Pincode = reciverAddress.Pincode,
+                                UpdateDate = reciverAddress.UpdateDate
+
+                            };
+                            var stateName = _address.GetState(address.StateId);
+                            if (stateName != null) {
+                                address.StateName = stateName.Name;
+                            }
+                            user.UserAddress = address;
+
+
+                        }
+                        int stausId = _book.GetStatusNameV2(item.UserId, item.Id);
+                        if (stausId > 0) {
+                            user.ReceiverStatusId = stausId;
+                        }
+                        string Reciverstatus = Enum.GetName(typeof(BookExchangeStatus), user.ReceiverStatusId);
+                        if (!string.IsNullOrEmpty(Reciverstatus)) {
+                            user.ReceiverStatus = Reciverstatus;
+                        }
+                        res.ReceiverUsers.Add(user);    
+                    }
+                }
+            }
             return res; 
         }
 

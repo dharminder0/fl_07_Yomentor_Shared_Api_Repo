@@ -8,6 +8,7 @@ using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
 using static Core.Business.Entities.DTOs.Enum;
@@ -85,7 +86,7 @@ namespace Core.Data.Repositories.Concrete {
             var sqlCheck = @"
         SELECT COUNT(*) 
         FROM Book_Exchange 
-        WHERE SenderId = @SenderId 
+        WHERE receiverId = @receiverId 
         AND BookId = @BookId;
     ";
 
@@ -279,5 +280,9 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select createdate from Book_Exchange where bookId=@bookId ";
             return ExecuteScalar<DateTime>(sql, new { bookId });
         }
+        public IEnumerable<int>  GetReciverId(int bookId, int senderId) {
+            var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and senderid=@senderId ";
+            return Query<int>(sql, new { bookId, senderId });
+        } 
     }
 }
