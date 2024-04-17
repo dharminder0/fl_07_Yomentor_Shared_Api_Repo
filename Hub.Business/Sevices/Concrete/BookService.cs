@@ -114,7 +114,7 @@ namespace Core.Business.Sevices.Concrete {
 
             }
 
-            int stusId = _book.GetStatusName(item.UserId, item.Id);
+            int stusId = _book.GetStatusNameV2(item.UserId, item.Id);
             if (stusId > 0) {
                 res.Status = stusId;
             }
