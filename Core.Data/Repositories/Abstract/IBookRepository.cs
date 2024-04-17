@@ -23,5 +23,6 @@ namespace Core.Data.Repositories.Abstract {
         bool UpdateBookStatus(int id);
         bool DeleteBook(int id);
         DateTime GetRequestedDate(int userId);
+        int GetStatusNameV2(int id, int bookId);
     }
 }

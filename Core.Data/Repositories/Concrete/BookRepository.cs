@@ -250,6 +250,10 @@ namespace Core.Data.Repositories.Concrete {
             return ExecuteScalar<bool>(sql, new { id });
 
         }
+        public int GetStatusNameV2(int id, int bookId) {
+            var sql = @" select status  from book_exchange where senderid=@id and bookid=@bookId ";
+            return QueryFirst<int>(sql, new { id, bookId });
+        }
         public bool DeleteBook(int id) {
             var sql = @" update books set isdeleted= 1  where id=@id";
             return ExecuteScalar<bool>(sql, new { id });
