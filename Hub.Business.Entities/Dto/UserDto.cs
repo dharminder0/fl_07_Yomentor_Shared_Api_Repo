@@ -50,5 +50,7 @@ namespace Core.Business.Entities.Dto {
         public string  Email { get; set; }
         public Address UserAddress { get; set; }
         public string  UserImage { get; set; }
+        public string ReceiverStatus { get; set; }
+        public int ReceiverStatusId { get; set; }
     }
 }

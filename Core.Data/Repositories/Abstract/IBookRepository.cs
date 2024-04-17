@@ -24,5 +24,6 @@ namespace Core.Data.Repositories.Abstract {
         bool DeleteBook(int id);
         DateTime GetRequestedDate(int userId);
         int GetStatusNameV2(int id, int bookId);
+        IEnumerable<int> GetReciverId(int bookId, int senderId);
     }
 }
