@@ -263,7 +263,7 @@ namespace Core.Business.Sevices.Concrete {
                     obj.SubjectName = subjectName;  
                 }
                 if (book.ActionType !=(int)BookActionType.IsRequested) {
-                    int stusId = _book.GetStatusName(item.UserId, obj.Id);
+                    int stusId = _book.GetStatusName(book.UserId, obj.Id);
                     if (stusId > 0) {
                         obj.Status = stusId;
                     }

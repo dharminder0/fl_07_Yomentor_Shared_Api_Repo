@@ -242,7 +242,7 @@ namespace Core.Data.Repositories.Concrete {
         }
 
         public int GetStatusName(int id,int bookId) {
-            var sql = @" select status  from book_exchange where senderId=@id and bookid=@bookId ";
+            var sql = @" select status  from book_exchange where receiverid=@id and bookid=@bookId ";
             return QueryFirst<int >(sql,  new { id ,bookId}); 
         }
         public bool UpdateBookStatus(int id) {
