@@ -19,8 +19,8 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IAddressRepository _address;
         private readonly IUserRepository _user;
         private readonly IGradeRepository _grade;
-        private readonly IMediaFileRepository _mediaFile;  
-        private readonly ISubjectRepository _subject;   
+        private readonly IMediaFileRepository _mediaFile;
+        private readonly ISubjectRepository _subject;
 
         public BookService(IBookRepository book, IAddressRepository address, IUserRepository user, IGradeRepository grade, IMediaFileRepository mediaFile, ISubjectRepository subject) {
             _book = book;
@@ -46,8 +46,8 @@ namespace Core.Business.Sevices.Concrete {
             book1.GradeId = book.GradeId;
             book1.UserId = book.UserId;
             book1.PublicationYear = book.PublicationYear;
-            book1.Remark = book.Remark; 
-            book1.SubjectId= book.SubjectId;    
+            book1.Remark = book.Remark;
+            book1.SubjectId = book.SubjectId;
 
             if (book.Id == 0) {
                 res = await _book.InsertBook(book1);
@@ -74,8 +74,9 @@ namespace Core.Business.Sevices.Concrete {
         public BooksResponse GetBooksList(int bookId) {
 
             var item = _book.GetBooksList(bookId);
+            if (item == null) { return null; }
 
-
+            UserBasic user = new UserBasic();
             BooksResponse res = new BooksResponse();
             res.Title = item.Title;
             res.ISBN = item.ISBN;
@@ -90,18 +91,18 @@ namespace Core.Business.Sevices.Concrete {
             res.PublicationYear = item.PublicationYear;
             res.GradeId = item.GradeId;
             res.SubjectId = item.SubjectId;
-           string subjectname= _subject.GetSubjectName(res.SubjectId);
-            if (!string.IsNullOrEmpty(subjectname)) { 
-                res.SubjectName = subjectname;  
+            string subjectname = _subject.GetSubjectName(res.SubjectId);
+            if (!string.IsNullOrEmpty(subjectname)) {
+                res.SubjectName = subjectname;
             }
-            DateTime requestDate=_book.GetRequestedDate(bookId);
-            if(requestDate != DateTime.MinValue) {
-                res.RequestedDate = requestDate;    
+            DateTime requestDate = _book.GetRequestedDate(bookId);
+            if (requestDate != DateTime.MinValue) {
+                res.RequestedDate = requestDate;
             }
-            string gradeName=_grade.GetGradeName(res.GradeId);
-            if(!string.IsNullOrEmpty(gradeName)) {
+            string gradeName = _grade.GetGradeName(res.GradeId);
+            if (!string.IsNullOrEmpty(gradeName)) {
                 res.GradeName = gradeName;
-                    }
+            }
             try {
                 var Image = _mediaFile.GetImage(item.Id, MediaEntityType.Book);
                 if (Image != null) {
@@ -110,7 +111,7 @@ namespace Core.Business.Sevices.Concrete {
 
             } catch (Exception) {
 
-         
+
             }
 
             int stusId = _book.GetStatusName(item.UserId, item.Id);
@@ -121,49 +122,56 @@ namespace Core.Business.Sevices.Concrete {
             if (!string.IsNullOrEmpty(status)) {
                 res.StatusName = status;
             }
-            res.Remark= item.Remark;    
+            res.Remark = item.Remark;
 
             var userInfo = _user.GetUserInfo(item.UserId);
             if (userInfo != null) {
+                var image = _mediaFile.GetImage(item.UserId, MediaEntityType.Users);
 
 
-                var user = new UserBasic {
-                    FirstName = userInfo.FirstName,
-                    LastName = userInfo.LastName,
-                    Email = userInfo.Email,
-                    Phone = userInfo.Phone
-                };
 
-            
-            var addressInfo = _address.GetUserAddress(item.UserId);
-                if (addressInfo != null) {
-                    var address = new Address {
-                        Address1 = addressInfo.Address1,
-                        Address2 = addressInfo.Address2,
-                        UserId = addressInfo.UserId,
-                        StateId = addressInfo.StateId,
-                        Latitude = addressInfo.Latitude,
-                        Longitude = addressInfo.Longitude,
-                        City = addressInfo.City,
-                        IsDeleted = addressInfo.IsDeleted,
-                        Id = addressInfo.Id,
-                        Pincode = addressInfo.Pincode,
-                        UpdateDate = addressInfo.UpdateDate
-
-                    };
-                    var stateName = _address.GetState(address.StateId);
-                    if (stateName != null) {
-                        address.StateName = stateName.Name;
-                    }
-                    user.UserAddress = address;
-
-
+                user.FirstName = userInfo.FirstName;
+                user.LastName = userInfo.LastName;
+                user.Email = userInfo.Email;
+                user.Phone = userInfo.Phone;
+                if (image != null) {
+                    user.UserImage = image.BlobLink;
                 }
-                res.UserInfo = user;
+
+
             }
-           
-            return res;
+
+
+            var addressInfo = _address.GetUserAddress(item.UserId);
+            if (addressInfo != null) {
+                var address = new Address {
+                    Address1 = addressInfo.Address1,
+                    Address2 = addressInfo.Address2,
+                    UserId = addressInfo.UserId,
+                    StateId = addressInfo.StateId,
+                    Latitude = addressInfo.Latitude,
+                    Longitude = addressInfo.Longitude,
+                    City = addressInfo.City,
+                    IsDeleted = addressInfo.IsDeleted,
+                    Id = addressInfo.Id,
+                    Pincode = addressInfo.Pincode,
+                    UpdateDate = addressInfo.UpdateDate
+
+                };
+                var stateName = _address.GetState(address.StateId);
+                if (stateName != null) {
+                    address.StateName = stateName.Name;
+                }
+                user.UserAddress = address;
+
+
+            }
+            res.UserInfo = user;
+            return res; 
         }
+
+
+    
             
             
 
