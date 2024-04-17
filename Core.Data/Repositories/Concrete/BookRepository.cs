@@ -82,7 +82,21 @@ namespace Core.Data.Repositories.Concrete {
         }
 
         public async Task<int> InsertBookExchange(BookExchange exchange) {
-            var sql = @"
+            var sqlCheck = @"
+        SELECT COUNT(*) 
+        FROM Book_Exchange 
+        WHERE SenderId = @SenderId 
+        AND BookId = @BookId;
+    ";
+
+            var count = await ExecuteScalarAsync<int>(sqlCheck, exchange);
+
+            if (count > 0) {
+               
+                throw new Exception("Record already exists for this user and book.");
+            }
+
+            var sqlInsert = @"
         INSERT INTO Book_Exchange
         (
             SenderId,
@@ -103,8 +117,9 @@ namespace Core.Data.Repositories.Concrete {
         SELECT SCOPE_IDENTITY();
     ";
 
-            return await ExecuteScalarAsync<int>(sql, exchange);
+            return await ExecuteScalarAsync<int>(sqlInsert, exchange);
         }
+
 
         public async Task<int> UpdateBookExchange(BookExchange exchange) {
             var sql = @"
@@ -251,7 +266,7 @@ namespace Core.Data.Repositories.Concrete {
 
         }
         public int GetStatusNameV2(int id, int bookId) {
-            var sql = @" select status  from book_exchange where senderid=@id and bookid=@bookId ";
+            var sql = @" select status  from book_exchange where senderid=@id and bookid=@bookId  ";
             return QueryFirst<int>(sql, new { id, bookId });
         }
         public bool DeleteBook(int id) {
