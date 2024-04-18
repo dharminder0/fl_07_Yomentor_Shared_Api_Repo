@@ -11,7 +11,7 @@ namespace Core.Business.Entities.DataModels {
         public string Description { get; set; }
         public int GradeId { get; set; }
         public int SubjectId { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public bool IsDeleted { get; set; }
     }

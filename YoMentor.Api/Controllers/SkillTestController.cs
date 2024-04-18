@@ -33,8 +33,8 @@ namespace YoMentor.Api.Controllers {
         /// <returns></returns>
         [HttpGet]
         [Route("SkillTest/Id")]
-        public IActionResult GetSkillTest(int id) {
-            var response =  _skillTestService.GetSkillTest(id);
+        public IActionResult GetSkillTest(int id,int userId) {
+            var response =  _skillTestService.GetSkillTest(id,userId);
             return JsonExt(response);
         }
         /// <summary>
