@@ -13,5 +13,6 @@ namespace Core.Business.Sevices.Abstract {
         SkillTestResponse GetSkillTest(int id, int userId);
         ActionMessageResponse UpsertAttempt(Attempt attempt);
         Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId);
+        ActionMessageResponse AttemptDetailBulkInsert(SkillTestAttemptRequest request);
     }
 }
