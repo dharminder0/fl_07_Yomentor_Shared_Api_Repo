@@ -12,7 +12,7 @@ namespace Core.Business.Entities.DataModels {
         public int SkillTestId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? CompleteDate { get; set; }
-        public string Status { get; set; }
+        public int  Status { get; set; }
         public int Score { get; set; }
     }
 }
