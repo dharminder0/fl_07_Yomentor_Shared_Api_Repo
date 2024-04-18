@@ -18,5 +18,8 @@ namespace Core.Data.Repositories.Abstract {
         Task<IEnumerable<Question>> GetQuestions(int skillTestId);
         Task<IEnumerable<AnswerOption>> GetAnswerOptionsForQuestion(int questionId);
         IEnumerable<Attempt> GetAttemptHistory(int userId, int skilltestId);
+        bool InsertAttemptDetail(AttemptDetail attemptDetail);
+        bool DeleteAttemptDetail(int attemptId);
+        int GetCorrectAnswer(int questionId);
     }
 }

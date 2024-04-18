@@ -133,6 +133,33 @@ namespace Core.Business.Sevices.Concrete {
 
             return quizResponseList;
         }
+        public ActionMessageResponse AttemptDetailBulkInsert(SkillTestAttemptRequest request) {
+            if (request == null) throw new ArgumentNullException();
+            _skillTestRepository.DeleteAttemptDetail(request.AttemptId);
+            foreach (var item in request.AttemptedQuestions) {
+                AttemptDetail attemptDetail=new AttemptDetail();
+                attemptDetail.AttemptId=request.AttemptId;  
+                attemptDetail.CreateDate=attemptDetail.CreateDate;  
+                attemptDetail.QuestionId=item.QuestionId;   
+                attemptDetail.AnswerId=item.AnswerId;
+                try {
+                   int id= _skillTestRepository.GetCorrectAnswer(item.QuestionId);
+                    if (id == item.AnswerId) {
+                        attemptDetail.IsCorrect=true;
+                    }
+                    
+                } catch (Exception) {
+
+                   
+                }
+               
+                _skillTestRepository.InsertAttemptDetail(attemptDetail);
+              
+
+            }
+            return new ActionMessageResponse { Success = true };
+
+        }
 
     }
 }

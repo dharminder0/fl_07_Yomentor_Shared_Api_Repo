@@ -5,6 +5,7 @@ using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
@@ -109,5 +110,38 @@ ORDER BY id DESC
 
 
          }
+        public bool InsertAttemptDetail(AttemptDetail attemptDetail) {
+
+            string sql = @"
+            INSERT INTO Attempt_Detail
+            (
+                AttemptId,
+                QuestionId,
+                AnswerId,
+                IsCorrect,
+                CreateDate
+            )
+            VALUES
+            (
+                @AttemptId,
+                @QuestionId,
+                @AnswerId,
+                @IsCorrect,
+                GetUtcDate()
+            )";
+            return ExecuteScalar<bool>(sql, attemptDetail); 
+
+              
+            
+        }
+        public bool DeleteAttemptDetail(int attemptId) {
+            var sql = @" delete from attempt_detail where AttemptId=@attemptId ";
+            return ExecuteScalar<bool>(sql, new { attemptId });    
+        }
+        public int GetCorrectAnswer(int questionId) {
+            var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1";
+            return ExecuteScalar<int>(sql, new { questionId });
+               
+        }
     }
 }
