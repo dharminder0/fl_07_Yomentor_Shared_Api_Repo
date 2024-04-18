@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Core.Business.Sevices.Abstract {
     public interface ISkillTestService {
         Task<List<SkillTestResponse>> GetSkillTestList(SkillTestRequest skillTest);
-        SkillTestResponse GetSkillTest(int id);
+        SkillTestResponse GetSkillTest(int id, int userId);
         ActionMessageResponse UpsertAttempt(Attempt attempt);
         Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId);
     }

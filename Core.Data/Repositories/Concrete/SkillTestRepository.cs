@@ -100,5 +100,14 @@ ORDER BY id DESC
             return  await QueryAsync<AnswerOption>(sql, new { questionId });
         }
 
+        public IEnumerable<Attempt> GetAttemptHistory(int userId,int skilltestId) {
+            var sql = @"
+ select * from Attempt where userid=@userId  and skilltestid=@skilltestId
+
+ ";
+            return Query<Attempt>(sql, new { userId, skilltestId });
+
+
+         }
     }
 }

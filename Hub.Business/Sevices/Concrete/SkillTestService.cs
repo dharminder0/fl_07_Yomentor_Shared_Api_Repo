@@ -46,6 +46,7 @@ namespace Core.Business.Sevices.Concrete {
                     var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                     int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
                     skillTestResponse.AverageMarks = averageCount / userCount;
+                    skillTestResponse.AteemptCount = userCount;
 
                 } catch (Exception) {
 
@@ -56,8 +57,9 @@ namespace Core.Business.Sevices.Concrete {
             }
             return skills;
         }
-        public SkillTestResponse GetSkillTest(int id) {
+        public SkillTestResponse GetSkillTest(int id,int userId) {
             if (id > null) throw new ArgumentNullException(nameof(id));
+            List<AteemptHistory> obj = new List<AteemptHistory>();
             var item = _skillTestRepository.GetSkillTest(id);
 
             SkillTestResponse skillTestResponse = new SkillTestResponse();
@@ -80,11 +82,28 @@ namespace Core.Business.Sevices.Concrete {
                 var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                 int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
                 skillTestResponse.AverageMarks = averageCount / userCount;
+                skillTestResponse.AteemptCount = userCount;
             } catch (Exception) {
 
 
             }
+            try {
+              var response=  _skillTestRepository.GetAttemptHistory(userId, id);
+                if (response != null) {
+                    foreach (var item1 in response) {
+                        AteemptHistory history = new AteemptHistory();
+                        history.Score = item1.Score;
+                        history.AttemptDate = item.CreateDate;
+                        obj.Add(history);
 
+
+                    }
+                    skillTestResponse.AteemptHistory = obj;
+
+                }
+            } catch (Exception) {
+
+            }
 
             return skillTestResponse;
         }

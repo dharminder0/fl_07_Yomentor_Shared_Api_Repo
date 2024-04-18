@@ -17,5 +17,6 @@ namespace Core.Data.Repositories.Abstract {
         int UpsertAttempt(Attempt attempt);
         Task<IEnumerable<Question>> GetQuestions(int skillTestId);
         Task<IEnumerable<AnswerOption>> GetAnswerOptionsForQuestion(int questionId);
+        IEnumerable<Attempt> GetAttemptHistory(int userId, int skilltestId);
     }
 }

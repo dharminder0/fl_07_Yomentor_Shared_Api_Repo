@@ -17,5 +17,12 @@ namespace Core.Business.Entities.ResponseModels {
         public string SubjectName { get; set; }
         public bool IsDeleted { get; set; }
         public int AverageMarks { get; set; }
+        public int AteemptCount { get; set; }
+        public List<AteemptHistory> AteemptHistory { get; set; }  
+    }
+    public class AteemptHistory {
+        public int Score { get; set; }
+        public DateTime AttemptDate { get; set; }
+
     }
 }
