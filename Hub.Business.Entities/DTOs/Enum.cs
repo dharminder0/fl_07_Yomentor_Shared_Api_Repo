@@ -104,5 +104,10 @@ namespace Core.Business.Entities.DTOs
             assessment_assigned=4
 
         }
+        public enum QuizStatus {
+            Pending=0,
+            Complete=1, Failed=2,   
+
+        }
     }
 }
