@@ -46,7 +46,7 @@ namespace Core.Business.Sevices.Concrete {
                     var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                     int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
                     skillTestResponse.AverageMarks = averageCount / userCount;
-                    skillTestResponse.AteemptCount = userCount;
+                    skillTestResponse.AttemptCount = userCount;
 
                 } catch (Exception) {
 
@@ -59,7 +59,7 @@ namespace Core.Business.Sevices.Concrete {
         }
         public SkillTestResponse GetSkillTest(int id,int userId) {
             if (id > null) throw new ArgumentNullException(nameof(id));
-            List<AteemptHistory> obj = new List<AteemptHistory>();
+            List<AttemptHistory> obj = new List<AttemptHistory>();
             var item = _skillTestRepository.GetSkillTest(id);
 
             SkillTestResponse skillTestResponse = new SkillTestResponse();
@@ -82,7 +82,7 @@ namespace Core.Business.Sevices.Concrete {
                 var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                 int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
                 skillTestResponse.AverageMarks = averageCount / userCount;
-                skillTestResponse.AteemptCount = userCount;
+                skillTestResponse.AttemptCount = userCount;
             } catch (Exception) {
 
 
@@ -91,14 +91,14 @@ namespace Core.Business.Sevices.Concrete {
               var response=  _skillTestRepository.GetAttemptHistory(userId, id);
                 if (response != null) {
                     foreach (var item1 in response) {
-                        AteemptHistory history = new AteemptHistory();
+                        AttemptHistory history = new AttemptHistory();
                         history.Score = item1.Score;
                         history.AttemptDate = item.CreateDate;
                         obj.Add(history);
 
 
                     }
-                    skillTestResponse.AteemptHistory = obj;
+                    skillTestResponse.AttemptHistory = obj;
 
                 }
             } catch (Exception) {
