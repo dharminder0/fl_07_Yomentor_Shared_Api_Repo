@@ -41,6 +41,12 @@ namespace YoMentor.Api.Controllers
             var response = await _attendanceServices.GetStudentsAttendance(request);
             return JsonExt(response);
         }
+        [HttpPost]
+        [Route("StudentAttendanceHistory")]
+        public async Task<IActionResult> GetStudentsAttendanceHistory(AttendanceRequest request) {
+            var response = await _attendanceServices.GetStudentsAttendanceHistory(request);
+            return JsonExt(response);
+        }
 
         [HttpPost]
         [Route("Bulk/Add")]
