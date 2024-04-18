@@ -93,7 +93,7 @@ namespace Core.Business.Sevices.Concrete {
                     foreach (var item1 in response) {
                         AttemptHistory history = new AttemptHistory();
                         history.Score = item1.Score;
-                        history.AttemptDate = item.CreateDate;
+                        history.AttemptDate = item1.StartDate;
                         obj.Add(history);
 
 
