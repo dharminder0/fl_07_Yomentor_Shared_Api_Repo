@@ -71,7 +71,7 @@ namespace Core.Business.Sevices.Concrete {
             res = await _book.UpdateBookExchange(book);
             return new ActionMessageResponse { Success = true, Content = res, Message = " Update_Successfully" };
         }
-        public BooksResponse GetBooksList(int bookId, int type) {
+        public BooksResponse GetBooksList(int bookId, int type, int userId) {
 
             var item = _book.GetBooksList(bookId);
             if (item == null) { return null; }
@@ -113,8 +113,8 @@ namespace Core.Business.Sevices.Concrete {
 
 
             }
-
-            int stusId = _book.GetStatusName(item.UserId, item.Id);
+           
+            int stusId = _book.GetStatusName(userId, item.Id);
             if (stusId > 0) {
                 res.Status = stusId;
             }
