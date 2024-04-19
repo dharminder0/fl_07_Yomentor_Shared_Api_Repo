@@ -39,11 +39,11 @@ ORDER BY id DESC
             return QueryFirst<SkillTest>(sql, new { Id });  
         }
         public int GetSkillTestSumScore(int Id) {
-            var sql = @" select sum(score) from attempt  where skilltestId=@id";
+            var sql = @" select Avg(score) from attempt  where skilltestId=@id and status=1 ";
             return ExecuteScalar<int>(sql,  new { Id });
         }
         public int GetSkillTestUser(int Id) {
-            var sql = @" select userId from attempt  where skilltestId=@id";
+            var sql = @" select Count(userId) from attempt  where skilltestId=@id  and status=1 ";
             return ExecuteScalar<int>(sql, new { Id });
         }
         public int UpsertAttempt(Attempt attempt) {
@@ -164,5 +164,16 @@ GROUP BY
             var sql = @"update  Attempt set score=@score,status=1 where  id=@attemptId   ";
             return ExecuteScalar<int>(sql,new { attemptId, score });    
         }
+        public IEnumerable<AttemptDetail> GetAttemptDetails(int attemptId) {
+            var sql = @" select * from attempt_detail where attemptid=@attemptId ";
+            return Query<AttemptDetail>(sql, new { attemptId });
+
+        }
+        public IEnumerable<AnswerOption> GetAnswerList(int questionId) {
+            var sql = @"select * from answer_option where questionId=@questionId ";
+            return Query<AnswerOption>(sql, new { questionId });
+
+        }
+        
     }
 }
