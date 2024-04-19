@@ -114,7 +114,7 @@ namespace Core.Business.Sevices.Concrete {
 
             }
 
-            int stusId = _book.GetStatusNameV2(item.UserId, item.Id);
+            int stusId = _book.GetStatusName(item.UserId, item.Id);
             if (stusId > 0) {
                 res.Status = stusId;
             }
@@ -173,9 +173,9 @@ namespace Core.Business.Sevices.Concrete {
                 if (userIds != null && userIds.Any()) {
                     res.ReceiverUsers = new List<UserBasic>()
 ;                    foreach (var item1 in userIds) {
-                        var reciverInfo = _user.GetUserInfo(item.UserId);
+                        var reciverInfo = _user.GetUserInfo(item1);
                         if (userInfo != null) {
-                            var image = _mediaFile.GetImage(item.UserId, MediaEntityType.Users);
+                            var image = _mediaFile.GetImage(item1, MediaEntityType.Users);
 
 
 
@@ -215,7 +215,7 @@ namespace Core.Business.Sevices.Concrete {
 
 
                         }
-                        int stausId = _book.GetStatusNameV2(item.UserId, item.Id);
+                        int stausId = _book.GetStatusName(item1, item.Id);
                         if (stausId > 0) {
                             user.ReceiverStatusId = stausId;
                         }
