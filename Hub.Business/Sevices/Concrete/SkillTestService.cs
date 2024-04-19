@@ -135,6 +135,7 @@ namespace Core.Business.Sevices.Concrete {
         }
         public ActionMessageResponse AttemptDetailBulkInsert(SkillTestAttemptRequest request) {
             if (request == null) throw new ArgumentNullException();
+            var percentage = new AttemptSummaryResponse();
             _skillTestRepository.DeleteAttemptDetail(request.AttemptId);
             foreach (var item in request.AttemptedQuestions) {
                 AttemptDetail attemptDetail=new AttemptDetail();
@@ -154,10 +155,14 @@ namespace Core.Business.Sevices.Concrete {
                 }
                
                 _skillTestRepository.InsertAttemptDetail(attemptDetail);
+                 
+
+
               
 
             }
-            return new ActionMessageResponse { Success = true };
+            percentage = _skillTestRepository.CalculatePercentage(request.AttemptId);
+            return new ActionMessageResponse { Success = true,Content= percentage,Message="Insertion_Successfully" };
 
         }
 

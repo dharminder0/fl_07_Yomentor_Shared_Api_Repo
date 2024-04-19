@@ -21,5 +21,6 @@ namespace Core.Data.Repositories.Abstract {
         bool InsertAttemptDetail(AttemptDetail attemptDetail);
         bool DeleteAttemptDetail(int attemptId);
         int GetCorrectAnswer(int questionId);
+        AttemptSummaryResponse CalculatePercentage(int attemptId);
     }
 }
