@@ -36,8 +36,31 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMassegeResponse { Content = content ,Message="Upsert Successfully",Response=true};
 
         }
-        public   Address GetUserAddress(int userId) {
-            return  _addressRepository.GetUserAddress(userId);     
+        public Address GetUserAddress(int userId) {
+            var addressInfo = _addressRepository.GetUserAddress(userId);
+            if (addressInfo != null) {
+                var address = new Address {
+                    Address1 = addressInfo.Address1,
+                    Address2 = addressInfo.Address2,
+                    UserId = addressInfo.UserId,
+                    StateId = addressInfo.StateId,
+                    Latitude = addressInfo.Latitude,
+                    Longitude = addressInfo.Longitude,
+                    City = addressInfo.City,
+                    IsDeleted = addressInfo.IsDeleted,
+                    Id = addressInfo.Id,
+                    Pincode = addressInfo.Pincode,
+                    UpdateDate = addressInfo.UpdateDate
+
+                };
+                var stateName = _addressRepository.GetState(address.StateId);
+                if (stateName != null) {
+                    address.StateName = stateName.Name;
+                }
+                return address;
+            }
+            return null;
+
         }
         public List<State> GetState() {
             return _addressRepository.GetStateList().ToList();

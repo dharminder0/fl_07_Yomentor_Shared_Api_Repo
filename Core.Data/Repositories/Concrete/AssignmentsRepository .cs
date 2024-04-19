@@ -81,13 +81,13 @@ namespace Core.Data.Repositories.Concrete {
 
         public  async Task<Assignments> GetAssignments(int id)
         {
-            var sql = $@"Select * from Assignments where Id=@id";
+            var sql = $@"Select * from Assignments where Id=@id and Isdeleted=0 ";
             return QueryFirst<Assignments>(sql, new { id });
         }
 
         public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequestV2 request) {
 
-            var sql = $@"Select * from Assignments where  teacherid=@TeacherId ";
+            var sql = $@"Select * from Assignments where  teacherid=@TeacherId and Isdeleted=0 ";
             if (request.GradeId > 0)
             {
                 sql += $@" and GradeId=@GradeId";

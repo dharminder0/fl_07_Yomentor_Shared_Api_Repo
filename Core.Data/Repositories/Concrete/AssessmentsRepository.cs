@@ -83,14 +83,14 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<int>(sql, assignment);
         }
         public Assessments GetAssessments(int id) {
-            var sql = @"SELECT * FROM [dbo].[assessments] WHERE id = @id";
+            var sql = @"SELECT * FROM [dbo].[assessments] WHERE id = @id and isdeleted=0 ";
             return   QueryFirst<Assessments>(sql, new { id });
             
         }
      
         public async Task<List<Assessments>> GetAssessmentsAllList(StudentProgressRequestV2 request  )
         {
-            var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid";
+            var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid and isdeleted=0 ";
             if (request.GradeId > 0)
             {
                 sql += $@" and GradeId=@GradeId";

@@ -7,7 +7,7 @@ namespace Core.Data.Repositories.Concrete {
     {
         public IEnumerable<BatchStudents> GetBatchStudentsbybatchId(int batchId)
         {
-            var sql = $@"SELECT * FROM batch_students WHERE batchId=@batchId";
+            var sql = $@"SELECT * FROM batch_students WHERE batchId=@batchId and IsDeleted=0";
             return Query<BatchStudents>(sql, new { batchId });
         }
         public async Task<bool> UpdateEnrollmentStatus(int status, int Id, int batchId) {
@@ -74,6 +74,10 @@ namespace Core.Data.Repositories.Concrete {
         public async Task<BatchStudents> GetEnrollmentStatus(int batchId,int studentId) {
             var sql = @" select enrollmentstatus from batch_students where batchId=@batchId and studentId=@studentId ";
             return await QueryFirstAsync<BatchStudents>(sql, new { batchId, studentId });
+        }
+        public  int GetTeacherId(int batchId) {
+            var sql = @" select teacherid from batch  where id=@batchId ";
+            return ExecuteScalar<int>(sql, new { batchId });    
         }
     }
 }

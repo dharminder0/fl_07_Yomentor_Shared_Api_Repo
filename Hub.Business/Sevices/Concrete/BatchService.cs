@@ -4,6 +4,7 @@ using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
 using Core.Business.Entities.DTOs;
 using Core.Business.Entities.RequestModels;
+using Core.Business.Services.Abstract;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
@@ -15,6 +16,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Security.AccessControl;
 using static Core.Business.Entities.DTOs.Enum;
+using static Slapper.AutoMapper;
 
 namespace Core.Business.Sevices.Concrete {
     public class BatchService : IBatchService
@@ -27,8 +29,9 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IUserRepository _userRepository;
         private readonly IFavouriteBatchRepository _favouriteBatchRepository;
         private readonly IMediaFileRepository _mediaFileRepository;
-        private readonly IAddressRepository _addressRepository; 
-        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository, IFavouriteBatchRepository favouriteBatchRepository, IMediaFileRepository mediaFileRepository, IAddressRepository addressRepository)
+        private readonly IAddressRepository _addressRepository;
+        private readonly IUserService _user;
+        public BatchService(IBatchRepository batchRepository,  IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IBatchStudentsRepository batchStudentsRepository,IUserRepository userRepository, IFavouriteBatchRepository favouriteBatchRepository, IMediaFileRepository mediaFileRepository, IAddressRepository addressRepository, IUserService user)
         {
             _batchRepository = batchRepository;         
             _gradeRepository = gradeRepository;
@@ -38,6 +41,7 @@ namespace Core.Business.Sevices.Concrete {
             _favouriteBatchRepository= favouriteBatchRepository;  
             _mediaFileRepository= mediaFileRepository;
             _addressRepository = addressRepository;
+            _user = user;
         }
         public async Task<List<BatchDto>> BatchDetails(BatchRequest request)
         {
@@ -241,6 +245,14 @@ namespace Core.Business.Sevices.Concrete {
         }
         public async Task<ActionMassegeResponse> UpdateEnrollmentStatus(int status, int Id, int batchId) {
             bool response = await _batchStudentsRepository.UpdateEnrollmentStatus(status, Id,batchId);
+            try {
+                _user.PushNotifications(NotificationType.enrollment_status_update, Id, batchId);
+                
+
+            } catch (Exception) {
+
+              
+            }
             return new ActionMassegeResponse { Content = response, Message = "Updated_successfully", Response = true };
 
         }
@@ -261,6 +273,17 @@ namespace Core.Business.Sevices.Concrete {
                 obj.StudentId = item.StudentId;
 
                 res = await _batchStudentsRepository.InsertBatchStudent(obj);
+
+
+                try {
+                    int teacherid = _batchStudentsRepository.GetTeacherId(request.BatchId);
+                    _user.PushNotifications(NotificationType.student_enrolled, teacherid, item.StudentId);
+                } catch (Exception) {
+
+
+                }
+
+
 
             }
             return new ActionMassegeResponse { Content = res, Message = "Assigned Successfully !!", Response = true };

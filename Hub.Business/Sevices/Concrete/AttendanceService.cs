@@ -96,6 +96,7 @@ namespace Core.Business.Sevices.Concrete
                         FirstName = info.FirstName,
                         LastName = info.LastName,
                         Phone = info.Phone,
+                     
                         Image = image != null ? image.BlobLink : null
 
 
@@ -117,6 +118,9 @@ namespace Core.Business.Sevices.Concrete
                         FirstName = info.FirstName,
                         LastName = info.LastName,
                         Phone = info.Phone,
+                        Date=info.CreateDate,
+
+
                         Image = image != null ? image.BlobLink : null
 
                     };
@@ -126,7 +130,34 @@ namespace Core.Business.Sevices.Concrete
 
             return obj;
         }
+        public async Task<List<AttendanceHistoryResponse>> GetStudentsAttendanceHistory(AttendanceRequest request) {
+            if (request == null) {
+                return new List<AttendanceHistoryResponse>();
+            }
 
+            var response = await _attendanceRepository.GetStudentsAttendance(request);
+            var obj = new List<AttendanceHistoryResponse>();
+            foreach (var item in response) {
+                    var attendance = new AttendanceHistoryResponse {
+                        Id = item.Id,
+                        StudentId = item.StudentId,
+                        Status = item.Status,
+                        Date = item.Date,
+                        UpdateDate = item.UpdateDate,
+                        CreateDate = item.CreateDate,
+                        BatchId = item.BatchId,            
+                    };
+                    obj.Add(attendance);
+                }
+            return obj;
+        }
+
+         
+                
+    
+
+      
+        
 
 
     }

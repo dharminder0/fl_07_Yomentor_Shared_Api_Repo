@@ -14,5 +14,6 @@ namespace Core.Business.Sevices.Abstract
         Task<ActionMassegeResponse> InsertAttendance(Attendance attendance);
         Task<List<AttendanceResponse>> GetStudentsAttendance(AttendanceRequest request);
         Task<ActionMassegeResponse> BulkInsertAttendance(AttendanceV2 attendancev2);
+        Task<List<AttendanceHistoryResponse>> GetStudentsAttendanceHistory(AttendanceRequest request);
     }
 }

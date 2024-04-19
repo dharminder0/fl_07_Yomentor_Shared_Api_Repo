@@ -1,4 +1,6 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using Core.Business.Entites.DataModels;
+using Core.Business.Entites.RequestModels;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
@@ -7,6 +9,8 @@ using Core.Common.Account;
 using Core.Common.Web;
 using Core.Data.Repositories.Abstract;
 using Core.Data.Repositories.Concrete;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
 using Hub.Common.Settings;
 using RLV.Security.Lib;
 using System.Collections.Generic;
@@ -27,17 +31,19 @@ namespace Core.Business.Services.Concrete {
         private readonly IGradeRepository _gradeRepository; 
         private readonly ISubjectRepository _subjectRepository; 
         private readonly IAddressRepository _addressRepository; 
+        private  readonly IPushnotificationsRepository _ushnotificationsRepository; 
         
 
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository, ITeacherSpecialityRepository teacherSpecialityRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IAddressRepository addressRepository) {
+        public UserService(IUserRepository usersRepository, IReviewsRepository reviewsRepository, IMediaFileRepository mediaFileRepository, ITeacherSpecialityRepository teacherSpecialityRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IAddressRepository addressRepository, IPushnotificationsRepository ushnotificationsRepository) {
             _userRepository = usersRepository;
             _reviewsRepository = reviewsRepository;
             _mediaFileRepository = mediaFileRepository;
             _teacherSpecialityRepository = teacherSpecialityRepository; 
             _gradeRepository = gradeRepository; 
             _subjectRepository = subjectRepository; 
-            _addressRepository = addressRepository; 
+            _addressRepository = addressRepository;
+            _ushnotificationsRepository = ushnotificationsRepository;   
 
 
         }
@@ -89,6 +95,20 @@ namespace Core.Business.Services.Concrete {
                     var salt = Hasher.GenerateSalt();
                     var hashedPassword = Hasher.HashPassword(salt, obj.Password);
                     userId = _userRepository.InsertUser(obj, hashedPassword, salt);
+                try {
+                    if(obj.Type== (int)UserType.Teacher) {
+                        TeacherProfile tch = new TeacherProfile();
+                      
+                        tch.TeacherId = userId;
+                      
+
+
+                        await _userRepository.UpsertTeacherProfile(tch);
+                    }
+                } catch (Exception) {
+
+                   
+                }
                     return new ActionMessageResponse { Success = true, Content = userId, Message = "User inserted successfully." };
                 
             }
@@ -495,6 +515,124 @@ namespace Core.Business.Services.Concrete {
             teacherProfile.Experience= profileRequest.Experience;
             int  id= await  _userRepository.UpsertTeacherProfile(teacherProfile);
             return new ActionMessageResponse { Success = true,Content=id };    
+        }
+        public int  PushNotifications(NotificationType type, int userId, int Id) {
+            PushNotificationRequest pushNotifications = new PushNotificationRequest();
+            var notification = _ushnotificationsRepository.pushNotificationType(type.ToString());
+
+        
+            pushNotifications.NotificationMessage = notification.Message;
+            pushNotifications.Notificationtitle = notification.Title;
+            pushNotifications.NotificationTypeId = notification.Id;
+  
+            pushNotifications.NotificationDateTime = DateTime.UtcNow.AddMinutes(5);
+
+         int id=   _ushnotificationsRepository.AddPushNotifications((int)type, userId, pushNotifications.Notificationtitle, pushNotifications.NotificationMessage, pushNotifications.NotificationDateTime, DateTime.Now, (int)Status.Pending, (int)NotificationStatus.NotSent, Id, false);
+
+            return id;
+        }
+        public List<PushNotifications> GetPushNotifications(int pazeSize, int pazeInedx, int userId) {
+            var response = _ushnotificationsRepository.GetPushNotifications(pazeSize, pazeInedx, userId);
+            List<PushNotifications> app = new List<PushNotifications>();
+            foreach (var item in response) {
+
+                PushNotifications push = new PushNotifications();
+                push.Id = item.Id;
+                push.UserId = userId;
+                push.NotificationTypeId = item.NotificationTypeId;
+                push.Status = item.Status;
+                push.NotificationStatus = item.NotificationStatus;
+                push.NotificationTitle = item.NotificationTitle;
+                push.NotificationMessage = item.NotificationMessage;
+                push.CreatedDate = item.CreatedDate;
+                push.IsRead = item.IsRead;
+                push.EntityId = item.EntityId;
+                push.NotificationDateTime = item.NotificationDateTime;
+                push.NotificationTypeId = item.NotificationTypeId;
+              
+                app.Add(push);
+
+
+            }
+            return app;
+
+
+        }
+        public int GetPushNotificationCount(int userId) {
+            return _ushnotificationsRepository.GetPushNotificationsCount(userId);
+
+
+        }
+        public ActionMessageResponse RemoveUsers(string deviceToekn) {
+
+            var res = _userRepository.RemoveDevices(deviceToekn);
+            return new ActionMessageResponse { Success = true, Message = "successfully deleted" };
+
+        }
+        public ActionMessageResponse AddUserDevices(UserDevicesRequest deviceRefRequest) {
+
+            try {
+
+                //   _userRepository.RemoveDevices(deviceRefRequest.DeviceToken.ToString());
+                if (deviceRefRequest != null && deviceRefRequest.UserId.Any())
+                    foreach (var item in deviceRefRequest.UserId) {
+
+                        _userRepository.AddUserDevices(item, deviceRefRequest.DeviceToken, deviceRefRequest.CreatedDate);
+
+                    }
+                return new ActionMessageResponse { Message = "Assigned successfully ", Success = true, Content = true };
+
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<bool> GetPushNotification() {
+            PushNotifications pushNotifications = new PushNotifications();
+            var response = await _userRepository.GetPushNotifications();
+
+            foreach (var notification in response) {
+                try {
+                    var deviceDetailsList = await _userRepository.GetUserDevicesV2(notification.UserId);
+                    if (deviceDetailsList != null && deviceDetailsList.Any()) {
+                        foreach (var deviceDetails in deviceDetailsList) {
+                            try {
+                                if (!string.IsNullOrWhiteSpace(deviceDetails.DeviceToken)) {
+                                    await SendPushNotificationAsync(deviceDetails.DeviceToken, notification.NotificationTitle, notification.NotificationMessage);
+                                    await _userRepository.UpdateStatus(notification.Id, Status.Delivered, notification.NotificationTypeId);
+                                    await _userRepository.UpdateNotificationStatus(notification.Id, NotificationStatus.Sent);
+                                }
+                            } catch (Exception ex) {
+                                await _userRepository.UpdateStatus(notification.Id, Status.Failed, 0);
+                            }
+                        }
+                    }
+                    else {
+                        await _userRepository.UpdateStatus(notification.Id, Status.DeviceNotFound, 0);
+                    }
+                } catch (Exception) {
+                    await _userRepository.UpdateStatus(notification.Id, Status.Failed, 0);
+                }
+            }
+            return true;
+        }
+        public async Task SendPushNotificationAsync(string registrationToken, string title, string body) {
+            try {
+                var message = new Message {
+                    Token = registrationToken,
+                    Notification = new Notification {
+                        Title = title,
+                        Body = body
+                    }
+                };
+
+                var messaging = FirebaseMessaging.DefaultInstance;
+
+
+                await messaging.SendAsync(message);
+            } catch (FirebaseException ex) {
+
+                throw;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.RequestModels;
+﻿using Core.Business.Entites.RequestModels;
+using Core.Business.Entities.RequestModels;
 using Core.Business.Services.Abstract;
 using Core.Business.Sevices.Abstract;
 using Hub.Web.Api.Controllers;
@@ -150,7 +151,65 @@ namespace Core.Web.API.Controllers {
 
             }
         }
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pazeSize"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/User/PushNotifications")]
+      
+        public IActionResult GetPushNotifications(int pazeSize, int pageIndex, int userid) {
+
+            var response = _userService.GetPushNotifications(pazeSize, pageIndex, userid);
+            return JsonExt(response);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/User/PushNotifications/Count")]
     
+        public IActionResult GetPushNotificationCount(int userId) {
+
+            var response = _userService.GetPushNotificationCount(userId);
+            return JsonExt(response);
+
+        }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="UserRefRequest"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AddUserDevices")]
+        [RequireAuthorization]
+        public IActionResult AddUserDevices(UserDevicesRequest UserRefRequest) {
+
+            var response = _userService.AddUserDevices(UserRefRequest);
+            return JsonExt(response);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userToken"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("RemoveUserDevices")]
+        [RequireAuthorization]
+        public IActionResult AddUserDevices(string userToken) {
+
+            var response = _userService.RemoveUsers(userToken);
+            return JsonExt(response);
+
+        }
+    }
+
 }
   

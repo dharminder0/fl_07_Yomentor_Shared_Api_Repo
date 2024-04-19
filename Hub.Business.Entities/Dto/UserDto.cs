@@ -4,6 +4,7 @@ using Core.Business.Entities.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -48,5 +49,17 @@ namespace Core.Business.Entities.Dto {
         public string  Phone { get; set; }
         public string  Email { get; set; }
         public Address UserAddress { get; set; }
+        public string  UserImage { get; set; }
+      
+    }
+    public class UserBasicV2 {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public Address UserAddress { get; set; }
+        public string UserImage { get; set; }
+        public string ReceiverStatus { get; set; }
+        public int ReceiverStatusId { get; set; }
     }
 }

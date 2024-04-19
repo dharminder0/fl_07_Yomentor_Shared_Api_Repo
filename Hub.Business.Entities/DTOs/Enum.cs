@@ -54,13 +54,15 @@ namespace Core.Business.Entities.DTOs
             None = 0,
             Assignment=1,
             Assessment=2,
-            Users=3
+            Users=3,
+            Book=4
         }
         public enum MediaType {
             None=0,
             Image=1,
             Video=2,
             Pdf=4,
+
 
         }
         public enum FavouriteEntityType {
@@ -70,17 +72,42 @@ namespace Core.Business.Entities.DTOs
         }
         public enum TaskStatus {
             Assign=1,
-            Complete=2
+            Complete= 2
         }
         public enum BookExchangeStatus {
-            Pending,
-            Requested,
-            Accepted,
-            Declined,
-            Completed,
-            Cancelled,
-            
+            Requested = 1,
+            Accepted = 2,
+            Declined = 3,
+            Delivered = 4,
+            Cancelled = 5
         }
 
+        public enum BookActionType {
+           IsRequested =1,
+           IsCreated =2
+
+    }
+        public enum NotificationStatus {
+            NotSent = 1,
+            Sent = 2
+        }
+        public enum Status {
+            Pending = 1,
+            Delivered = 2,
+            Failed = 3,
+            DeviceNotFound = 4,
+        }
+        public enum NotificationType {
+            student_enrolled=1,
+            enrollment_status_update=2,
+            assignment_assigned=3,
+            assessment_assigned=4
+
+        }
+        public enum QuizStatus {
+            Pending=0,
+            Complete=1, Failed=2,   
+
+        }
     }
 }

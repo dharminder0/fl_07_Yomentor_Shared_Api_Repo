@@ -1,6 +1,7 @@
 ﻿using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
+using Core.Business.Services.Abstract;
 using Core.Business.Sevices.Abstract;
 using Core.Common.Data;
 using Core.Data.Repositories.Abstract;
@@ -20,13 +21,15 @@ namespace Core.Business.Sevices.Concrete {
         private readonly IGradeRepository _gradeRepository;
         private readonly ISubjectRepository _subjectRepository;
         private readonly IMediaFileRepository _mediaFileRepository;
-        public AssessmentsService(IAssessmentsRepository assessmentsRepository, IBatchStudentsRepository batchStudentsRepository, IStudentAssessmentRepository studentAssessmentRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository) {
+        private readonly IUserService _userService;
+        public AssessmentsService(IAssessmentsRepository assessmentsRepository, IBatchStudentsRepository batchStudentsRepository, IStudentAssessmentRepository studentAssessmentRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository, IMediaFileRepository mediaFileRepository, IUserService userService) {
             _assessmentsRepository = assessmentsRepository;
             _batchStudentsRepository = batchStudentsRepository;
             _studentAssessmentRepository = studentAssessmentRepository;
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
             _mediaFileRepository = mediaFileRepository;
+            _userService = userService;
         }
         public async Task<ActionMessageResponse> InsertOrUpdateAssessmentsV2(AssessmentsRequest assessmentsRequest) {
             if (assessmentsRequest == null) {
@@ -266,6 +269,12 @@ namespace Core.Business.Sevices.Concrete {
                     Marks = requestV2.Marks,
                 };
                  res = await _studentAssessmentRepository.InsertStudentAssessment(student);
+                try {
+                    _userService.PushNotifications(Entities.DTOs.Enum.NotificationType.assessment_assigned, item.StudentId, requestV2.AssessmentId);
+                } catch (Exception) {
+
+           
+                }
             }
 
 

@@ -26,7 +26,7 @@ namespace Core.Business.Entities.RequestModels {
         public DateTime ClassTime { get; set; }
         public DateTime Date { get; set; }
         public List<string> Days { get; set; }
-        public string Description { get; set; }
+        public string ? Description { get; set; }
         public string Name { get; set; }
         public int NumberOfStudents { get; set; }
         public decimal Fee { get; set; }

@@ -13,11 +13,13 @@ namespace Core.Business.Entities.RequestModels {
         public string ?  Genre { get; set; }
         public int  PublicationYear { get; set; }
         public int  GradeId { get; set; }
-        public bool  Available { get; set; }
+        public bool Available { get; set; } = true;
+        public string  Remark { get; set; }
         public string  ?  ImageUrl { get; set; }
         public int  UserId { get; set; }
         public DateTime  CreateDate { get; set; }
         public DateTime  UpdateDate { get; set; }
         public bool  IsDeleted { get; set; } = false;
+        public int SubjectId { get; set; }
     }
 }
