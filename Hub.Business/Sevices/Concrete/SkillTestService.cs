@@ -45,7 +45,7 @@ namespace Core.Business.Sevices.Concrete {
                 try {
                     var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                     int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
-                    skillTestResponse.AverageMarks = averageCount / userCount;
+                    skillTestResponse.AverageMarks = averageCount;
                     skillTestResponse.AttemptCount = userCount;
 
                 } catch (Exception) {
@@ -81,7 +81,7 @@ namespace Core.Business.Sevices.Concrete {
             try {
                 var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                 int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
-                skillTestResponse.AverageMarks = averageCount / userCount;
+                skillTestResponse.AverageMarks = averageCount;
                 skillTestResponse.AttemptCount = userCount;
             } catch (Exception) {
 
