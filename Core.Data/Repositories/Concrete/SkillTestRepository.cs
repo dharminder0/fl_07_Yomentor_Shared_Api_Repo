@@ -88,7 +88,7 @@ ORDER BY id DESC
 
             SELECT Id FROM Attempt WHERE Id = @Id;
         END;
-    ";
+    "; 
 
             return  ExecuteScalar<int>(sql, attempt);
         }
@@ -142,6 +142,23 @@ ORDER BY id DESC
             var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1";
             return ExecuteScalar<int>(sql, new { questionId });
                
+        }
+        public AttemptSummaryResponse CalculatePercentage(int attemptId) {
+            var sql = @"SELECT
+    attemptId,
+    COUNT(*) AS TotalQuestions,
+    SUM(CASE WHEN IsCorrect = 1 THEN 1 ELSE 0 END) AS TotalCorrectAnswers,
+    (SUM(CASE WHEN IsCorrect = 1 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) AS PercentageCorrect
+FROM
+    attempt_detail
+WHERE
+    attemptId =@attemptId
+GROUP BY
+    attemptId;
+";
+            return QueryFirst<AttemptSummaryResponse>(sql, new { attemptId });
+
+
         }
     }
 }
