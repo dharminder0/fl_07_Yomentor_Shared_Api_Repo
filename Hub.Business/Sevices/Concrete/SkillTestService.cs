@@ -163,6 +163,9 @@ namespace Core.Business.Sevices.Concrete {
 
             }
             percentage = _skillTestRepository.CalculatePercentage(request.AttemptId);
+            if(percentage != null) {
+                _skillTestRepository.UpdateScore(request.AttemptId,percentage.PercentageCorrect);
+            }
             return new ActionMessageResponse { Success = true,Content= percentage,Message="Insertion_Successfully" };
 
         }
