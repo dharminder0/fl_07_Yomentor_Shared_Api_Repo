@@ -65,7 +65,7 @@ namespace Core.Business.Sevices.Concrete {
 
             if (book.Id == 0) {
                 res = await _book.InsertBookExchange(book);
-                return new ActionMessageResponse { Success = true, Content = res, Message = " Insertion_Successfully" };
+                return new ActionMessageResponse { Success = true, Content = res, Message = " Insertion_Update_Successfully" };
 
             }
             res = await _book.UpdateBookExchange(book);
@@ -170,16 +170,13 @@ namespace Core.Business.Sevices.Concrete {
             if (type == 2) {
 
                var userIds= _book.GetReciverId(bookId, item.UserId);
+                res.ReceiverUsers = new List<UserBasicV2>();
                 if (userIds != null && userIds.Any()) {
-                    res.ReceiverUsers = new List<UserBasicV2>();
-                        UserBasicV2 user1 = new UserBasicV2();
-;                    foreach (var item1 in userIds) {
+                    foreach (var item1 in userIds) {
+                        UserBasicV2 user1 = new UserBasicV2(); // Move the declaration inside the loop
                         var reciverInfo = _user.GetUserInfo(item1);
-                        if (userInfo != null) {
+                        if (reciverInfo != null) {
                             var image = _mediaFile.GetImage(item1, MediaEntityType.Users);
-
-
-
                             user1.FirstName = reciverInfo.FirstName;
                             user1.LastName = reciverInfo.LastName;
                             user1.Email = reciverInfo.Email;
@@ -187,13 +184,10 @@ namespace Core.Business.Sevices.Concrete {
                             if (image != null) {
                                 user1.UserImage = image.BlobLink;
                             }
-
-
                         }
 
-
                         var reciverAddress = _address.GetUserAddress(item1);
-                        if (addressInfo != null) {
+                        if (reciverAddress != null) {
                             var address = new Address {
                                 Address1 = reciverAddress.Address1,
                                 Address2 = reciverAddress.Address2,
@@ -206,27 +200,26 @@ namespace Core.Business.Sevices.Concrete {
                                 Id = reciverAddress.Id,
                                 Pincode = reciverAddress.Pincode,
                                 UpdateDate = reciverAddress.UpdateDate
-
                             };
                             var stateName = _address.GetState(address.StateId);
                             if (stateName != null) {
                                 address.StateName = stateName.Name;
                             }
                             user1.UserAddress = address;
+                        }
 
-
+                        int statusId = _book.GetStatusName(item1, item.Id);
+                        if (statusId > 0) {
+                            user1.ReceiverStatusId = statusId;
                         }
-                        int stausId = _book.GetStatusName(item1, item.Id);
-                        if (stausId > 0) {
-                            user1.ReceiverStatusId = stausId;
+                        string receiverStatus = Enum.GetName(typeof(BookExchangeStatus), user1.ReceiverStatusId);
+                        if (!string.IsNullOrEmpty(receiverStatus)) {
+                            user1.ReceiverStatus = receiverStatus;
                         }
-                        string Reciverstatus = Enum.GetName(typeof(BookExchangeStatus), user1.ReceiverStatusId);
-                        if (!string.IsNullOrEmpty(Reciverstatus)) {
-                            user1.ReceiverStatus = Reciverstatus;
-                        }
-                        res.ReceiverUsers.Add(user1);    
+                        res.ReceiverUsers.Add(user1);
                     }
                 }
+
             }
             return res; 
         }
