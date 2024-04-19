@@ -171,7 +171,8 @@ namespace Core.Business.Sevices.Concrete {
 
                var userIds= _book.GetReciverId(bookId, item.UserId);
                 if (userIds != null && userIds.Any()) {
-                    res.ReceiverUsers = new List<UserBasic>()
+                    res.ReceiverUsers = new List<UserBasicV2>();
+                        UserBasicV2 user1 = new UserBasicV2();
 ;                    foreach (var item1 in userIds) {
                         var reciverInfo = _user.GetUserInfo(item1);
                         if (userInfo != null) {
@@ -179,19 +180,19 @@ namespace Core.Business.Sevices.Concrete {
 
 
 
-                            user.FirstName = reciverInfo.FirstName;
-                            user.LastName = reciverInfo.LastName;
-                            user.Email = reciverInfo.Email;
-                            user.Phone = reciverInfo.Phone;
+                            user1.FirstName = reciverInfo.FirstName;
+                            user1.LastName = reciverInfo.LastName;
+                            user1.Email = reciverInfo.Email;
+                            user1.Phone = reciverInfo.Phone;
                             if (image != null) {
-                                user.UserImage = image.BlobLink;
+                                user1.UserImage = image.BlobLink;
                             }
 
 
                         }
 
 
-                        var reciverAddress = _address.GetUserAddress(item.UserId);
+                        var reciverAddress = _address.GetUserAddress(item1);
                         if (addressInfo != null) {
                             var address = new Address {
                                 Address1 = reciverAddress.Address1,
@@ -211,19 +212,19 @@ namespace Core.Business.Sevices.Concrete {
                             if (stateName != null) {
                                 address.StateName = stateName.Name;
                             }
-                            user.UserAddress = address;
+                            user1.UserAddress = address;
 
 
                         }
                         int stausId = _book.GetStatusName(item1, item.Id);
                         if (stausId > 0) {
-                            user.ReceiverStatusId = stausId;
+                            user1.ReceiverStatusId = stausId;
                         }
-                        string Reciverstatus = Enum.GetName(typeof(BookExchangeStatus), user.ReceiverStatusId);
+                        string Reciverstatus = Enum.GetName(typeof(BookExchangeStatus), user1.ReceiverStatusId);
                         if (!string.IsNullOrEmpty(Reciverstatus)) {
-                            user.ReceiverStatus = Reciverstatus;
+                            user1.ReceiverStatus = Reciverstatus;
                         }
-                        res.ReceiverUsers.Add(user);    
+                        res.ReceiverUsers.Add(user1);    
                     }
                 }
             }
