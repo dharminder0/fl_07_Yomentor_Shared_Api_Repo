@@ -160,5 +160,9 @@ GROUP BY
 
 
         }
+        public int UpdateScore(int attemptId,double score) {
+            var sql = @"update  Attempt set score=@score,status=1 where  id=@attemptId   ";
+            return ExecuteScalar<int>(sql,new { attemptId, score });    
+        }
     }
 }
