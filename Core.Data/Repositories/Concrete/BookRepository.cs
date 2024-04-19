@@ -93,8 +93,8 @@ namespace Core.Data.Repositories.Concrete {
             var count = await ExecuteScalarAsync<int>(sqlCheck, exchange);
 
             if (count > 0) {
-               
-                throw new Exception("Record already exists for this user and book.");
+
+              return  await  UpdateBookExchange(exchange);
             }
 
             var sqlInsert = @"
@@ -125,16 +125,12 @@ namespace Core.Data.Repositories.Concrete {
         public async Task<int> UpdateBookExchange(BookExchange exchange) {
             var sql = @"
         UPDATE Book_Exchange
-        SET
-            SenderId = @SenderId,
-            ReceiverId = @ReceiverId,
-            BookId = @BookId,
-            CreateDate = GetUtcDate(),
+        SET           
             Status = @Status
-        WHERE
-            Id = @Id;
+       WHERE receiverId = @receiverId 
+        AND BookId = @BookId;
 
-        SELECT Id FROM BookExchange WHERE Id = @Id;
+        SELECT Id FROM Book_Exchange WHERE Id = @Id;
     ";
 
             return await ExecuteScalarAsync<int>(sql, exchange);
