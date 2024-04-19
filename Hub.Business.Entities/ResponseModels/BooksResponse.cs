@@ -32,7 +32,7 @@ namespace Core.Business.Entities.ResponseModels {
         public string SubjectName { get; set; }
         public string  GradeName { get; set; }
         public DateTime RequestedDate { get; set; }
-        public List<UserBasic> ReceiverUsers { get; set; }
+        public List<UserBasicV2> ReceiverUsers { get; set; }
     }
     public class BookResponseV2 {
         public int Id { get; set; }
