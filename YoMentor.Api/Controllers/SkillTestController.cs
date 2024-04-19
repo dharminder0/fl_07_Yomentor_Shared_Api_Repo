@@ -56,8 +56,8 @@ namespace YoMentor.Api.Controllers {
         /// <returns></returns>
         [HttpGet]
         [Route("QuestionsAnswers")]
-        public  async Task<IActionResult> GetQuizQuestionsWithAnswers(int skillTestId) {
-            var response =  await _skillTestService.GetQuizQuestionsWithAnswers(skillTestId);
+        public  async Task<IActionResult> GetQuizQuestionsWithAnswers(int skillTestId, int attemptId) {
+            var response =  await _skillTestService.GetQuizQuestionsWithAnswers(skillTestId, attemptId);
             return JsonExt(response);
         }
         /// <summary>

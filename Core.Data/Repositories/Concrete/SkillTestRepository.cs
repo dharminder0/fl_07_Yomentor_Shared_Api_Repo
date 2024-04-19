@@ -103,7 +103,7 @@ ORDER BY id DESC
 
         public IEnumerable<Attempt> GetAttemptHistory(int userId,int skilltestId) {
             var sql = @"
- select * from Attempt where userid=@userId  and skilltestid=@skilltestId
+ select * from Attempt where userid=@userId  and skilltestid=@skilltestId and status=1  
 
  ";
             return Query<Attempt>(sql, new { userId, skilltestId });
@@ -164,9 +164,9 @@ GROUP BY
             var sql = @"update  Attempt set score=@score,status=1 where  id=@attemptId   ";
             return ExecuteScalar<int>(sql,new { attemptId, score });    
         }
-        public IEnumerable<AttemptDetail> GetAttemptDetails(int attemptId) {
-            var sql = @" select * from attempt_detail where attemptid=@attemptId ";
-            return Query<AttemptDetail>(sql, new { attemptId });
+        public int  GetAnswerId(int attemptId, int questionId) {
+            var sql = @" select answerId from attempt_detail where attemptid=@attemptId and questionId=@questionId ";
+            return ExecuteScalar<int>(sql, new { attemptId,questionId });
 
         }
         public IEnumerable<AnswerOption> GetAnswerList(int questionId) {

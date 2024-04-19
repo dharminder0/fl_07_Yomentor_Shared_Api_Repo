@@ -112,28 +112,36 @@ namespace Core.Business.Sevices.Concrete {
             var response = _skillTestRepository.UpsertAttempt(attempt);
             return new ActionMessageResponse { Content = response, Success = true };
         }
-     
-        public  async Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId) {
-            List<AttemptSkillTestResponse> quizResponseList = new List<AttemptSkillTestResponse>();
 
-           var questionList= await  _skillTestRepository.GetQuestions(skillTestId);
+        public async Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId, int attemptId) {
+            List<AttemptSkillTestResponse> quizResponseList = new List<AttemptSkillTestResponse>();
+            int selectedAnswerId = 0;
+
+            var questionList = await _skillTestRepository.GetQuestions(skillTestId);
             List<Question> questions = questionList.ToList();
             foreach (var question in questions) {
-                 var answerList = await  _skillTestRepository.GetAnswerOptionsForQuestion(question.Id);
-                List<AnswerOption> answerOptions= answerList.ToList();  
+                var answerList = await _skillTestRepository.GetAnswerOptionsForQuestion(question.Id);
+                if (attemptId > 0) {
+                    selectedAnswerId = _skillTestRepository.GetAnswerId(attemptId, question.Id);
+                }
+                List<AnswerOption> answerOptions = answerList.ToList();
 
-                quizResponseList.Add(new AttemptSkillTestResponse {
-                    QuestionId = question.Id,
-                    QuestionTitle = question.Title,
-                    QuestionDescription = question.Description,
-                    SkillTestId = question.SkillTestId,
-                    QuestionCreateDate = question.CreateDate,
-                    AnswerOptions = answerOptions
-                });
+                AttemptSkillTestResponse pb = new AttemptSkillTestResponse();
+                pb.QuestionId = question.Id;
+                pb.QuestionTitle = question.Title;
+                pb.QuestionDescription = question.Description;
+                pb.SkillTestId = question.SkillTestId;
+                pb.QuestionCreateDate = question.CreateDate;
+                pb.AnswerOptions = answerOptions;
+                if(selectedAnswerId >0) {
+                    pb.SelectedAnswerId = selectedAnswerId; 
+                }
+                quizResponseList.Add(pb);
             }
 
-            return quizResponseList;
-        }
+                return quizResponseList;
+            }
+        
         public ActionMessageResponse AttemptDetailBulkInsert(SkillTestAttemptRequest request) {
             if (request == null) throw new ArgumentNullException();
             var percentage = new AttemptSummaryResponse();
