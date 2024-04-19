@@ -23,7 +23,7 @@ namespace Core.Data.Repositories.Abstract {
         int GetCorrectAnswer(int questionId);
         AttemptSummaryResponse CalculatePercentage(int attemptId);
         int UpdateScore(int attemptId, double score);
-        IEnumerable<AttemptDetail> GetAttemptDetails(int attemptId);
+        int GetAnswerId(int attemptId, int questionId);
         IEnumerable<AnswerOption> GetAnswerList(int questionId);
     }
 }

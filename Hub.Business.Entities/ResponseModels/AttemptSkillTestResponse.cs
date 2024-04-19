@@ -12,6 +12,7 @@ namespace Core.Business.Entities.ResponseModels {
         public string QuestionDescription { get; set; }
         public int SkillTestId { get; set; }
         public DateTime QuestionCreateDate { get; set; }
+        public int SelectedAnswerId { get; set; }
         public List<AnswerOption> AnswerOptions { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace Core.Business.Sevices.Abstract {
         Task<List<SkillTestResponse>> GetSkillTestList(SkillTestRequest skillTest);
         SkillTestResponse GetSkillTest(int id, int userId);
         ActionMessageResponse UpsertAttempt(Attempt attempt);
-        Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId);
+        Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId, int attemptId);
         ActionMessageResponse AttemptDetailBulkInsert(SkillTestAttemptRequest request);
     }
 }
