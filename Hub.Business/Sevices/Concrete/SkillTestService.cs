@@ -94,6 +94,7 @@ namespace Core.Business.Sevices.Concrete {
                         AttemptHistory history = new AttemptHistory();
                         history.Score = item1.Score;
                         history.AttemptDate = item1.StartDate;
+                        history.AttemptId= item1.Id;    
                         obj.Add(history);
 
 

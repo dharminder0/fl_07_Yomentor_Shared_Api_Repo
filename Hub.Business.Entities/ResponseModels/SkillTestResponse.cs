@@ -23,6 +23,7 @@ namespace Core.Business.Entities.ResponseModels {
     public class AttemptHistory {
         public int Score { get; set; }
         public DateTime AttemptDate { get; set; }
+        public int AttemptId { get; set; }
 
     }
 }
