@@ -277,7 +277,8 @@ namespace Core.Data.Repositories.Concrete {
             return ExecuteScalar<DateTime>(sql, new { bookId });
         }
         public IEnumerable<int>  GetReciverId(int bookId, int senderId) {
-            var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and senderid=@senderId ";
+            var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and senderid=@senderId and status=1
+ ";
             return Query<int>(sql, new { bookId, senderId });
         } 
     }
