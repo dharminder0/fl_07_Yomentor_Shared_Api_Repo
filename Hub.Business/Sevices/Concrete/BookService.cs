@@ -232,8 +232,19 @@ namespace Core.Business.Sevices.Concrete {
         
        
 
-        public bool UpdateStatus(int id, int status) {
-            return _book.UpdateStatus(id, status);  
+        public bool UpdateStatus(int id, int status, int receiverId) {
+           bool response = _book.UpdateStatus(id, status, receiverId);
+            if (status == (int)BookExchangeStatus.Accepted) {
+
+                 List<int>reciverIds=_book.GetReciverIdV2(id).ToList();
+                foreach (var item in reciverIds) {
+                    response= _book.UpdateStatus(id, (int)BookExchangeStatus.Declined,item);
+
+                }
+                return response;    
+            }
+            return response;
+
         }
         public async Task<List<BookExchangeResponse>> GetBookExchangeList(BookExchangeRequest bookExchange) {
             if (bookExchange == null) {
