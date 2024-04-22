@@ -181,6 +181,7 @@ namespace Core.Business.Sevices.Concrete {
                             user1.LastName = reciverInfo.LastName;
                             user1.Email = reciverInfo.Email;
                             user1.Phone = reciverInfo.Phone;
+                            user1.UserId = item1;
                             if (image != null) {
                                 user1.UserImage = image.BlobLink;
                             }
