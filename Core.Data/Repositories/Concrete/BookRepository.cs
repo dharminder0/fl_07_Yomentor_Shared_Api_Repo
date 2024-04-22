@@ -139,9 +139,9 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @"select * from books where Available=1 and  IsDeleted=0 and id=@bookid ";
             return   QueryFirst<Books>(sql,new { bookId });
         }
-        public  bool UpdateStatus(int id, int status) {
-            var sql = @" update Book_Exchange set status=@status where id=@id";
-            return ExecuteScalar<bool>(sql,new { id, status }); 
+        public  bool  UpdateStatus(int id, int status, int receiverId) {
+            var sql = @" update Book_Exchange set status=@status where BookId=@id and receiverid=@receiverId    ";
+            return ExecuteScalar<bool>(sql,new { id, status ,receiverId}); 
 
         }
   
@@ -280,6 +280,11 @@ namespace Core.Data.Repositories.Concrete {
             var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and senderid=@senderId and status=1
  ";
             return Query<int>(sql, new { bookId, senderId });
-        } 
+        }
+        public IEnumerable<int> GetReciverIdV2(int bookId) {
+            var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and status=1
+ ";
+            return Query<int>(sql, new { bookId });
+        }
     }
 }
