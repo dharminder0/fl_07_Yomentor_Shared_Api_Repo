@@ -136,7 +136,7 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<int>(sql, exchange);
         }
        public Books GetBooksList(int bookId) {
-            var sql = @"select * from books where Available=1 and  IsDeleted=0 and id=@bookid ";
+            var sql = @"select * from books where    IsDeleted=0 and id=@bookid ";
             return   QueryFirst<Books>(sql,new { bookId });
         }
         public  bool  UpdateStatus(int id, int status, int receiverId) {
@@ -221,7 +221,12 @@ namespace Core.Data.Repositories.Concrete {
                     parameters.Add("@UserId", book.UserId);
                 }
             }
-            sql += " and b.available= 1 and b.isdeleted= 0 ";
+            if (book.ActionType == (int)BookActionType.IsCreated) {
+                sql += " and b.available=0 ";
+            }
+            else {
+                sql += " and b.available= 1 and b.isdeleted= 0 ";
+            }
 
             if (book.UserId > 0 && book.ActionType == (int)BookActionType.IsCreated) {
                 sql += @" AND b.userid = @UserId ";
