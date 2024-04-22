@@ -221,12 +221,10 @@ namespace Core.Data.Repositories.Concrete {
                     parameters.Add("@UserId", book.UserId);
                 }
             }
-            if (book.ActionType == (int)BookActionType.IsCreated) {
-                sql += " and b.available=0 ";
-            }
-            else {
+         
+
                 sql += " and b.available= 1 and b.isdeleted= 0 ";
-            }
+            
 
             if (book.UserId > 0 && book.ActionType == (int)BookActionType.IsCreated) {
                 sql += @" AND b.userid = @UserId ";
