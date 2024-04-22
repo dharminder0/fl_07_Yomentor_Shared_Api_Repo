@@ -240,7 +240,7 @@ namespace Core.Business.Sevices.Concrete {
                  List<int>reciverIds=_book.GetReciverIdV2(id).ToList();
                 foreach (var item in reciverIds) {
                     response= _book.UpdateStatus(id, (int)BookExchangeStatus.Declined,item);
-                    _book.UpdateBookStatus(id);
+                    //_book.UpdateBookStatus(id);
 
                 }
                 return response;    
