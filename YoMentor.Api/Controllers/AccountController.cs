@@ -187,8 +187,8 @@ namespace Core.Web.API.Controllers {
         /// <param name="UserRefRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("AddUserDevices")]
-        [RequireAuthorization]
+        [Route("api/User/AddUserDevices")]
+        
         public IActionResult AddUserDevices(UserDevicesRequest UserRefRequest) {
 
             var response = _userService.AddUserDevices(UserRefRequest);
@@ -201,8 +201,8 @@ namespace Core.Web.API.Controllers {
         /// <param name="userToken"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("RemoveUserDevices")]
-        [RequireAuthorization]
+        [Route("api/User/RemoveUserDevices")]
+      
         public IActionResult AddUserDevices(string userToken) {
 
             var response = _userService.RemoveUsers(userToken);
