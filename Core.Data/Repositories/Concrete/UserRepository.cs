@@ -418,7 +418,7 @@ u.id
             var sql = @"
 if not Exists(Select 1 from User_Devices where UserId =@UserId  and deviceToken=@deviceToken)
 begin
-INSERT INTO UserDevices(UserId,deviceToken,CreatedDate)
+INSERT INTO User_Devices(UserId,deviceToken,CreatedDate)
       VALUES(@UserId,@deviceToken,getutcdate())
  select SCOPE_IDENTITY()
 end
