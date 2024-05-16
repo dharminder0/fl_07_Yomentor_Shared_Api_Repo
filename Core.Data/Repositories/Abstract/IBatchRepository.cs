@@ -23,6 +23,7 @@ namespace Core.Data.Repositories.Abstract
         IEnumerable<string> GetBatchNamebybatchId(int batchId);
         Task<bool> UpdateBatchStatus(int batchStatus, int batchId);
         Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequestV2 request);
+        bool DeleteBatch(int id);
 
 
     }

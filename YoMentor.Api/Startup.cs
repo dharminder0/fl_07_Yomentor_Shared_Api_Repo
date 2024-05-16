@@ -6,6 +6,8 @@ using Autofac;
 using Core.Common.Configuration;
 using ElmahCore;
 using ElmahCore.Mvc;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Hub.Business;
 using Hub.Common.Settings;
 using Hub.Web.Api.Filters;
@@ -47,6 +49,10 @@ namespace Hub.Web.Api {
                 return builder.Build();
             });
 
+            var pathToFirebaseAdminSdkJson = "firebase/AdminSdk.json";
+            FirebaseApp.Create(new AppOptions {
+                Credential = GoogleCredential.FromFile(pathToFirebaseAdminSdkJson)
+            });
             //var ioc = new IoC(() => {
             //    var builder = new ContainerBuilder();
             //    builder.RegisterAssemblyTypes(assembliesToScan)
