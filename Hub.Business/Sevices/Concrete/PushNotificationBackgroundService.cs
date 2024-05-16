@@ -38,26 +38,15 @@ public class PushNotificationBackgroundService : BackgroundService {
         }
     }
 
-    public async Task PushNotifications() {
-        //using (var  scope = _serviceProvider.CreateScope()) {
-        //    var _appointment = scope.ServiceProvider.GetRequiredService<IAppointmentService>();
-        //}
-
-
-        try {
-           
-            // business for the service
+    public async Task PushNotifications() {       
+        try {             
             _logger.LogInformation($"service started:");
-
             var response =  await _userService.GetPushNotification(); 
-           
-
         } catch (Exception ex) {
-            _logger.LogError($@"The Website is Down {SERVICE_NAME} .", ex.Message);
-            
+            _logger.LogError($@"The Website is Down {SERVICE_NAME} .", ex.Message);            
         }
         await Task.FromResult("Done");
-        //return Task.CompletedTask;
+      
     }
 
    

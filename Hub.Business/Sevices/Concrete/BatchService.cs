@@ -402,7 +402,9 @@ namespace Core.Business.Sevices.Concrete {
                 return null;
             }
         }
-
+        public bool DeleteBatch(int id) {
+            return _batchRepository.DeleteBatch(id);
+        }
     }
 }
 
