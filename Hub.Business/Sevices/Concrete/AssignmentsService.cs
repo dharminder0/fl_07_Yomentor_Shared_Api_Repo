@@ -251,7 +251,10 @@ namespace Core.Business.Sevices.Concrete {
                 _mediaFileRepository.InsertInMediaFile(mediaFile);
             }
         }
+        public bool DeleteAssessment(int Id) {
+            return _assignmentsRepo.DeleteAssessment(Id);   
+        }
 
-    }
+        }
 
 }

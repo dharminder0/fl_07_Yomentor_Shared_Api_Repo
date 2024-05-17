@@ -114,7 +114,7 @@ FROM (
     SELECT DISTINCT SA.AssessmentId, cast(SA.AssignedDate as date) as AssignedDate
     FROM Assessments A
     JOIN student_assessments SA ON A.id = SA.assessmentid
-    WHERE SA.batchid = @batchId";
+    WHERE SA.batchid = @batchId  and isdeleted=0";
             if (request.StudentId > 0)
             {
                 sql += $@" And SA.StudentId=@StudentId";
@@ -129,6 +129,10 @@ JOIN Assessments A ON A.id = DistinctAssessments.AssessmentId
             }
             return await QueryAsync<Assessments>(sql, request);
           
+        }
+        public bool DeleteAssessment(int Id) {
+            var sql = @"update Assessments set isdeleted=1 where id=@id ";
+            return ExecuteScalar<bool>(sql, new { Id });    
         }
     }
 }
