@@ -16,5 +16,6 @@ namespace Core.Business.Sevices.Abstract {
         Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequestV2 requestV2);
         Task<List<AssessmentResponse>> GetAssessmentByBatch(ListRequest request);
         bool DeleteAssessment(int Id);
+        ActionMassegeResponse DeleteStudentAssessments(int batchId, int assesmentid);
     }
 }

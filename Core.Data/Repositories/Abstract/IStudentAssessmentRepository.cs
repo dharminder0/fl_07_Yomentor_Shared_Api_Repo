@@ -10,5 +10,6 @@ namespace Core.Data.Repositories.Abstract {
     public interface IStudentAssessmentRepository : IDataRepository<StudentAssessment>{
         Task<int> InsertStudentAssessment(StudentAssessment studentAssessment);
         Task<int> UpdateStudentAssessment(StudentAssessment studentAssessment);
+        bool DeleteStudentAssessment(int batchId, int assessmentId);
     }
 }
