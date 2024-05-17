@@ -312,6 +312,10 @@ namespace Core.Business.Sevices.Concrete {
 
             return res;
         }
+        public bool DeleteAssessment(int Id) { 
+            return _assessmentsRepository.DeleteAssessment(Id);
+
+        }
 
     }
 }

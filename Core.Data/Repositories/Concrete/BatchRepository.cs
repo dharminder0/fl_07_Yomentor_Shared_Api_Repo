@@ -198,7 +198,7 @@ WHERE B.teacherId = @teacherId and isdeleted=0 ";
 
             if (request.StatusId?.Count > 0) {
                 sql += @"
-AND B.status IN @statusIds";
+AND B.status IN @statusIds"; 
                 parameters.Add("statusIds", request.StatusId);
             }
 

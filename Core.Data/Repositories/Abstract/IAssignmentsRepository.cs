@@ -14,6 +14,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<Assignments> GetAssignments(int id);
         Task<List<Assignments>> GetAllAssignments(StudentProgressRequestV2 request);
         Task<IEnumerable<Assignments>> GetAssignmentsByBatch(ListRequest request);
+        bool DeleteAssessment(int Id);
 
     }
 }
