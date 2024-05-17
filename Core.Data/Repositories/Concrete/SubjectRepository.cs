@@ -18,5 +18,6 @@ namespace Core.Data.Repositories.Concrete {
             return res;
           
         }
+       
     }
 }

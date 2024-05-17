@@ -254,7 +254,12 @@ namespace Core.Business.Sevices.Concrete {
         public bool DeleteAssessment(int Id) {
             return _assignmentsRepo.DeleteAssessment(Id);   
         }
-
+        public ActionMassegeResponse RemoveStudentAssignments(int assesementId, int batchId) {
+            bool response = false;
+              response=  _studentAssignmentsRepo.DeleteStudentAssignments(batchId, assesementId);         
+            return new ActionMassegeResponse { Message = "Assignments removed successfully", Response = true, Content = response };
         }
+
+    }
 
 }

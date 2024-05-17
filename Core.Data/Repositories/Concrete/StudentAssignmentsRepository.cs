@@ -62,6 +62,11 @@ namespace Core.Data.Repositories.Concrete {
             return await  ExecuteScalarAsync<bool>(sql,new { batchId });       
 
         }
+        public bool DeleteStudentAssignments(int batchId, int assignmentId) {
+            var sql = @" delete from student_assignments where batchId=@batchId and assignmentid=@assignmentId ";
+            return  ExecuteScalar<bool>(sql, new { batchId,assignmentId });
+
+        }
 
     }
 }

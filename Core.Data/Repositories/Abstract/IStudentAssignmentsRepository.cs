@@ -13,5 +13,6 @@ namespace Core.Data.Repositories.Abstract
         Task<int> InsertStudentAssignment(Student_Assignments studentAssignment);
         Task<int> UpdateStudentAssignment(Student_Assignments studentAssignment);
         Task<bool> DeleteStudentAssignment(int batchId);
+        bool DeleteStudentAssignments(int batchId, int assignmentid);
     }
 }
