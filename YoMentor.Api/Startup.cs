@@ -32,6 +32,7 @@ namespace Hub.Web.Api {
                 Assembly.GetExecutingAssembly(),
                 Assembly.GetAssembly(typeof(Core.Business.IDependency)),
                 Assembly.GetAssembly(typeof(Core.Data.IDependency)),
+                  Assembly.GetAssembly(typeof(YoMentor.ChatGPT.IDependency)),
             };
             // register services only
             services.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
