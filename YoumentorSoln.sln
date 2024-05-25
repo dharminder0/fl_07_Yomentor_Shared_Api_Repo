@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Business.Entities", "H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoMentor.Api", "YoMentor.Api\YoMentor.Api.csproj", "{B6C6E347-10DF-49BA-8844-8F07049C33DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yomentor.Security", "Yomentor.Security\Yomentor.Security.csproj", "{6A8CE46A-83F7-4A37-BCB6-C4A099028628}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yomentor.Security", "Yomentor.Security\Yomentor.Security.csproj", "{6A8CE46A-83F7-4A37-BCB6-C4A099028628}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoMentor.ChatGPT", "YoMentor.ChatGPT\YoMentor.ChatGPT.csproj", "{4A1F07AC-4750-4A86-AA86-DFCB3CC26DF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6A8CE46A-83F7-4A37-BCB6-C4A099028628}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A8CE46A-83F7-4A37-BCB6-C4A099028628}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A8CE46A-83F7-4A37-BCB6-C4A099028628}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A1F07AC-4750-4A86-AA86-DFCB3CC26DF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A1F07AC-4750-4A86-AA86-DFCB3CC26DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A1F07AC-4750-4A86-AA86-DFCB3CC26DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A1F07AC-4750-4A86-AA86-DFCB3CC26DF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

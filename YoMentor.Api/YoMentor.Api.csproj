@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
     <ProjectReference Include="..\Hub.Business.Entities\Core.Business.Entities.csproj" />
     <ProjectReference Include="..\Hub.Business\Core.Business.csproj" />
+    <ProjectReference Include="..\YoMentor.ChatGPT\YoMentor.ChatGPT.csproj" />
   </ItemGroup>
 
   <ItemGroup>

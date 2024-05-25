@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace Core.Common.Web {
     public class HttpService {
@@ -135,6 +137,47 @@ namespace Core.Common.Web {
                 throw new Exception("Unknown error");
             }
         }
+
+        public async Task<T> PostChatGPTAsync<T>(string route, object body)
+        {
+            var url = $"{RootUrl.TrimEnd('/')}/{route}";
+            var client = GetClient();
+            client.Timeout = TimeSpan.FromMinutes(5);
+
+            var jsonRequest = JsonConvert.SerializeObject(body);
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+
+
+            //var dataAsString = JsonConvert.SerializeObject(body, new JsonSerializerSettings
+            //{
+            //    ContractResolver = new CamelCasePropertyNamesContractResolver()
+            //});
+            //var content = new StringContent(dataAsString);
+            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var response = await client.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode && response.Content != null)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+               // var responseData = JsonSerializer.Deserialize<JsonElement>(responseContent);
+                return JsonConvert.DeserializeObject<T>(data);
+            }
+            else
+            {
+                if (response.Content != null)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    throw new Exception(result);
+                    //var resultDetails = new {Error = result.SerializeObjectWithoutNull(), Body  = body.SerializeObjectWithoutNull(), Request = route };
+                    //throw new Exception(resultDetails.SerializeObjectWithoutNull());
+                }
+
+                throw new Exception("Unknown error");
+            }
+        }
+
+
 
         public async Task<T> PostAsync<T>(string route, object body) {
             var url = $"{RootUrl.TrimEnd('/')}/{route}";
