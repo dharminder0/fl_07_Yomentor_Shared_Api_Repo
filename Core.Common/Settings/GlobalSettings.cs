@@ -142,6 +142,8 @@ namespace Hub.Common.Settings {
         public static string BlobAssessment => GetString("BlobAssessment");
         public static string BlobAssignment => GetString("BlobAssignment");
 
+        public static string ChatGPTKey => GetString("ChatGPTKey");
+
         public static string GetKeyValues(string key) {
             return !string.IsNullOrWhiteSpace(_appSettings[key]) ? _appSettings[key] : null;
         }

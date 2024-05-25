@@ -19,9 +19,20 @@ namespace YoMentor.Api.Controllers
 
 
         [HttpPost]
+        [Route("GetQuestion")]
         public async Task<IActionResult> GenerateQuestions([FromBody] QuestionRequest request)
         {
-            var questions =await _aIQuestionAnswer.GenerateQuestions(request);
+            var questions =await _aIQuestionAnswer.GenerateQuestions(request,false);
+
+            return Ok(questions);
+        }
+
+
+        [HttpPost]
+        [Route("GetQuestionObject")]
+        public async Task<IActionResult> GenerateQuestionsObject([FromBody] QuestionRequest request)
+        {
+            var questions = await _aIQuestionAnswer.GenerateQuestions(request,true);
 
             return Ok(questions);
         }
