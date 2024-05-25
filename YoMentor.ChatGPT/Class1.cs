@@ -14,13 +14,13 @@ namespace YoMentor.ChatGPT
     public interface IAIQuestionAnswerService
     {
         Task<object> GenerateQuestionsOld(QuestionRequest request);
-        Task<object> GenerateQuestions(QuestionRequest request);
+        Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject);
     }
 
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService
     {
 
-        public AIQuestionAnswerService() : base("https://api.openai.com", "Bearer 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") { }
+        public AIQuestionAnswerService() : base("https://api.openai.com", GlobalSettings.ChatGPTKey) { }
 
 
         public async Task<object> GenerateQuestionsOld(QuestionRequest request)
@@ -42,7 +42,7 @@ namespace YoMentor.ChatGPT
         }
 
 
-        public async Task<object> GenerateQuestions(QuestionRequest request) {
+        public async Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject) {
            
             var openAiRequest = new
             {
@@ -52,6 +52,7 @@ namespace YoMentor.ChatGPT
                 new { role = "system", content = "You are a helpful assistant." },
                 new { role = "user", content = $"Generate {request.NumberOfQuestions} questions for a {request.AcademicClass} class in {request.Subject} on the topic of {request.Topic} at a {request.ComplexityLevel} complexity level. Provide the correct answers and explanations." }
             },
+                //$"Generate {request.NumberOfQuestions} questions for a {request.AcademicClass} class in {request.Subject} on the topic of {request.Topic} at a {request.ComplexityLevel} complexity level. Provide the correct answers and explanations.",
                 max_tokens = 1500
             };
 
@@ -59,6 +60,10 @@ namespace YoMentor.ChatGPT
             var responseData = await _httpService.PostAsync<object>("v1/chat/completions", openAiRequest);
 
             var responseDatass = JObject.Parse(responseData.ToString());
+            if (isOnlyobject) {
+                return responseDatass;
+            }
+            
             var choices = responseDatass["choices"];
             var questions = new List<QuestionResponse>();
             foreach (var choice in choices)
