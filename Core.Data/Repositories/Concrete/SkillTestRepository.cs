@@ -174,6 +174,76 @@ GROUP BY
             return Query<AnswerOption>(sql, new { questionId });
 
         }
-        
+        public async  Task<int> InsertQuestion(Question question) {
+            string sql = @"
+        INSERT INTO Question
+        (
+            Title,
+            Description,
+            SkillTestId,
+          
+            CreateDate
+        )
+        VALUES
+        (
+            @Title,
+            @Description,
+            @SkillTestId,
+          
+            GetUtcDate()
+        );
+            SELECT SCOPE_IDENTITY(); "; 
+
+            return await  ExecuteScalarAsync<int >(sql, question);
+        }
+        public  async Task<bool> InsertAnswerOption(AnswerOption answerOption) {
+            string sql = @"
+        INSERT INTO Answer_Option
+        (
+            QuestionId,
+            Title,
+            IsCorrect,
+            CreateDate,
+            IsDeleted
+        )
+        VALUES
+        (
+            @QuestionId,
+            @Title,
+            @IsCorrect,
+            GetUtcDate(),
+            @IsDeleted
+        )";
+
+            return await  ExecuteScalarAsync<bool>(sql, answerOption);
+        }
+        public async Task<int> InsertSkillTest(SkillTest skillTest) {
+            string sql = @"
+    INSERT INTO SkillTest
+    (
+   
+        Title,
+        Description,
+        GradeId,
+        SubjectId,
+        CreateDate,
+        UpdateDate,
+        IsDeleted
+    )
+    VALUES
+    (
+
+        @Title,
+        @Description,
+        @GradeId,
+        @SubjectId,
+        GetUtcDate(),
+        @UpdateDate,
+        @IsDeleted
+    );
+            SELECT SCOPE_IDENTITY(); "; 
+            return await ExecuteScalarAsync<int >(sql, skillTest);
+        }
+
     }
 }
