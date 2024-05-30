@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using Core.Business.Entities.DataModels;
 
 namespace YoMentor.ChatGPT
 {
@@ -43,20 +44,63 @@ namespace YoMentor.ChatGPT
 
 
         public async Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject) {
-           
+
+            //var openAiRequest = new
+            //{
+            //    model = "gpt-3.5-turbo",
+            //    messages = new[]
+            //    {
+            //    new { role = "system", content = "You are a helpful assistant." },
+            //    new { role = "user", content = $"Generate {request.NumberOfQuestions} questions for a {request.AcademicClass} class in {request.Subject} on the topic of {request.Topic} at a {request.ComplexityLevel} complexity level. Provide the correct answers and explanations." }
+            //},
+            //    //$"Generate {request.NumberOfQuestions} questions for a {request.AcademicClass} class in {request.Subject} on the topic of {request.Topic} at a {request.ComplexityLevel} complexity level. Provide the correct answers and explanations.",
+            //    max_tokens = 1500
+            //};
+
+            string userPrompt = $@"
+    Generate {request.NumberOfQuestions} questions for an Indian student in {request.AcademicClass} class studying {request.Subject} on the topic of {request.Topic} according to the NCERT syllabus and CBSE board standards. 
+    The questions should be of {request.ComplexityLevel} complexity and should test the student's critical thinking, problem-solving skills, and deep understanding of the topic.
+    Each question should include multiple choice answers, the correct answer, and a detailed explanation. 
+    Ensure that the generated questions do not repeat any of the previously provided questions.
+    The output should be in the following JSON array format:
+
+    [
+        {{
+            ""question"": ""Question 1"",
+            ""choices"": [""Option A"", ""Option B"", ""Option C"", ""Option D""],
+            ""correct_answer"": ""Option B"",
+            ""explanation"": ""Detailed explanation of why Option B is correct.""
+        }},
+        {{
+            ""question"": ""Question 2"",
+            ""choices"": [""Option A"", ""Option B"", ""Option C"", ""Option D""],
+            ""correct_answer"": ""Option A"",
+            ""explanation"": ""Detailed explanation of why Option A is correct.""
+        }},
+        ...
+    ]
+";
+
             var openAiRequest = new
             {
                 model = "gpt-3.5-turbo",
                 messages = new[]
                 {
-                new { role = "system", content = "You are a helpful assistant." },
-                new { role = "user", content = $"Generate {request.NumberOfQuestions} questions for a {request.AcademicClass} class in {request.Subject} on the topic of {request.Topic} at a {request.ComplexityLevel} complexity level. Provide the correct answers and explanations." }
+                new { role = "system", content = "You are an AI tutor assisting students in generating study questions based on their inputs." },
+                new { role = "user", content =userPrompt }
             },
                 //$"Generate {request.NumberOfQuestions} questions for a {request.AcademicClass} class in {request.Subject} on the topic of {request.Topic} at a {request.ComplexityLevel} complexity level. Provide the correct answers and explanations.",
-                max_tokens = 1500
+                max_tokens = 1500,
+                n = 1,
+                stop = "None",
+                temperature = 0.7
             };
 
-           
+
+
+
+
+
             var responseData = await _httpService.PostAsync<object>("v1/chat/completions", openAiRequest);
 
             var responseDatass = JObject.Parse(responseData.ToString());
@@ -73,9 +117,9 @@ namespace YoMentor.ChatGPT
 
                 foreach (var block in questionBlocks)
                 {
-                    var questionMatch = Regex.Match(block, @"Question: (.+)");
-                    var answerMatch = Regex.Match(block, @"Answer: (.+)");
-                    var explanationMatch = Regex.Match(block, @"Explanation: (.+)");
+                    var questionMatch = Regex.Match(block, @"question: (.+)");
+                    var answerMatch = Regex.Match(block, @"answer: (.+)");
+                    var explanationMatch = Regex.Match(block, @"explanation: (.+)");
 
                     if (questionMatch.Success && answerMatch.Success && explanationMatch.Success)
                     {
