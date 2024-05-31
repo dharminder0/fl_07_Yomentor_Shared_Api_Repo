@@ -34,6 +34,8 @@ namespace Core.Business.Entities.ResponseModels {
     }
 
     public class ProcessedResponse {
+        public string Summary { get; set; }
+        public string  Title { get; set; }
         public List<QuestionInfo> Questions { get; set; }
     }
 

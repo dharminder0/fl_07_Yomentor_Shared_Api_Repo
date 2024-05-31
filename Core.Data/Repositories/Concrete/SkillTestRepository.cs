@@ -12,13 +12,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Data.Repositories.Concrete {
-    public class SkillTestRepository  : DataRepository<SkillTest>, ISkillTestRepository{
+    public class SkillTestRepository : DataRepository<SkillTest>, ISkillTestRepository {
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
             var sql = @" select * from skilltest where 1=1 ";
-            if(skillTest.SubjectId > 0) {
+            if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
-            if(skillTest.GradeId > 0) {
+            if (skillTest.GradeId > 0) {
                 sql += @" and gradeId=@gradeId ";
             }
             if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
@@ -32,15 +32,15 @@ ORDER BY id DESC
     
         OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
             }
-            return  await QueryAsync<SkillTest>(sql, skillTest);
+            return await QueryAsync<SkillTest>(sql, skillTest);
         }
-        public  SkillTest GetSkillTest(int Id) {
+        public SkillTest GetSkillTest(int Id) {
             var sql = @" select * from skillTest where id=@Id and IsDeleted=0 ";
-            return QueryFirst<SkillTest>(sql, new { Id });  
+            return QueryFirst<SkillTest>(sql, new { Id });
         }
         public int GetSkillTestSumScore(int Id) {
             var sql = @" select Avg(score) from attempt  where skilltestId=@id and status=1 ";
-            return ExecuteScalar<int>(sql,  new { Id });
+            return ExecuteScalar<int>(sql, new { Id });
         }
         public int GetSkillTestUser(int Id) {
             var sql = @" select Count(userId) from attempt  where skilltestId=@id  and status=1 ";
@@ -88,20 +88,23 @@ ORDER BY id DESC
 
             SELECT Id FROM Attempt WHERE Id = @Id;
         END;
-    "; 
+    ";
 
-            return  ExecuteScalar<int>(sql, attempt);
+            return ExecuteScalar<int>(sql, attempt);
         }
         public async Task<IEnumerable<Question>> GetQuestions(int skillTestId) {
             var sql = @"select * from Question where skilltestid=@skillTestId";
             return await QueryAsync<Question>(sql, new { skillTestId });
         }
         public async Task<IEnumerable<AnswerOption>> GetAnswerOptionsForQuestion(int questionId) {
-            var sql = @"select * from answer_option where questionId=@questionId ";
-            return  await QueryAsync<AnswerOption>(sql, new { questionId });
+            var sql = @"SELECT A.*, Q.Explanations 
+FROM answer_option A 
+JOIN Question Q 
+ON A.QuestionId = Q.id where A.questionId=@questionId ";
+            return await QueryAsync<AnswerOption>(sql, new { questionId });
         }
 
-        public IEnumerable<Attempt> GetAttemptHistory(int userId,int skilltestId) {
+        public IEnumerable<Attempt> GetAttemptHistory(int userId, int skilltestId) {
             var sql = @"
  select * from Attempt where userid=@userId  and skilltestid=@skilltestId and status=1  
 
@@ -109,7 +112,7 @@ ORDER BY id DESC
             return Query<Attempt>(sql, new { userId, skilltestId });
 
 
-         }
+        }
         public bool InsertAttemptDetail(AttemptDetail attemptDetail) {
 
             string sql = @"
@@ -129,19 +132,19 @@ ORDER BY id DESC
                 @IsCorrect,
                 GetUtcDate()
             )";
-            return ExecuteScalar<bool>(sql, attemptDetail); 
+            return ExecuteScalar<bool>(sql, attemptDetail);
 
-              
-            
+
+
         }
         public bool DeleteAttemptDetail(int attemptId) {
             var sql = @" delete from attempt_detail where AttemptId=@attemptId ";
-            return ExecuteScalar<bool>(sql, new { attemptId });    
+            return ExecuteScalar<bool>(sql, new { attemptId });
         }
         public int GetCorrectAnswer(int questionId) {
             var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1";
             return ExecuteScalar<int>(sql, new { questionId });
-               
+
         }
         public AttemptSummaryResponse CalculatePercentage(int attemptId) {
             var sql = @"SELECT
@@ -160,13 +163,13 @@ GROUP BY
 
 
         }
-        public int UpdateScore(int attemptId,double score) {
+        public int UpdateScore(int attemptId, double score) {
             var sql = @"update  Attempt set score=@score,status=1 where  id=@attemptId   ";
-            return ExecuteScalar<int>(sql,new { attemptId, score });    
+            return ExecuteScalar<int>(sql, new { attemptId, score });
         }
-        public int  GetAnswerId(int attemptId, int questionId) {
+        public int GetAnswerId(int attemptId, int questionId) {
             var sql = @" select answerId from attempt_detail where attemptid=@attemptId and questionId=@questionId ";
-            return ExecuteScalar<int>(sql, new { attemptId,questionId });
+            return ExecuteScalar<int>(sql, new { attemptId, questionId });
 
         }
         public IEnumerable<AnswerOption> GetAnswerList(int questionId) {
@@ -174,14 +177,14 @@ GROUP BY
             return Query<AnswerOption>(sql, new { questionId });
 
         }
-        public async  Task<int> InsertQuestion(Question question) {
+        public async Task<int> InsertQuestion(Question question) {
             string sql = @"
         INSERT INTO Question
         (
             Title,
             Description,
             SkillTestId,
-          
+          explanations,
             CreateDate
         )
         VALUES
@@ -189,14 +192,14 @@ GROUP BY
             @Title,
             @Description,
             @SkillTestId,
-          
+          @explanations,
             GetUtcDate()
         );
-            SELECT SCOPE_IDENTITY(); "; 
+            SELECT SCOPE_IDENTITY(); ";
 
-            return await  ExecuteScalarAsync<int >(sql, question);
+            return await ExecuteScalarAsync<int>(sql, question);
         }
-        public  async Task<bool> InsertAnswerOption(AnswerOption answerOption) {
+        public async Task<bool> InsertAnswerOption(AnswerOption answerOption) {
             string sql = @"
         INSERT INTO Answer_Option
         (
@@ -215,7 +218,7 @@ GROUP BY
             @IsDeleted
         )";
 
-            return await  ExecuteScalarAsync<bool>(sql, answerOption);
+            return await ExecuteScalarAsync<bool>(sql, answerOption);
         }
         public async Task<int> InsertSkillTest(SkillTest skillTest) {
             string sql = @"
@@ -241,9 +244,12 @@ GROUP BY
         @UpdateDate,
         @IsDeleted
     );
-            SELECT SCOPE_IDENTITY(); "; 
-            return await ExecuteScalarAsync<int >(sql, skillTest);
+            SELECT SCOPE_IDENTITY(); ";
+            return await ExecuteScalarAsync<int>(sql, skillTest);
         }
-
+        public Prompt GetPrompt(string prompt_type) {
+            var sql = @" select * from Prompt where prompt_type=@prompt_type ";
+            return QueryFirst<Prompt>(sql, new { prompt_type });
+        }
     }
 }
