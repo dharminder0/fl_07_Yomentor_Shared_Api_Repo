@@ -13,7 +13,7 @@ namespace Core.Business.Entities.ChatGPT {
         public string? Topic { get; set; }
         public int ComplexityLevel { get; set; }
         public int NumberOfQuestions { get; set; }
-        public string? ExamName { get; set; }
+      
         public int Language { get; set; }
     }
 
