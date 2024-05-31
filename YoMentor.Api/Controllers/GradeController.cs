@@ -16,8 +16,8 @@ namespace YoMentor.Api.Controllers {
         }
         [HttpGet]
         [Route("list")]
-        public async Task<IActionResult> GetAllGrades() {
-            var response = await  _gradeService.GetAllGrades();
+        public async Task<IActionResult> GetAllGrades(int type) {
+            var response = await  _gradeService.GetAllGrades(type);
             return JsonExt(response);
 
 
