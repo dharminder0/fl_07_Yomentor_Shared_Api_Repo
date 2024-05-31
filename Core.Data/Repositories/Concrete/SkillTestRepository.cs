@@ -181,7 +181,7 @@ GROUP BY
             Title,
             Description,
             SkillTestId,
-          
+          explanations,
             CreateDate
         )
         VALUES
@@ -189,7 +189,7 @@ GROUP BY
             @Title,
             @Description,
             @SkillTestId,
-          
+          @explanations,
             GetUtcDate()
         );
             SELECT SCOPE_IDENTITY(); "; 

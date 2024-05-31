@@ -122,7 +122,7 @@ namespace YoMentor.ChatGPT {
                 var processedResponse = ProcessOpenAiResponse(response);
                 try {
                     List<QuestionInfo> questionInfos = new List<QuestionInfo>();
-                    foreach (var item in processedResponse.Result.Questions) {
+                    foreach (var item in processedResponse.Questions) {
 
                         Questions questions = new Questions();
                         questions.CorrectAnswer = item.correct_answer;
@@ -152,8 +152,8 @@ namespace YoMentor.ChatGPT {
 
                         ProcessedResponse processedResponse1 = new ProcessedResponse();
                         processedResponse1.Questions = questionInfos;
-                    processedResponse1.Summary = processedResponse.Result.Summary;
-                    processedResponse1.Title = processedResponse.Result.Title;
+                    processedResponse1.Summary = processedResponse.Summary;
+                    processedResponse1.Title = processedResponse.Title;
                          await InsertSkillTestWithQuestionsAndAnswerOptions(processedResponse1, request);
 
 
@@ -236,17 +236,17 @@ namespace YoMentor.ChatGPT {
                 temperature = 0.7
             };
         }
-        private (bool Success, Questionnaire Result) ProcessOpenAiResponse(object responseData) {
+        private Questionnaire  ProcessOpenAiResponse(object responseData) {
             try {
                 var responseJson = JObject.Parse(responseData.ToString());
                 var messageContent = responseJson["choices"][0]["message"]["content"].ToString();
 
                 var questionnaire = JsonConvert.DeserializeObject<Questionnaire>(messageContent);
-                return (true, questionnaire);
+                return questionnaire;
             } catch (Exception ex) {
                 // Log the exception for debugging purposes
                 Console.WriteLine($"Error processing JSON response: {ex.Message}");
-                return (false, null);
+                return  null;
             }
         }
 
@@ -285,7 +285,7 @@ namespace YoMentor.ChatGPT {
              
                 int questionId = await _skillTestRepository.InsertQuestion(new Question {
                     Title = question.Title,
-                    Description = question.Description,
+                    Explanations = question.Description,
                     SkillTestId = skillTestId,
                     //CorrectOption =  int.Parse(question.CorrectOption),
                     CreateDate = DateTime.UtcNow
