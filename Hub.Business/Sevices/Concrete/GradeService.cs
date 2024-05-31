@@ -16,8 +16,8 @@ namespace Core.Business.Sevices.Concrete {
             _gradeRepository=gradeRepository;
         }
 
-        public async Task<List<GradeResponse>> GetAllGrades() {
-            var grades= await _gradeRepository.GetAllGrades();
+        public async Task<List<GradeResponse>> GetAllGrades(int type) {
+            var grades= await _gradeRepository.GetAllGrades(type);
             List<GradeResponse> results= new List<GradeResponse>(); 
             foreach (var item in grades) {
                 GradeResponse response = new GradeResponse();

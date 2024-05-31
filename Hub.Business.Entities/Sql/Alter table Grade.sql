@@ -1,0 +1,1 @@
+﻿Alter table Grade Add type int 
