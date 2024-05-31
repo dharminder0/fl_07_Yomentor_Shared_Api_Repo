@@ -16,20 +16,21 @@ using Core.Business.Entities.DataModels;
 using Core.Business.Entities.ResponseModels;
 using Core.Data.Repositories.Abstract;
 using Core.Data.Repositories.Concrete;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace YoMentor.ChatGPT {
     public interface IAIQuestionAnswerService {
         Task<object> GenerateQuestionsOld(QuestionRequest request);
         Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject);
 
-        Task<object> GenerateQuestions(QuestionRequest request);
+        Task<int> GenerateQuestions(QuestionRequest request);
     }
 
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService {
         private static readonly Dictionary<string, List<string>> _userQuestions = new Dictionary<string, List<string>>();
         private readonly ISkillTestRepository _skillTestRepository;
         private readonly IGradeRepository _gradeRepository;
-        private readonly ISubjectRepository _subjectRepository; 
+        private readonly ISubjectRepository _subjectRepository;
         public AIQuestionAnswerService(ISkillTestRepository skillTestRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) : base("https://api.openai.com", GlobalSettings.ChatGPTKey) {
             _skillTestRepository = skillTestRepository;
             _gradeRepository = gradeRepository;
@@ -103,17 +104,18 @@ namespace YoMentor.ChatGPT {
 
 
 
-        public async Task<object> GenerateQuestions(QuestionRequest request) {
+        public async Task<int> GenerateQuestions(QuestionRequest request) {
             try {
+                int skillTestId = 0;
                 var validationResult = ValidateRequest(request);
                 if (!validationResult.Success) {
-                    return validationResult.Result;
+                    return 0;
                 }
 
                 var userPromptResult = BuildUserPrompt(request);
-               
+
                 if (!userPromptResult.Success) {
-                    return userPromptResult.Result;
+                    return 0;
                 }
 
                 var openAiRequest = BuildOpenAiRequest(userPromptResult.Result);
@@ -129,8 +131,6 @@ namespace YoMentor.ChatGPT {
                         questions.Explanation = item.Explanation;
                         questions.QuestionText = item.Question;
                         questions.Choices = (item.Choices);
-
-                    
                         QuestionInfo questionInfo = new QuestionInfo();
                         questionInfo.Title = questions.QuestionText;
                         questionInfo.Description = questions.Explanation;
@@ -140,21 +140,22 @@ namespace YoMentor.ChatGPT {
                         List<AnswerInfo> answerInfos = new List<AnswerInfo>();
 
                         for (int i = 0; i < item.Choices.Count; i++) {
-                                AnswerInfo answerInfo = new AnswerInfo();
-                                answerInfo.Title = item.Choices[i];
+                            AnswerInfo answerInfo = new AnswerInfo();
+                            answerInfo.Title = item.Choices[i];
                             answerInfo.IsCorrect = (questions.Choices[i] == questions.CorrectAnswer);
                             answerInfos.Add(answerInfo);
-                            }
-
-                            questionInfo.AnswerOptions = answerInfos;
-                            questionInfos.Add(questionInfo);
                         }
 
-                        ProcessedResponse processedResponse1 = new ProcessedResponse();
-                        processedResponse1.Questions = questionInfos;
+                        questionInfo.AnswerOptions = answerInfos;
+                        questionInfos.Add(questionInfo);
+                    }
+
+                    ProcessedResponse processedResponse1 = new ProcessedResponse();
+                    processedResponse1.Questions = questionInfos;
                     processedResponse1.Summary = processedResponse.Summary;
                     processedResponse1.Title = processedResponse.Title;
-                         await InsertSkillTestWithQuestionsAndAnswerOptions(processedResponse1, request);
+                    skillTestId = await InsertSkillTestWithQuestionsAndAnswerOptions(processedResponse1, request);
+                    processedResponse.SkillTestId = skillTestId;
 
 
                 } catch (Exception ex) {
@@ -162,9 +163,9 @@ namespace YoMentor.ChatGPT {
                 }
 
 
-                return processedResponse;
+                return skillTestId;
             } catch (Exception ex) {
-                return new { error = $"An error occurred: {ex.Message}" };
+                return 0;
             }
         }
 
@@ -172,47 +173,43 @@ namespace YoMentor.ChatGPT {
 
 
         private (bool Success, object Result) ValidateRequest(QuestionRequest request) {
-            if (request == null || string.IsNullOrEmpty(request.UserId)) {
-                return (false, new { error = "User ID is required" });
+
+            if (request.Category == (int)Category.Academic) {
+                return (true, Category.Academic.ToString());
             }
 
-            if (request.Category == "Academic") {
-                if (string.IsNullOrEmpty(request.AcademicClass) || string.IsNullOrEmpty(request.Subject) ||
-                    string.IsNullOrEmpty(request.Topic) || string.IsNullOrEmpty(request.ComplexityLevel) ||
-                    request.NumberOfQuestions <= 0) {
-                    return (false, new { error = "Missing required fields for Academic category" });
-                }
-            }
-            else if (request.Category == "Competitive Exams") {
-                if (string.IsNullOrEmpty(request.ExamName) || string.IsNullOrEmpty(request.Subject) ||
-                    string.IsNullOrEmpty(request.Topic) || string.IsNullOrEmpty(request.ComplexityLevel) ||
-                    request.NumberOfQuestions <= 0) {
-                    return (false, new { error = "Missing required fields for Competitive Exams category" });
-                }
+            else if (request.Category == (int)Category.Competitive_Exams) {
+                return (true, Category.Competitive_Exams.ToString());
             }
             else {
                 return (false, new { error = "Invalid category" });
             }
-
-            return (true, null);
         }
+
+
 
 
         private (bool Success, string Result) BuildUserPrompt(QuestionRequest request) {
             string userPrompt = string.Empty;
-            var promptData = _skillTestRepository.GetPrompt(request.Category);
+            string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
+            string subjectname = _subjectRepository.GetSubjectName(request.Subject);
+            string categoryName = Enum.GetName(typeof(Category), request.Category);
+            var promptData = _skillTestRepository.GetPrompt(categoryName);
+            string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
+            string language = Enum.GetName(typeof(Language), request.Language);
 
             if (promptData != null) {
                 userPrompt = promptData.Prompt_Text;
 
-              
+
                 userPrompt = userPrompt.Replace("{request.NumberOfQuestions}", request.NumberOfQuestions.ToString());
-                userPrompt = userPrompt.Replace("{request.AcademicClass}", request.AcademicClass);
-                userPrompt = userPrompt.Replace("{request.Subject}", request.Subject);
+                userPrompt = userPrompt.Replace("{request.AcademicClass}", gradeName);
+                userPrompt = userPrompt.Replace("{request.Subject}", subjectname);
                 userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
-                userPrompt = userPrompt.Replace("{request.ComplexityLevel}", request.ComplexityLevel);
-                userPrompt = userPrompt.Replace("{ExamName}", request.ExamName);
-              
+                userPrompt = userPrompt.Replace("{request.ComplexityLevel}", complexityLevel);
+                userPrompt = userPrompt.Replace("{request.ExamName}", request.ExamName);
+                userPrompt = userPrompt.Replace("{request.language}", language);
+
 
             }
             else {
@@ -230,13 +227,13 @@ namespace YoMentor.ChatGPT {
             new { role = "system", content = "You are an AI tutor assisting students in generating study questions based on their inputs." },
             new { role = "user", content = userPrompt }
         },
-                max_tokens = 3000,
+                max_tokens = 3500,
                 n = 1,
                 stop = "None",
                 temperature = 0.7
             };
         }
-        private Questionnaire  ProcessOpenAiResponse(object responseData) {
+        private Questionnaire ProcessOpenAiResponse(object responseData) {
             try {
                 var responseJson = JObject.Parse(responseData.ToString());
                 var messageContent = responseJson["choices"][0]["message"]["content"].ToString();
@@ -246,7 +243,7 @@ namespace YoMentor.ChatGPT {
             } catch (Exception ex) {
                 // Log the exception for debugging purposes
                 Console.WriteLine($"Error processing JSON response: {ex.Message}");
-                return  null;
+                return null;
             }
         }
 
@@ -258,31 +255,30 @@ namespace YoMentor.ChatGPT {
             } catch (JsonReaderException) {
                 return false;
             }
-        } 
+        }
 
 
 
 
 
-        private async Task InsertSkillTestWithQuestionsAndAnswerOptions(ProcessedResponse processedResponse, QuestionRequest request ) {
-             int gradeId= _gradeRepository.GetGradeId(request.AcademicClass);
-             int subjectId=_subjectRepository.GetSubjectId(request.Subject);
+        private async Task<int> InsertSkillTestWithQuestionsAndAnswerOptions(ProcessedResponse processedResponse, QuestionRequest request) {
+
 
 
             var skillTest = new SkillTest {
-                Title= processedResponse.Title,
-                GradeId= gradeId,
-                SubjectId=  subjectId,
-                UpdateDate= DateTime.Now,
+                Title = processedResponse.Title,
+                GradeId = request.AcademicClass,
+                SubjectId = request.Subject,
+                UpdateDate = DateTime.Now,
                 CreateDate = DateTime.UtcNow,
                 IsDeleted = false,
-                Description=processedResponse.Summary,
+                Description = processedResponse.Summary,
             };
 
             int skillTestId = await _skillTestRepository.InsertSkillTest(skillTest);
 
             foreach (var question in processedResponse.Questions) {
-             
+
                 int questionId = await _skillTestRepository.InsertQuestion(new Question {
                     Title = question.Title,
                     Explanations = question.Description,
@@ -292,7 +288,7 @@ namespace YoMentor.ChatGPT {
                 });
 
                 foreach (var answerOption in question.AnswerOptions) {
-                   
+
                     await _skillTestRepository.InsertAnswerOption(new AnswerOption {
                         QuestionId = questionId,
                         Title = answerOption.Title,
@@ -302,6 +298,7 @@ namespace YoMentor.ChatGPT {
                     });
                 }
             }
+            return skillTestId;
         }
 
     }
