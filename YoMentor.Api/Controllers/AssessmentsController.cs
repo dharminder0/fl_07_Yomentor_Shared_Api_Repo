@@ -75,5 +75,18 @@ namespace YoMentor.Api.Controllers {
             var response = await _service.GetAssessmentByBatch(request);
             return JsonExt(response);
         }
+        [Route("Delete")]
+        [HttpPost]  
+        public IActionResult  DeleteAssessment(int Id) {
+            var response=_service.DeleteAssessment(Id); 
+            return JsonExt(response);   
+        }
+        [Route("RemoveAssessment")]
+        [HttpPost]
+        public IActionResult DeleteStudentAssessments(int batchId, int assesmentid) {
+            var response=_service.DeleteStudentAssessments(batchId, assesmentid);   
+            return JsonExt(response);   
+        }
+
     }
 }

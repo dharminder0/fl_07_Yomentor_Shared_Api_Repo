@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using static Core.Business.Entities.DTOs.Enum;
+using Message = FirebaseAdmin.Messaging.Message;
 
 namespace Core.Business.Services.Concrete {
     public class UserService : IUserService {

@@ -25,5 +25,9 @@ namespace Core.Data.Repositories.Abstract {
         int UpdateScore(int attemptId, double score);
         int GetAnswerId(int attemptId, int questionId);
         IEnumerable<AnswerOption> GetAnswerList(int questionId);
+         Task<int> InsertQuestion(Question question);
+        Task<bool> InsertAnswerOption(AnswerOption answerOption);
+        Task<int> InsertSkillTest(SkillTest skillTest);
+       Prompt GetPrompt(string prompt_type);
     }
 }

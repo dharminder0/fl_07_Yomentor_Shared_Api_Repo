@@ -4,7 +4,8 @@ using Core.Common.Contracts;
 
 namespace Core.Data.Repositories.Abstract {
     public interface IGradeRepository : IDataRepository<Grade> {
-        Task<IEnumerable<Grade>> GetAllGrades();
+        Task<IEnumerable<Grade>> GetAllGrades(int type);
         string GetGradeName(int id);
+        int GetGradeId(string gradeName);
     }
 }

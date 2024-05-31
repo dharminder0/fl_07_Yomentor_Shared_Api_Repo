@@ -1,0 +1,1 @@
+﻿Alter table  Question  add explanations nvarchar(max)

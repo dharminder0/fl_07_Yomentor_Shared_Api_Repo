@@ -15,7 +15,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> InsertBookExchange(BookExchange exchange);
         Task<int> UpdateBookExchange(BookExchange exchange);
         Books GetBooksList(int bookId);
-        bool UpdateStatus(int id, int status);
+        bool  UpdateStatus(int id, int status, int receiverid);
         Task<IEnumerable<BookExchange>> GetBooks(BookExchangeRequest bookExchange);
         string GetBookName(int id);
         Task<IEnumerable<BookResponseV2>> GetBookList(BookRequestV2 book);
@@ -25,5 +25,6 @@ namespace Core.Data.Repositories.Abstract {
         DateTime GetRequestedDate(int userId);
         int GetStatusNameV2(int id, int bookId);
         IEnumerable<int> GetReciverId(int bookId, int senderId);
+        IEnumerable<int> GetReciverIdV2(int bookId);
     }
 }

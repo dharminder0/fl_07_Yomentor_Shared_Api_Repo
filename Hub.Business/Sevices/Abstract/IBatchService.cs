@@ -28,6 +28,7 @@ namespace Core.Business.Sevices.Abstract
         Task<ActionMassegeResponse> InsertOrUpdateFavouriteBatch(FavouriteBatchRequest batch);
         Task<ActionMassegeResponse> UpdateFavouriteStatus(int userId, int entityId);
         Task<List<BatchDto>> BatchDetails(BatchRequestV2 request);
+        bool DeleteBatch(int id);
 
 
 

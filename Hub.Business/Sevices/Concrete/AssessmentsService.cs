@@ -113,7 +113,7 @@ namespace Core.Business.Sevices.Concrete {
                 IsFavorite = assessmentsRequest.Isfavorite,
                 Createdate = assessmentsRequest.Createdate,
                 Updatedate = assessmentsRequest.UpdatedDate,
-                Maxmark=assessmentsRequest.Maxmark,
+                Maxmark = assessmentsRequest.Maxmark,
             };
 
             int id = assessments.Id == 0
@@ -145,7 +145,7 @@ namespace Core.Business.Sevices.Concrete {
             }
         }
 
-        public  List<AssessmentResponse> GetAssessmentsList(int id) {
+        public List<AssessmentResponse> GetAssessmentsList(int id) {
             if (id <= 0) {
                 throw new ArgumentOutOfRangeException("id is null or blank");
             }
@@ -154,67 +154,65 @@ namespace Core.Business.Sevices.Concrete {
             List<FileUploadResponse> ros = new List<FileUploadResponse>();
 
 
-            var item =  _assessmentsRepository.GetAssessments(id);
+            var item = _assessmentsRepository.GetAssessments(id);
 
 
-                AssessmentResponse obj = new AssessmentResponse()
+            AssessmentResponse obj = new AssessmentResponse()
 ;
-                obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
-                obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
-                obj.Id = item.Id;
-                obj.TeacherId = item.TeacherId;
-                obj.Title = item.Title;
-                obj.Description = item.Description;
-                obj.GradeId = item.GradeId;
-                obj.IsFavorite = item.IsFavorite;
-                obj.Id = item.Id;
-                obj.CreateDate = item.Createdate;
-                obj.UpdateDate = item.Updatedate;
-                obj.MaxMark = item.Maxmark;
-                obj.SubjectId = item.Subjectid;
+            obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
+            obj.SubjectName = _subjectRepository.GetSubjectName(item.Subjectid);
+            obj.Id = item.Id;
+            obj.TeacherId = item.TeacherId;
+            obj.Title = item.Title;
+            obj.Description = item.Description;
+            obj.GradeId = item.GradeId;
+            obj.IsFavorite = item.IsFavorite;
+            obj.Id = item.Id;
+            obj.CreateDate = item.Createdate;
+            obj.UpdateDate = item.Updatedate;
+            obj.MaxMark = item.Maxmark;
+            obj.SubjectId = item.Subjectid;
 
 
-                try {
-                    var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assessment);
+            try {
+                var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assessment);
 
-                    foreach (var fileItem in files) {
-                        FileUploadResponse fileUpload = new FileUploadResponse {
-                            FileLink = fileItem.BlobLink,
-                            FileName = fileItem.FileName,
-                            FileIdentifier=fileItem.FileName,
-                        };
-                       ros.Add(fileUpload); 
-                    obj.UploadedFiles=ros;
-                 
+                foreach (var fileItem in files) {
+                    FileUploadResponse fileUpload = new FileUploadResponse {
+                        FileLink = fileItem.BlobLink,
+                        FileName = fileItem.FileName,
+                        FileIdentifier = fileItem.FileName,
+                    };
+                    ros.Add(fileUpload);
+                    obj.UploadedFiles = ros;
 
 
-                    }
+
+                }
                 obj.FilesCount = files.Count();
                 assessmentResponses.Add(obj);
                 return assessmentResponses;
 
-                } catch (Exception) {
+            } catch (Exception) {
 
 
-                }
+            }
 
             return null;
-            }
-              
-
-                
+        }
 
 
-            
-    
-        
-        public async Task<List<AssessmentResponse>> GetAssessmentsAllList(StudentProgressRequestV2 request)
-        {
-            try
-            {
+
+
+
+
+
+
+        public async Task<List<AssessmentResponse>> GetAssessmentsAllList(StudentProgressRequestV2 request) {
+            try {
                 List<AssessmentResponse> res = new List<AssessmentResponse>();
                 var response = await _assessmentsRepository.GetAssessmentsAllList(request);
-            
+
                 foreach (var item in response) {
                     AssessmentResponse obj = new AssessmentResponse();
                     obj.GradeName = _gradeRepository.GetGradeName(item.GradeId);
@@ -223,16 +221,16 @@ namespace Core.Business.Sevices.Concrete {
                     obj.TeacherId = item.TeacherId;
                     obj.Title = item.Title;
                     obj.Description = item.Description;
-                    obj.GradeId = item.GradeId; 
+                    obj.GradeId = item.GradeId;
                     obj.IsFavorite = item.IsFavorite;
                     obj.Id = item.Id;
                     obj.CreateDate = item.Createdate;
                     obj.UpdateDate = item.Updatedate;
-                    obj.MaxMark= item.Maxmark;  
+                    obj.MaxMark = item.Maxmark;
                     obj.SubjectId = item.Subjectid;
                     try {
                         var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assessment).Count();
-                        obj.FilesCount= files;  
+                        obj.FilesCount = files;
                     } catch (Exception) {
 
                     }
@@ -243,14 +241,13 @@ namespace Core.Business.Sevices.Concrete {
                 return res;
 
 
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return null;
             }
         }
         public async Task<ActionMassegeResponse> AssignStudentAssessment(StudentAssessmentRequestV2 requestV2) {
-             int res=0;
-            if (requestV2== null ) {
+            int res = 0;
+            if (requestV2 == null) {
                 return new ActionMassegeResponse { Response = false };
             }
 
@@ -259,21 +256,20 @@ namespace Core.Business.Sevices.Concrete {
                 return new ActionMassegeResponse { Message = "No students found for the given batch.", Response = false };
             }
             foreach (var item in response) {
-                StudentAssessment student = new StudentAssessment
-                {
-                    Id = item.Id,   
+                StudentAssessment student = new StudentAssessment {
+                    Id = item.Id,
                     Status = requestV2.Status,
                     AssessmentId = requestV2.AssessmentId,
                     BatchId = requestV2.BatchId,
                     StudentId = item.StudentId,
                     Marks = requestV2.Marks,
                 };
-                 res = await _studentAssessmentRepository.InsertStudentAssessment(student);
+                res = await _studentAssessmentRepository.InsertStudentAssessment(student);
                 try {
                     _userService.PushNotifications(Entities.DTOs.Enum.NotificationType.assessment_assigned, item.StudentId, requestV2.AssessmentId);
                 } catch (Exception) {
 
-           
+
                 }
             }
 
@@ -301,10 +297,10 @@ namespace Core.Business.Sevices.Concrete {
                 obj.AssignedDate = item.AssignedDate;
                 try {
                     var files = _mediaFileRepository.GetEntityMediaFile(item.Id, Entities.DTOs.Enum.MediaEntityType.Assessment).Count();
-                    obj.FilesCount = files; 
+                    obj.FilesCount = files;
                 } catch (Exception) {
 
-                   
+
                 }
                 res.Add(obj);
 
@@ -312,6 +308,15 @@ namespace Core.Business.Sevices.Concrete {
 
             return res;
         }
+        public bool DeleteAssessment(int Id) {
+            return _assessmentsRepository.DeleteAssessment(Id);
+
+        }
+        public ActionMassegeResponse DeleteStudentAssessments(int batchId, int assesmentid) {
+            bool res = _studentAssessmentRepository.DeleteStudentAssessment(batchId, assesmentid);
+            return new ActionMassegeResponse { Message = "Deleted_Successfully", Response = true, Content = res };
+        }
+
 
     }
 }

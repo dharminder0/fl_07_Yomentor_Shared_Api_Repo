@@ -173,7 +173,7 @@ namespace Core.Business.Sevices.Concrete {
                 res.ReceiverUsers = new List<UserBasicV2>();
                 if (userIds != null && userIds.Any()) {
                     foreach (var item1 in userIds) {
-                        UserBasicV2 user1 = new UserBasicV2(); // Move the declaration inside the loop
+                        UserBasicV2 user1 = new UserBasicV2(); 
                         var reciverInfo = _user.GetUserInfo(item1);
                         if (reciverInfo != null) {
                             var image = _mediaFile.GetImage(item1, MediaEntityType.Users);
@@ -181,6 +181,7 @@ namespace Core.Business.Sevices.Concrete {
                             user1.LastName = reciverInfo.LastName;
                             user1.Email = reciverInfo.Email;
                             user1.Phone = reciverInfo.Phone;
+                            user1.UserId = item1;
                             if (image != null) {
                                 user1.UserImage = image.BlobLink;
                             }
@@ -232,8 +233,20 @@ namespace Core.Business.Sevices.Concrete {
         
        
 
-        public bool UpdateStatus(int id, int status) {
-            return _book.UpdateStatus(id, status);  
+        public bool UpdateStatus(int id, int status, int receiverId) {
+           bool response = _book.UpdateStatus(id, status, receiverId);
+            if (status == (int)BookExchangeStatus.Accepted) {
+
+                 List<int>reciverIds=_book.GetReciverIdV2(id).ToList();
+                foreach (var item in reciverIds) {
+                    response= _book.UpdateStatus(id, (int)BookExchangeStatus.Declined,item);
+                    //_book.UpdateBookStatus(id);
+
+                }
+                return response;    
+            }
+            return response;
+
         }
         public async Task<List<BookExchangeResponse>> GetBookExchangeList(BookExchangeRequest bookExchange) {
             if (bookExchange == null) {

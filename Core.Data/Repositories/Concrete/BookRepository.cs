@@ -136,12 +136,12 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<int>(sql, exchange);
         }
        public Books GetBooksList(int bookId) {
-            var sql = @"select * from books where Available=1 and  IsDeleted=0 and id=@bookid ";
+            var sql = @"select * from books where    IsDeleted=0 and id=@bookid ";
             return   QueryFirst<Books>(sql,new { bookId });
         }
-        public  bool UpdateStatus(int id, int status) {
-            var sql = @" update Book_Exchange set status=@status where id=@id";
-            return ExecuteScalar<bool>(sql,new { id, status }); 
+        public  bool  UpdateStatus(int id, int status, int receiverId) {
+            var sql = @" update Book_Exchange set status=@status where BookId=@id and receiverid=@receiverId    ";
+            return ExecuteScalar<bool>(sql,new { id, status ,receiverId}); 
 
         }
   
@@ -221,7 +221,10 @@ namespace Core.Data.Repositories.Concrete {
                     parameters.Add("@UserId", book.UserId);
                 }
             }
-            sql += " and b.available= 1 and b.isdeleted= 0 ";
+         
+
+                sql += " and b.available= 1 and b.isdeleted= 0 ";
+            
 
             if (book.UserId > 0 && book.ActionType == (int)BookActionType.IsCreated) {
                 sql += @" AND b.userid = @UserId ";
@@ -277,8 +280,14 @@ namespace Core.Data.Repositories.Concrete {
             return ExecuteScalar<DateTime>(sql, new { bookId });
         }
         public IEnumerable<int>  GetReciverId(int bookId, int senderId) {
-            var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and senderid=@senderId ";
+            var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and senderid=@senderId 
+ ";
             return Query<int>(sql, new { bookId, senderId });
-        } 
+        }
+        public IEnumerable<int> GetReciverIdV2(int bookId) {
+            var sql = @" select receiverid from  Book_Exchange where bookId=@bookId  and status=1
+ ";
+            return Query<int>(sql, new { bookId });
+        }
     }
 }

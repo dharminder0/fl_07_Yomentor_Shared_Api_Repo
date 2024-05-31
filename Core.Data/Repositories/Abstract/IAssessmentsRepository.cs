@@ -9,5 +9,6 @@ namespace Core.Data.Repositories.Abstract {
         Assessments GetAssessments(int id);
         Task<List<Assessments>> GetAssessmentsAllList(StudentProgressRequestV2 request);
         Task<IEnumerable<Assessments>> GetAssessmentsByBatch(ListRequest listRequest );
+        bool DeleteAssessment(int Id);
     }
 }

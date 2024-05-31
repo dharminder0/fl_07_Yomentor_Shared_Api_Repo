@@ -10,9 +10,12 @@ using System.Threading.Tasks;
 
 namespace Core.Data.Repositories.Concrete {
     public class GradeRepository : DataRepository<Grade>, IGradeRepository {
-      public  async Task<IEnumerable<Grade>> GetAllGrades() {
+      public  async Task<IEnumerable<Grade>> GetAllGrades(int type) {
             var sql = @"select * from Grade ";
-            return  await  QueryAsync<Grade>(sql); 
+            if(type > 0) {
+                sql += @"where type=@type";
+            }
+            return  await  QueryAsync<Grade>(sql,new {type}); 
         }
 
         public string GetGradeName(int id)
@@ -20,6 +23,11 @@ namespace Core.Data.Repositories.Concrete {
             var sql = "SELECT name FROM Grade WHERE Id=@id";
             var res = Query<string>(sql, new { id });
             return res.FirstOrDefault(); 
+        }
+        public int  GetGradeId(string  gradeName) {
+            var sql = "SELECT id FROM Grade WHERE name=@gradeName ";
+            var res = Query<int>(sql, new { gradeName });
+            return res.FirstOrDefault();
         }
     }
 }

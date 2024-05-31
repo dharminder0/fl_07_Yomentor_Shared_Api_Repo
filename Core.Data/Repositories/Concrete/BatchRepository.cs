@@ -34,16 +34,16 @@ namespace Core.Data.Repositories.Concrete
 
                 if (request.IsFavourite) {
                     sql += @"
-                WHERE fb.userId = @userId AND IsFavourite = 1";
+                WHERE fb.userId = @userId AND IsFavourite = 1 and isdeleted=0 ";
                 }
                
             }
             else if (request.UserType == 1) {
                 sql += @"
-            WHERE B.teacherId = @userId";
+            WHERE B.teacherId = @userId and isdeleted=0 ";
             }
             if (request.UserType == 3 && !request.IsFavourite) {
-                sql += " LEFT JOIN batch_students BS ON B.id = BS.batchid  WHERE BS.studentId = @userId  and BS.enrollmentstatus<>0 ";
+                sql += " LEFT JOIN batch_students BS ON B.id = BS.batchid  WHERE BS.studentId = @userId  and BS.enrollmentstatus<>0  and isdeleted=0 ";
 
             }
             if (request.StatusId != null) {
@@ -77,7 +77,7 @@ namespace Core.Data.Repositories.Concrete
         }
         public IEnumerable<Batch> GetBatchDetailsbybatchId(int batchId)
         {
-            var sql = $"Select * from dbo.Batch where Id=@batchId and isdeleted=0 and isdeleted=0";
+            var sql = $"Select * from dbo.Batch where Id=@batchId and isdeleted=0 ";
             return Query<Batch>(sql, new { batchId });
         }
         public IEnumerable<string> GetBatchNamebybatchId(int batchId)
@@ -190,7 +190,7 @@ END ;";
    
                 if (request.teacherId >0) {
                     sql += @"
-WHERE B.teacherId = @teacherId";
+WHERE B.teacherId = @teacherId and isdeleted=0 ";
                     parameters.Add("teacherId", request.teacherId);
                 }
 
@@ -198,7 +198,7 @@ WHERE B.teacherId = @teacherId";
 
             if (request.StatusId?.Count > 0) {
                 sql += @"
-AND B.status IN @statusIds";
+AND B.status IN @statusIds"; 
                 parameters.Add("statusIds", request.StatusId);
             }
 
@@ -212,7 +212,10 @@ OFFSET @PageSize * (@PageIndex - 1) ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             return await QueryAsync<Batch>(sql, parameters);
         }
-
+        public bool DeleteBatch(int id) {
+            var sql = @"update batch set isdeleted=1 where id=@id";
+            return ExecuteScalar<bool>(sql, new { id });    
+        }
 
 
     }

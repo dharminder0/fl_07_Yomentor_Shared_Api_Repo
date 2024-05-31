@@ -130,5 +130,11 @@ namespace YoMentor.Api.Controllers {
                 return JsonExt(ex);
             }
         }
+        [HttpPost]
+        [Route("Delete")]
+        public IActionResult DeleteBatch(int id) {
+            var response =  _batchService.DeleteBatch(id); 
+            return JsonExt(response);
+        }
     }
 }

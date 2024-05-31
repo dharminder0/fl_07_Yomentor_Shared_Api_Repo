@@ -11,6 +11,7 @@ namespace Core.Business.Entities.DataModels {
         public string Title { get; set; }
         public bool IsCorrect { get; set; }
         public DateTime CreateDate { get; set; }
-        public bool IsDeleted { get; set; }= false; 
+        public bool IsDeleted { get; set; } = false;
+        public string Explanations { get; set; }
     }
 }

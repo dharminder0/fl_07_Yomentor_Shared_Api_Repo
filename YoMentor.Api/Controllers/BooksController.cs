@@ -57,8 +57,8 @@ namespace YoMentor.Api.Controllers {
         /// <returns></returns>
         [HttpGet]
         [Route("updateStatus")]
-        public  IActionResult UpdateStatus( int id, int statusId) {
-            var response =  bookService.UpdateStatus(id,statusId);
+        public  IActionResult UpdateStatus( int id, int statusId, int receiverId) {
+            var response =  bookService.UpdateStatus(id,statusId, receiverId);
             return JsonExt(response);
 
         }

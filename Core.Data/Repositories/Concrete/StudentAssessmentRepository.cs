@@ -58,5 +58,10 @@ namespace Core.Data.Repositories.Abstract {
             return await ExecuteScalarAsync<int>(sql, studentAssessment);
         }
 
+        public bool DeleteStudentAssessment(int batchId,int assessmentId) {
+            var sql = @"delete from Student_Assessments where  BatchId=@batchId and AssessmentId=@assessmentId";
+            return ExecuteScalar<bool>(sql,new {batchId,assessmentId}); 
+        }
+
     }
 }
