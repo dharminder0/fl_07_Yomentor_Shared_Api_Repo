@@ -112,10 +112,10 @@ namespace Core.Business.Entities.DTOs {
 
         }
         public enum ComplexityLevel {
-            Easy,
-            Medium,
-            Hard,
-            Advanced
+            Easy=1,
+            Medium=2,
+            Hard=3,
+            Advanced=4
         }
         public enum Category {
             Academic = 1,
