@@ -18,10 +18,18 @@ namespace Core.Business.Entities.ChatGPT {
 
     public class QuestionResponse {
         public string Question { get; set; }
-        public string CorrectAnswer { get; set; }
+        public string correct_answer { get; set; }
         public string Explanation { get; set; }
         public List<string> Choices { get; set; }
+
     }
+    public class Questionnaire {
+        public string Title { get; set; }
+        public string Summary { get; set; }
+        public List<QuestionResponse> Questions { get; set; }
+    }
+
+  
     public class ChatGPTRequest {
         public string QuestionText { get; set; }
         public string QuestionType { get; set; }

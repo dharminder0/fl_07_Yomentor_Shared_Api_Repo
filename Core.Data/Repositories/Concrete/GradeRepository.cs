@@ -21,5 +21,10 @@ namespace Core.Data.Repositories.Concrete {
             var res = Query<string>(sql, new { id });
             return res.FirstOrDefault(); 
         }
+        public int  GetGradeId(string  gradeName) {
+            var sql = "SELECT id FROM Grade WHERE name=@gradeName ";
+            var res = Query<int>(sql, new { gradeName });
+            return res.FirstOrDefault();
+        }
     }
 }

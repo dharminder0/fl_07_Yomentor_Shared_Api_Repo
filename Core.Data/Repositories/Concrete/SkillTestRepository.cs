@@ -244,6 +244,9 @@ GROUP BY
             SELECT SCOPE_IDENTITY(); "; 
             return await ExecuteScalarAsync<int >(sql, skillTest);
         }
-
+        public Prompt GetPrompt(string prompt_type) {
+            var sql = @" select * from Prompt where prompt_type=@prompt_type ";
+            return   QueryFirst<Prompt>(sql,  new { prompt_type });    
+        }
     }
 }
