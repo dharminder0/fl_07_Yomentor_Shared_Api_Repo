@@ -207,7 +207,7 @@ namespace YoMentor.ChatGPT {
                 userPrompt = userPrompt.Replace("{request.Subject}", subjectname);
                 userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
                 userPrompt = userPrompt.Replace("{request.ComplexityLevel}", complexityLevel);
-                userPrompt = userPrompt.Replace("{request.ExamName}", gradeName);
+                //userPrompt = userPrompt.Replace("{request.ExamName}", gradeName);
                 userPrompt = userPrompt.Replace("{request.language}", language);
 
 
