@@ -18,6 +18,13 @@ namespace Core.Data.Repositories.Concrete {
             return res;
           
         }
-       
+        public int GetSubjectId(string subjectName) {
+            var sql = $"select Id from dbo.Subject where name=@subjectName";
+            var res = QueryFirst<int>(sql, new { subjectName });
+            return res;
+
+        }
+
+
     }
 }

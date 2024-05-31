@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using Core.Business.Entities.DataModels;
 using Core.Business.Entities.ResponseModels;
 using Core.Data.Repositories.Abstract;
+using Core.Data.Repositories.Concrete;
 
 namespace YoMentor.ChatGPT {
     public interface IAIQuestionAnswerService {
@@ -27,8 +28,12 @@ namespace YoMentor.ChatGPT {
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService {
         private static readonly Dictionary<string, List<string>> _userQuestions = new Dictionary<string, List<string>>();
         private readonly ISkillTestRepository _skillTestRepository;
-        public AIQuestionAnswerService(ISkillTestRepository skillTestRepository) : base("https://api.openai.com", GlobalSettings.ChatGPTKey) {
+        private readonly IGradeRepository _gradeRepository;
+        private readonly ISubjectRepository _subjectRepository; 
+        public AIQuestionAnswerService(ISkillTestRepository skillTestRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) : base("https://api.openai.com", GlobalSettings.ChatGPTKey) {
             _skillTestRepository = skillTestRepository;
+            _gradeRepository = gradeRepository;
+            _subjectRepository = subjectRepository;
         }
 
 
@@ -84,7 +89,7 @@ namespace YoMentor.ChatGPT {
                     if (questionMatch.Success && answerMatch.Success && explanationMatch.Success) {
                         questions.Add(new QuestionResponse {
                             Question = questionMatch.Groups[1].Value.Trim(),
-                            CorrectAnswer = answerMatch.Groups[1].Value.Trim(),
+                            correct_answer = answerMatch.Groups[1].Value.Trim(),
                             Explanation = explanationMatch.Groups[1].Value.Trim()
                         });
                     }
@@ -106,6 +111,7 @@ namespace YoMentor.ChatGPT {
                 }
 
                 var userPromptResult = BuildUserPrompt(request);
+               
                 if (!userPromptResult.Success) {
                     return userPromptResult.Result;
                 }
@@ -116,10 +122,10 @@ namespace YoMentor.ChatGPT {
                 var processedResponse = ProcessOpenAiResponse(response);
                 try {
                     List<QuestionInfo> questionInfos = new List<QuestionInfo>();
-                    foreach (var item in processedResponse.Item2) {
+                    foreach (var item in processedResponse.Questions) {
 
                         Questions questions = new Questions();
-                        questions.CorrectAnswer = item.CorrectAnswer;
+                        questions.CorrectAnswer = item.correct_answer;
                         questions.Explanation = item.Explanation;
                         questions.QuestionText = item.Question;
                         questions.Choices = (item.Choices);
@@ -146,7 +152,9 @@ namespace YoMentor.ChatGPT {
 
                         ProcessedResponse processedResponse1 = new ProcessedResponse();
                         processedResponse1.Questions = questionInfos;
-                         await InsertSkillTestWithQuestionsAndAnswerOptions(processedResponse1);
+                    processedResponse1.Summary = processedResponse.Summary;
+                    processedResponse1.Title = processedResponse.Title;
+                         await InsertSkillTestWithQuestionsAndAnswerOptions(processedResponse1, request);
 
 
                 } catch (Exception ex) {
@@ -192,55 +200,23 @@ namespace YoMentor.ChatGPT {
 
         private (bool Success, string Result) BuildUserPrompt(QuestionRequest request) {
             string userPrompt = string.Empty;
-          
+            var promptData = _skillTestRepository.GetPrompt(request.Category);
 
-            if (request.Category == "Academic") {
-                userPrompt = $@"
-Generate Maximum {request.NumberOfQuestions} questions for an Indian student in {request.AcademicClass} class studying {request.Subject} on the topic of {request.Topic} according to the NCERT syllabus and CBSE board standards. 
-The questions should be of {request.ComplexityLevel} complexity and should test the student's critical thinking, problem-solving skills, and deep understanding of the topic.
-Each question should include multiple choice answers, the correct answer, and a detailed explanation. 
-Ensure that the generated questions do not repeat any of the previously provided questions.
-The output should be in the following JSON array format  :
+            if (promptData != null) {
+                userPrompt = promptData.Prompt_Text;
 
-[
-    {{
-        'question': 'Question 1',
-        'choices': ['Option A', 'Option B', 'Option C', 'Option D'],
-        'correct_answer': 'Option B',
-        'explanation': 'Detailed explanation of why Option B is correct.'
-    }},
-    {{
-        'question': 'Question 2',
-        'choices': ['Option A', 'Option B', 'Option C', 'Option D'],
-        'correct_answer': 'Option A',
-        'explanation': 'Detailed explanation of why Option A is correct.'
-    }},
-    ...
-]";
+              
+                userPrompt = userPrompt.Replace("{request.NumberOfQuestions}", request.NumberOfQuestions.ToString());
+                userPrompt = userPrompt.Replace("{request.AcademicClass}", request.AcademicClass);
+                userPrompt = userPrompt.Replace("{request.Subject}", request.Subject);
+                userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
+                userPrompt = userPrompt.Replace("{request.ComplexityLevel}", request.ComplexityLevel);
+                userPrompt = userPrompt.Replace("{ExamName}", request.ExamName);
+              
+
             }
-            else if (request.Category == "Competitive Exams") {
-                userPrompt = $@"
-Generate {request.NumberOfQuestions} questions for an Indian student preparing for {request.ExamName} in the subject of {request.Subject} on the topic of {request.Topic}. 
-The questions should be of {request.ComplexityLevel} complexity and should test the student's critical thinking, problem-solving skills, and deep understanding of the topic.
-Ensure that the generated questions do not repeat any of the previously provided questions.
-Each question should include multiple choice answers, the correct answer, and a detailed explanation. 
-The output should be in the following JSON array format  also Please note that if the max_tokens limit is exceeded during generation, the response will be truncated to fit within the token limit, resulting in incomplete questions. However, the JSON format will remain valid.:
-
-[
-    {{
-        'question': 'Question 1',
-        'choices': ['Option A', 'Option B', 'Option C', 'Option D'],
-        'correct_answer': 'Option B',
-        'explanation': 'Detailed explanation of why Option B is correct.'
-    }},
-    {{
-        'question': 'Question 2',
-        'choices': ['Option A', 'Option B', 'Option C', 'Option D'],
-        'correct_answer': 'Option A',
-        'explanation': 'Detailed explanation of why Option A is correct.'
-    }},
-    ...
-]";
+            else {
+                return (false, "Prompt not found for the specified category.");
             }
 
             return (true, userPrompt);
@@ -260,49 +236,20 @@ The output should be in the following JSON array format  also Please note that i
                 temperature = 0.7
             };
         }
-        private (bool Success, List<QuestionResponse> Result) ProcessOpenAiResponse(object responseData) {
+        private Questionnaire  ProcessOpenAiResponse(object responseData) {
             try {
                 var responseJson = JObject.Parse(responseData.ToString());
+                var messageContent = responseJson["choices"][0]["message"]["content"].ToString();
 
-                var choices = responseJson["choices"];
-                var questions = new List<QuestionResponse>();
-
-                foreach (var choice in choices) {
-                    var messageContent = choice["message"]["content"].ToString();
-                    if (IsValidJson(messageContent)) {
-                        var questionsArray = JArray.Parse(messageContent);
-
-                        foreach (var questionObj in questionsArray) {
-                            var question = questionObj["question"].ToString();
-                            var correctAnswer = questionObj["correct_answer"].ToString();
-
-                            var explanation = questionObj["explanation"]?.ToString() ?? "Explanation not provided";
-
-                            var optionsToken = questionObj["choices"];
-                            var options = optionsToken != null ? optionsToken.ToObject<List<string>>() : new List<string>();
-
-                            questions.Add(new QuestionResponse {
-                                Question = question,
-                                Choices = options,
-                                CorrectAnswer = correctAnswer,
-                                Explanation = explanation
-                            });
-                        }
-                    }
-                    else {
-                        // Retry fetching the information
-                        Console.WriteLine("Invalid JSON format. Retrying...");
-                        return (false, null);
-                    }
-                }
-
-                return (true, questions);
+                var questionnaire = JsonConvert.DeserializeObject<Questionnaire>(messageContent);
+                return questionnaire;
             } catch (Exception ex) {
                 // Log the exception for debugging purposes
-                Console.WriteLine($"JSON parsing exception: {ex.Message}");
-                return (false, null);
+                Console.WriteLine($"Error processing JSON response: {ex.Message}");
+                return  null;
             }
         }
+
 
         private bool IsValidJson(string json) {
             try {
@@ -317,13 +264,19 @@ The output should be in the following JSON array format  also Please note that i
 
 
 
-        private async Task InsertSkillTestWithQuestionsAndAnswerOptions(ProcessedResponse processedResponse) {
-       
+        private async Task InsertSkillTestWithQuestionsAndAnswerOptions(ProcessedResponse processedResponse, QuestionRequest request ) {
+             int gradeId= _gradeRepository.GetGradeId(request.AcademicClass);
+             int subjectId=_subjectRepository.GetSubjectId(request.Subject);
+
+
             var skillTest = new SkillTest {
-               
-       
+                Title= processedResponse.Title,
+                GradeId= gradeId,
+                SubjectId=  subjectId,
+                UpdateDate= DateTime.Now,
                 CreateDate = DateTime.UtcNow,
-                IsDeleted = false
+                IsDeleted = false,
+                Description=processedResponse.Summary,
             };
 
             int skillTestId = await _skillTestRepository.InsertSkillTest(skillTest);
@@ -332,7 +285,7 @@ The output should be in the following JSON array format  also Please note that i
              
                 int questionId = await _skillTestRepository.InsertQuestion(new Question {
                     Title = question.Title,
-                    Description = question.Description,
+                    Explanations = question.Description,
                     SkillTestId = skillTestId,
                     //CorrectOption =  int.Parse(question.CorrectOption),
                     CreateDate = DateTime.UtcNow

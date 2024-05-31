@@ -12,5 +12,6 @@ namespace Core.Business.Entities.DataModels {
         public int SkillTestId { get; set; }
         public int CorrectOption { get; set; }
         public DateTime CreateDate { get; set; }
+        public string Explanations { get; set; }
     }
 }
