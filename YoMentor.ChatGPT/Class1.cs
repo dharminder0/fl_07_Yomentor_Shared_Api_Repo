@@ -121,7 +121,7 @@ namespace YoMentor.ChatGPT {
                 var openAiRequest = BuildOpenAiRequest(userPromptResult.Result);
 
                 var response = await _httpService.PostAsync<object>("v1/chat/completions", openAiRequest);
-                var processedResponse = ProcessOpenAiResponse(response);
+                var processedResponse = await  ProcessOpenAiResponse(response, userPromptResult.Result);
                 try {
                     List<QuestionInfo> questionInfos = new List<QuestionInfo>();
                     foreach (var item in processedResponse.Questions) {
@@ -186,11 +186,7 @@ namespace YoMentor.ChatGPT {
             }
         }
 
-
-
-
-        private (bool Success, string Result) BuildUserPrompt(QuestionRequest request) {
-            string userPrompt = string.Empty;
+        public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
             string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
             string subjectname = _subjectRepository.GetSubjectName(request.Subject);
             string categoryName = Enum.GetName(typeof(Category), request.Category);
@@ -199,44 +195,72 @@ namespace YoMentor.ChatGPT {
             string language = Enum.GetName(typeof(Language), request.Language);
 
             if (promptData != null) {
-                userPrompt = promptData.Prompt_Text;
-
-
+                string userPrompt = promptData.Prompt_Text;
                 userPrompt = userPrompt.Replace("{request.NumberOfQuestions}", request.NumberOfQuestions.ToString());
                 userPrompt = userPrompt.Replace("{request.AcademicClass}", gradeName);
                 userPrompt = userPrompt.Replace("{request.Subject}", subjectname);
                 userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
                 userPrompt = userPrompt.Replace("{request.ComplexityLevel}", complexityLevel);
-                //userPrompt = userPrompt.Replace("{request.ExamName}", gradeName);
                 userPrompt = userPrompt.Replace("{request.language}", language);
 
+                Prompt resultPrompt = new Prompt {
+                    Prompt_Id = promptData.Prompt_Id,
+                    Prompt_Text = userPrompt,
+                    Prompt_Type = promptData.Prompt_Type,
+                    Temperature = promptData.Temperature,
+                    Max_tokens = promptData.Max_tokens,
+                    Top_p = promptData.Top_p,
+                    Sop_Sequence = promptData.Sop_Sequence,
+                    Model = promptData.Model,
+                    System_Role=promptData.System_Role,     
+                };
 
+                return (true, resultPrompt);
             }
             else {
-                return (false, "Prompt not found for the specified category.");
+                return (false, null);
             }
-
-            return (true, userPrompt);
         }
 
 
-        private object BuildOpenAiRequest(string userPrompt) {
+
+
+        private object BuildOpenAiRequest(Prompt userPrompt) {
             return new {
-                model = "gpt-3.5-turbo",
+                model = userPrompt.Model,
                 messages = new[] {
-            new { role = "system", content = "You are an AI tutor assisting students in generating study questions based on their inputs." },
-            new { role = "user", content = userPrompt }
+            new { role = "system", content = userPrompt.System_Role },
+            new { role = "user", content = userPrompt.Prompt_Text }
         },
-                max_tokens = 3500,
+                max_tokens = userPrompt.Max_tokens,
                 n = 1,
-                stop = "None",
-                temperature = 0.7
+                stop = userPrompt.Sop_Sequence,
+                temperature = userPrompt.Temperature,
+                top_p = userPrompt.Top_p
             };
         }
-        private Questionnaire ProcessOpenAiResponse(object responseData) {
+
+        private async Task<Questionnaire> ProcessOpenAiResponse(object responseData, Prompt promptRes) {
             try {
                 var responseJson = JObject.Parse(responseData.ToString());
                 var messageContent = responseJson["choices"][0]["message"]["content"].ToString();
+                //Prompt prompt=new Prompt();
+                //prompt.Top_p=promptRes.Top_p;
+                //prompt.Model=promptRes.Model;
+                //var promptData = _skillTestRepository.GetPrompt("validate_response");
+                //string userPrompt = promptData.Prompt_Text;
+                //userPrompt = userPrompt.Replace("{request.prev_response}", messageContent);
+                //prompt.Prompt_Text = userPrompt;
+                //prompt.Temperature=promptRes.Temperature;
+                //prompt.Max_tokens = promptRes.Max_tokens;
+                //prompt.System_Role= promptData.System_Role;
+                
+
+                //var refineRequest = BuildOpenAiRequest(prompt);
+                //var refineResponse = await _httpService.PostAsync<object>("v1/chat/completions", refineRequest);
+                //var refineResponseJson = JObject.Parse(refineResponse.ToString());
+                //var refinedMessageContent = refineResponseJson["choices"][0]["message"]["content"].ToString();
+                 //var res=ExtractJsonPart(refinedMessageContent);
 
                 var questionnaire = JsonConvert.DeserializeObject<Questionnaire>(messageContent);
                 return questionnaire;
@@ -247,6 +271,35 @@ namespace YoMentor.ChatGPT {
             }
         }
 
+        private string ExtractJsonPart(string jsonString) {
+
+            // Regular expression to match text within braces {}
+            string pattern = @"\{(?:[^{}]|(?<Open>{)|(?<-Open>}))*\}(?(Open)(?!))";
+
+            // Find the first match using the regular expression
+            Match match = Regex.Match(jsonString, pattern);
+
+            if (match.Success) {
+                string json = match.Value;
+                return json;
+            }
+
+            return jsonString;
+
+
+            //    // Parse the JSON string
+            //    var jObject = JObject.Parse(jsonString);
+
+            //// Extract the title, summary, and questions parts
+            //var extractedPart = new JObject {
+            //    ["title"] = jObject["title"],
+            //    ["summary"] = jObject["summary"],
+            //    ["questions"] = jObject["questions"]
+            //};
+
+            //// Convert the extracted part back to JSON string
+            //return extractedPart.ToString();
+        }
 
         private bool IsValidJson(string json) {
             try {
@@ -258,6 +311,7 @@ namespace YoMentor.ChatGPT {
         }
 
 
+    
 
 
 
@@ -273,6 +327,11 @@ namespace YoMentor.ChatGPT {
                 CreateDate = DateTime.UtcNow,
                 IsDeleted = false,
                 Description = processedResponse.Summary,
+                Topic=request.Topic,
+                Complexity_Level= request.ComplexityLevel,  
+                NumberOf_Questions= request.NumberOfQuestions,  
+                Prompt_Type=request.Category,
+                CreatedBy=request.UserId
             };
 
             int skillTestId = await _skillTestRepository.InsertSkillTest(skillTest);

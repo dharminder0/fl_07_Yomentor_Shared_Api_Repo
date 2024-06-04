@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Core.Business.Entities.ChatGPT {
     public class QuestionRequest {
-        public string? UserId { get; set; }
+        public int UserId { get; set; }
         public int Category { get; set; }
         public int AcademicClass { get; set; }
         public int Subject { get; set; }
         public string? Topic { get; set; }
         public int ComplexityLevel { get; set; }
         public int NumberOfQuestions { get; set; }
-      
+        
         public int Language { get; set; }
     }
 
