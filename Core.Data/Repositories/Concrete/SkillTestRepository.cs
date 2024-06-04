@@ -231,7 +231,12 @@ GROUP BY
         SubjectId,
         CreateDate,
         UpdateDate,
-        IsDeleted
+        IsDeleted,
+        Topic,
+        Prompt_Type,
+        Complexity_Level,
+        NumberOf_Questions,
+        CreatedBy
     )
     VALUES
     (
@@ -242,7 +247,12 @@ GROUP BY
         @SubjectId,
         GetUtcDate(),
         @UpdateDate,
-        @IsDeleted
+        @IsDeleted,
+        @Topic,
+        @Prompt_Type,
+        @Complexity_Level,
+        @NumberOf_Questions,
+        @CreatedBy
     );
             SELECT SCOPE_IDENTITY(); ";
             return await ExecuteScalarAsync<int>(sql, skillTest);
