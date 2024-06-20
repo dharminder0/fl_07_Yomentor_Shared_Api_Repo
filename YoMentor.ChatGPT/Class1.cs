@@ -121,7 +121,7 @@ namespace YoMentor.ChatGPT {
                 var openAiRequest = BuildOpenAiRequest(userPromptResult.Result);
 
                 var response = await _httpService.PostAsync<object>("v1/chat/completions", openAiRequest);
-                var processedResponse = await  ProcessOpenAiResponse(response, userPromptResult.Result);
+                 var processedResponse = await ProcessOpenAiResponse(response);
                 try {
                     List<QuestionInfo> questionInfos = new List<QuestionInfo>();
                     foreach (var item in processedResponse.Questions) {
@@ -169,7 +169,13 @@ namespace YoMentor.ChatGPT {
             }
         }
 
+        public static string RemoveJsonDelimiters(string input) {
+            // Remove ```json and ``` from the input string
+            string pattern = @"^```json\s*|\s*```$";
+            string result = Regex.Replace(input, pattern, string.Empty, RegexOptions.Multiline).Trim();
 
+            return result;
+        }
 
 
         private (bool Success, object Result) ValidateRequest(QuestionRequest request) {
@@ -212,7 +218,7 @@ namespace YoMentor.ChatGPT {
                     Top_p = promptData.Top_p,
                     Sop_Sequence = promptData.Sop_Sequence,
                     Model = promptData.Model,
-                    System_Role=promptData.System_Role,     
+                    System_Role = promptData.System_Role,
                 };
 
                 return (true, resultPrompt);
@@ -240,67 +246,50 @@ namespace YoMentor.ChatGPT {
             };
         }
 
-        private async Task<Questionnaire> ProcessOpenAiResponse(object responseData, Prompt promptRes) {
+        private async Task<Questionnaire> ProcessOpenAiResponse(object responseData) {
             try {
                 var responseJson = JObject.Parse(responseData.ToString());
                 var messageContent = responseJson["choices"][0]["message"]["content"].ToString();
-                //Prompt prompt=new Prompt();
-                //prompt.Top_p=promptRes.Top_p;
-                //prompt.Model=promptRes.Model;
-                //var promptData = _skillTestRepository.GetPrompt("validate_response");
-                //string userPrompt = promptData.Prompt_Text;
-                //userPrompt = userPrompt.Replace("{request.prev_response}", messageContent);
-                //prompt.Prompt_Text = userPrompt;
-                //prompt.Temperature=promptRes.Temperature;
-                //prompt.Max_tokens = promptRes.Max_tokens;
-                //prompt.System_Role= promptData.System_Role;
-                
-
-                //var refineRequest = BuildOpenAiRequest(prompt);
-                //var refineResponse = await _httpService.PostAsync<object>("v1/chat/completions", refineRequest);
-                //var refineResponseJson = JObject.Parse(refineResponse.ToString());
-                //var refinedMessageContent = refineResponseJson["choices"][0]["message"]["content"].ToString();
-                 //var res=ExtractJsonPart(refinedMessageContent);
-
-                var questionnaire = JsonConvert.DeserializeObject<Questionnaire>(messageContent);
+                var res = ExtractJsonPart(messageContent);
+                var questionnaire = JsonConvert.DeserializeObject<Questionnaire>(res);
                 return questionnaire;
             } catch (Exception ex) {
-                // Log the exception for debugging purposes
                 Console.WriteLine($"Error processing JSON response: {ex.Message}");
                 return null;
             }
         }
 
-        private string ExtractJsonPart(string jsonString) {
+        public static string ExtractJsonPart(string input) {
 
-            // Regular expression to match text within braces {}
-            string pattern = @"\{(?:[^{}]|(?<Open>{)|(?<-Open>}))*\}(?(Open)(?!))";
+            string jsonPattern = @"```json\s*(\[.*?\])\s*```";
+            var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
 
-            // Find the first match using the regular expression
-            Match match = Regex.Match(jsonString, pattern);
-
-            if (match.Success) {
-                string json = match.Value;
-                return json;
+            if (!jsonMatch.Success) {
+                throw new Exception("JSON part not found");
             }
 
-            return jsonString;
+            string jsonArray = jsonMatch.Groups[1].Value;
 
+            string titlePattern = @"Title:\s*(.*?)\n";
+            string summaryPattern = @"Summary:\s*(.*?)\n\n";
 
-            //    // Parse the JSON string
-            //    var jObject = JObject.Parse(jsonString);
+            var titleMatch = Regex.Match(input, titlePattern, RegexOptions.Singleline);
+            var summaryMatch = Regex.Match(input, summaryPattern, RegexOptions.Singleline);
 
-            //// Extract the title, summary, and questions parts
-            //var extractedPart = new JObject {
-            //    ["title"] = jObject["title"],
-            //    ["summary"] = jObject["summary"],
-            //    ["questions"] = jObject["questions"]
-            //};
+            if (!titleMatch.Success || !summaryMatch.Success) {
+                throw new Exception("Title or Summary not found");
+            }
 
-            //// Convert the extracted part back to JSON string
-            //return extractedPart.ToString();
+            string title = titleMatch.Groups[1].Value.Trim();
+            string summary = summaryMatch.Groups[1].Value.Trim();
+            var combinedJsonObject = new JObject {
+                ["title"] = title,
+                ["summary"] = summary,
+                ["questions"] = JArray.Parse(jsonArray)
+            };
+
+            return combinedJsonObject.ToString();
         }
-
         private bool IsValidJson(string json) {
             try {
                 JToken.Parse(json);
@@ -311,7 +300,7 @@ namespace YoMentor.ChatGPT {
         }
 
 
-    
+
 
 
 
@@ -327,11 +316,11 @@ namespace YoMentor.ChatGPT {
                 CreateDate = DateTime.UtcNow,
                 IsDeleted = false,
                 Description = processedResponse.Summary,
-                Topic=request.Topic,
-                Complexity_Level= request.ComplexityLevel,  
-                NumberOf_Questions= request.NumberOfQuestions,  
-                Prompt_Type=request.Category,
-                CreatedBy=request.UserId
+                Topic = request.Topic,
+                Complexity_Level = request.ComplexityLevel,
+                NumberOf_Questions = request.NumberOfQuestions,
+                Prompt_Type = request.Category,
+                CreatedBy = request.UserId
             };
 
             int skillTestId = await _skillTestRepository.InsertSkillTest(skillTest);
