@@ -121,7 +121,7 @@ namespace YoMentor.ChatGPT {
                 var openAiRequest = BuildOpenAiRequest(userPromptResult.Result);
 
                 var response = await _httpService.PostAsync<object>("v1/chat/completions", openAiRequest);
-                var processedResponse = ProcessOpenAiResponse(response);
+                 var processedResponse = await ProcessOpenAiResponse(response);
                 try {
                     List<QuestionInfo> questionInfos = new List<QuestionInfo>();
                     foreach (var item in processedResponse.Questions) {
@@ -169,7 +169,13 @@ namespace YoMentor.ChatGPT {
             }
         }
 
+        public static string RemoveJsonDelimiters(string input) {
+            // Remove ```json and ``` from the input string
+            string pattern = @"^```json\s*|\s*```$";
+            string result = Regex.Replace(input, pattern, string.Empty, RegexOptions.Multiline).Trim();
 
+            return result;
+        }
 
 
         private (bool Success, object Result) ValidateRequest(QuestionRequest request) {
@@ -186,11 +192,7 @@ namespace YoMentor.ChatGPT {
             }
         }
 
-
-
-
-        private (bool Success, string Result) BuildUserPrompt(QuestionRequest request) {
-            string userPrompt = string.Empty;
+        public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
             string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
             string subjectname = _subjectRepository.GetSubjectName(request.Subject);
             string categoryName = Enum.GetName(typeof(Category), request.Category);
@@ -199,55 +201,95 @@ namespace YoMentor.ChatGPT {
             string language = Enum.GetName(typeof(Language), request.Language);
 
             if (promptData != null) {
-                userPrompt = promptData.Prompt_Text;
-
-
+                string userPrompt = promptData.Prompt_Text;
                 userPrompt = userPrompt.Replace("{request.NumberOfQuestions}", request.NumberOfQuestions.ToString());
                 userPrompt = userPrompt.Replace("{request.AcademicClass}", gradeName);
                 userPrompt = userPrompt.Replace("{request.Subject}", subjectname);
                 userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
                 userPrompt = userPrompt.Replace("{request.ComplexityLevel}", complexityLevel);
-                //userPrompt = userPrompt.Replace("{request.ExamName}", gradeName);
                 userPrompt = userPrompt.Replace("{request.language}", language);
 
+                Prompt resultPrompt = new Prompt {
+                    Prompt_Id = promptData.Prompt_Id,
+                    Prompt_Text = userPrompt,
+                    Prompt_Type = promptData.Prompt_Type,
+                    Temperature = promptData.Temperature,
+                    Max_tokens = promptData.Max_tokens,
+                    Top_p = promptData.Top_p,
+                    Sop_Sequence = promptData.Sop_Sequence,
+                    Model = promptData.Model,
+                    System_Role = promptData.System_Role,
+                };
 
+                return (true, resultPrompt);
             }
             else {
-                return (false, "Prompt not found for the specified category.");
+                return (false, null);
             }
-
-            return (true, userPrompt);
         }
 
 
-        private object BuildOpenAiRequest(string userPrompt) {
+
+
+        private object BuildOpenAiRequest(Prompt userPrompt) {
             return new {
-                model = "gpt-3.5-turbo",
+                model = userPrompt.Model,
                 messages = new[] {
-            new { role = "system", content = "You are an AI tutor assisting students in generating study questions based on their inputs." },
-            new { role = "user", content = userPrompt }
+            new { role = "system", content = userPrompt.System_Role },
+            new { role = "user", content = userPrompt.Prompt_Text }
         },
-                max_tokens = 3500,
+                max_tokens = userPrompt.Max_tokens,
                 n = 1,
-                stop = "None",
-                temperature = 0.7
+                stop = userPrompt.Sop_Sequence,
+                temperature = userPrompt.Temperature,
+                top_p = userPrompt.Top_p
             };
         }
-        private Questionnaire ProcessOpenAiResponse(object responseData) {
+
+        private async Task<Questionnaire> ProcessOpenAiResponse(object responseData) {
             try {
                 var responseJson = JObject.Parse(responseData.ToString());
                 var messageContent = responseJson["choices"][0]["message"]["content"].ToString();
-
-                var questionnaire = JsonConvert.DeserializeObject<Questionnaire>(messageContent);
+                var res = ExtractJsonPart(messageContent);
+                var questionnaire = JsonConvert.DeserializeObject<Questionnaire>(res);
                 return questionnaire;
             } catch (Exception ex) {
-                // Log the exception for debugging purposes
                 Console.WriteLine($"Error processing JSON response: {ex.Message}");
                 return null;
             }
         }
 
+        public static string ExtractJsonPart(string input) {
 
+            string jsonPattern = @"```json\s*(\[.*?\])\s*```";
+            var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
+
+            if (!jsonMatch.Success) {
+                throw new Exception("JSON part not found");
+            }
+
+            string jsonArray = jsonMatch.Groups[1].Value;
+
+            string titlePattern = @"Title:\s*(.*?)\n";
+            string summaryPattern = @"Summary:\s*(.*?)\n\n";
+
+            var titleMatch = Regex.Match(input, titlePattern, RegexOptions.Singleline);
+            var summaryMatch = Regex.Match(input, summaryPattern, RegexOptions.Singleline);
+
+            if (!titleMatch.Success || !summaryMatch.Success) {
+                throw new Exception("Title or Summary not found");
+            }
+
+            string title = titleMatch.Groups[1].Value.Trim();
+            string summary = summaryMatch.Groups[1].Value.Trim();
+            var combinedJsonObject = new JObject {
+                ["title"] = title,
+                ["summary"] = summary,
+                ["questions"] = JArray.Parse(jsonArray)
+            };
+
+            return combinedJsonObject.ToString();
+        }
         private bool IsValidJson(string json) {
             try {
                 JToken.Parse(json);
@@ -256,6 +298,7 @@ namespace YoMentor.ChatGPT {
                 return false;
             }
         }
+
 
 
 
@@ -273,6 +316,11 @@ namespace YoMentor.ChatGPT {
                 CreateDate = DateTime.UtcNow,
                 IsDeleted = false,
                 Description = processedResponse.Summary,
+                Topic = request.Topic,
+                Complexity_Level = request.ComplexityLevel,
+                NumberOf_Questions = request.NumberOfQuestions,
+                Prompt_Type = request.Category,
+                CreatedBy = request.UserId
             };
 
             int skillTestId = await _skillTestRepository.InsertSkillTest(skillTest);
