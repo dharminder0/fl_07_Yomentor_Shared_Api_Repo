@@ -71,5 +71,16 @@ namespace YoMentor.Api.Controllers {
             var response =  _skillTestService.AttemptDetailBulkInsert(skillTestId);
             return JsonExt(response);
         }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="skillTest"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("ListByUser")]
+        public async Task<IActionResult> GetSkillTestListByUser(SkillTestRequest skillTest) {
+            var response = await _skillTestService.GetSkillTestListByUser(skillTest);
+            return JsonExt(response);
+        }
     }
 }
