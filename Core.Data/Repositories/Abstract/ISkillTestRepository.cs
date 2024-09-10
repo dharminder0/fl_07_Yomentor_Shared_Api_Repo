@@ -29,5 +29,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<bool> InsertAnswerOption(AnswerOption answerOption);
         Task<int> InsertSkillTest(SkillTest skillTest);
        Prompt GetPrompt(string prompt_type);
+       Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest);
     }
 }
