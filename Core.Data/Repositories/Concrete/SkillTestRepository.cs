@@ -26,7 +26,7 @@ namespace Core.Data.Repositories.Concrete {
 
 
             if (skillTest.UserId == 0) {
-                sql += " and CreatedBy is null";
+                sql += " and CreatedBy is null or CreatedBy=0 ";
             }
                 if (skillTest.UserId > 0) {
                 sql += @" and CreatedBy=@userId ";
