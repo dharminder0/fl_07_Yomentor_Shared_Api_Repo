@@ -16,14 +16,17 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE CreatedBy IS NULL ";
+            var sql = @" select * from skilltest  WHERE 1=1";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
             if (skillTest.GradeId > 0) {
                 sql += @" and gradeId=@gradeId ";
             }
-          
+
+            if (skillTest.UserId > 0) {
+                sql += @" and CreatedBy=@userId ";
+            }
             if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
                 sql += $@"
         AND (title LIKE '%{skillTest.SearchText}%' OR          
