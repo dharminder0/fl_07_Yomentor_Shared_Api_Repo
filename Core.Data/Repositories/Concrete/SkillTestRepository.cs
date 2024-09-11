@@ -21,6 +21,9 @@ namespace Core.Data.Repositories.Concrete {
                 sql += @" and subjectId=@SubjectId  ";
             }
 
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
 
             if (skillTest.UserId == 0) {
                 sql += " and CreatedBy is null or CreatedBy=0 ";
