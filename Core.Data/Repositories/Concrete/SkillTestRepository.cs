@@ -20,9 +20,6 @@ namespace Core.Data.Repositories.Concrete {
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
-            if (skillTest.GradeId > 0) {
-                sql += @" and gradeId=@gradeId ";
-            }
 
 
             if (skillTest.UserId == 0) {
@@ -31,7 +28,10 @@ namespace Core.Data.Repositories.Concrete {
                 if (skillTest.UserId > 0) {
                 sql += @" and CreatedBy=@userId ";
             }
-     
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
+
             if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
                 sql += $@"
         AND (title LIKE '%{skillTest.SearchText}%' OR          
