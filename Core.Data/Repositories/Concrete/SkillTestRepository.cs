@@ -16,7 +16,7 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1";
+            var sql = @" select * from skilltest  WHERE 1=1 ";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
@@ -24,9 +24,14 @@ namespace Core.Data.Repositories.Concrete {
                 sql += @" and gradeId=@gradeId ";
             }
 
-            if (skillTest.UserId > 0) {
+
+            if (skillTest.UserId == 0) {
+                sql += " and CreatedBy is null";
+            }
+                if (skillTest.UserId > 0) {
                 sql += @" and CreatedBy=@userId ";
             }
+     
             if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
                 sql += $@"
         AND (title LIKE '%{skillTest.SearchText}%' OR          
@@ -41,7 +46,7 @@ ORDER BY id DESC
             return await QueryAsync<SkillTest>(sql, skillTest);
         }
         public async Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1";
+            var sql = @" select * from skilltest  CreatedBy 1=1";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
