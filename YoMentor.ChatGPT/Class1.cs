@@ -17,6 +17,7 @@ using Core.Business.Entities.ResponseModels;
 using Core.Data.Repositories.Abstract;
 using Core.Data.Repositories.Concrete;
 using static Core.Business.Entities.DTOs.Enum;
+using System.Collections.Generic;
 
 namespace YoMentor.ChatGPT {
     public interface IAIQuestionAnswerService {
@@ -25,7 +26,7 @@ namespace YoMentor.ChatGPT {
 
         Task<int> GenerateQuestions(QuestionRequest request);
      
-        List<DailyAttemptCount> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate);
+        List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate);
     }
 
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService {
@@ -379,12 +380,33 @@ namespace YoMentor.ChatGPT {
             }
             return skillTestId;
         }
-    
-        public List<DailyAttemptCount> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate) {
-            var response= _skillTestRepository.GetDailyAttemptCounts(userId, startDate, endDate);
-            return response.ToList();   
+
+        public List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate) {
+
+            var response = _skillTestRepository.GetDailyAttemptCounts(userId, startDate, endDate);
+
+
+            List<DailyAttemptCountV2> resultList = new List<DailyAttemptCountV2>();
+
+ 
+            foreach (var item in response) {
+                DailyAttemptCountV2 obj = new DailyAttemptCountV2 {
+                 Label = item.Date.ToString("dd MMM yyyy"),
+                    Value = item.AttemptedCount  
+                };
+
+
+                resultList.Add(obj);
+            }
+
+
+            return resultList;
         }
+
     }
+
+
+
 
 
 }

@@ -51,5 +51,9 @@ namespace Core.Business.Entities.ChatGPT {
         public DateTime Date { get; set; }
         public int AttemptedCount { get; set; }
     }
+    public class DailyAttemptCountV2 {
+        public string Label { get; set; }
+        public int Value { get; set; }
+    }
 
 }
