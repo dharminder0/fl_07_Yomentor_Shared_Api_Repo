@@ -24,6 +24,8 @@ namespace YoMentor.ChatGPT {
         Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject);
 
         Task<int> GenerateQuestions(QuestionRequest request);
+     
+        List<DailyAttemptCount> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate);
     }
 
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService {
@@ -377,7 +379,11 @@ namespace YoMentor.ChatGPT {
             }
             return skillTestId;
         }
-
+    
+        public List<DailyAttemptCount> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate) {
+            var response= _skillTestRepository.GetDailyAttemptCounts(userId, startDate, endDate);
+            return response.ToList();   
+        }
     }
 
 

@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using Core.Business.Entities.ChatGPT;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
 using Core.Common.Data;
@@ -299,5 +300,31 @@ GROUP BY
             var sql = @" select * from Prompt where prompt_type=@prompt_type ";
             return QueryFirst<Prompt>(sql, new { prompt_type });
         }
+        public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
+            var sql = @"
+   ;WITH DateRange AS (
+    SELECT TOP (DATEDIFF(day, @startDate, @endDate) + 1)
+        DATEADD(day, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1, @startDate) AS Date
+    FROM sys.all_objects -- This system view is used just to generate numbers
+)
+SELECT 
+    dr.Date,
+    ISNULL((
+        SELECT COUNT(*) 
+        FROM Attempt a
+        WHERE a.UserId = @userId
+        AND a.Status = 1
+        AND CAST(a.StartDate AS DATE) = dr.Date
+    ), 0) AS AttemptedCount
+FROM DateRange dr;
+;";
+
+            return Query<DailyAttemptCount>(sql, new { userId, startDate, endDate });
+        }
+
+
+
+
+
     }
 }
