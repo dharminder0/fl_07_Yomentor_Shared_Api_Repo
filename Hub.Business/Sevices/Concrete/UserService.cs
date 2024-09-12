@@ -237,6 +237,13 @@ namespace Core.Business.Services.Concrete {
             user.ParentId = dbUser.Parentid;          
             user.Type = dbUser.Type;
             user.AuthenticationStatus = true;
+            user.StudentGradeId = dbUser.GradeId;
+            user.Gender= dbUser.Gender;     
+            user.Email = dbUser.Email;  
+            user.DateOfBirth = dbUser.DateOfBirth;  
+            user.Rank = dbUser.Rank;    
+            user.IsDeleted = dbUser.IsDeleted;  
+           
 
             return user;
         }
