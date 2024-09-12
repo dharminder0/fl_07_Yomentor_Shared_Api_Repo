@@ -17,6 +17,7 @@ using Core.Business.Entities.ResponseModels;
 using Core.Data.Repositories.Abstract;
 using Core.Data.Repositories.Concrete;
 using static Core.Business.Entities.DTOs.Enum;
+using System.Collections.Generic;
 
 namespace YoMentor.ChatGPT {
     public interface IAIQuestionAnswerService {
@@ -24,6 +25,8 @@ namespace YoMentor.ChatGPT {
         Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject);
 
         Task<int> GenerateQuestions(QuestionRequest request);
+     
+        List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate);
     }
 
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService {
@@ -260,36 +263,65 @@ namespace YoMentor.ChatGPT {
         }
 
         public static string ExtractJsonPart(string input) {
-
-            string jsonPattern = @"```json\s*(\[.*?\])\s*```";
+            string jsonPattern = @"```json\s*(\{.*?\})\s*```"; 
             var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
 
             if (!jsonMatch.Success) {
                 throw new Exception("JSON part not found");
             }
 
-            string jsonArray = jsonMatch.Groups[1].Value;
+            string jsonObject = jsonMatch.Groups[1].Value;
 
-            string titlePattern = @"Title:\s*(.*?)\n";
-            string summaryPattern = @"Summary:\s*(.*?)\n\n";
+            JObject parsedJson = JObject.Parse(jsonObject);
 
-            var titleMatch = Regex.Match(input, titlePattern, RegexOptions.Singleline);
-            var summaryMatch = Regex.Match(input, summaryPattern, RegexOptions.Singleline);
+            string title = parsedJson["title"]?.ToString().Trim();
+            string summary = parsedJson["summary"]?.ToString().Trim();
 
-            if (!titleMatch.Success || !summaryMatch.Success) {
-                throw new Exception("Title or Summary not found");
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(summary)) {
+                throw new Exception("Title or Summary not found in the JSON object");
             }
 
-            string title = titleMatch.Groups[1].Value.Trim();
-            string summary = summaryMatch.Groups[1].Value.Trim();
+            // Create a new combined JSON object with title, summary, and questions
             var combinedJsonObject = new JObject {
                 ["title"] = title,
                 ["summary"] = summary,
-                ["questions"] = JArray.Parse(jsonArray)
+                ["questions"] = parsedJson["questions"] 
             };
 
-            return combinedJsonObject.ToString();
+            return combinedJsonObject.ToString(Newtonsoft.Json.Formatting.Indented);
         }
+
+        //public static string ExtractJsonPart(string input) {
+
+        //    string jsonPattern = @"```json\s*(\[.*?\])\s*```";
+        //    var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
+
+        //    if (!jsonMatch.Success) {
+        //        throw new Exception("JSON part not found");
+        //    }
+
+        //    string jsonArray = jsonMatch.Groups[1].Value;
+
+        //    string titlePattern = @"Title:\s*(.*?)\n";
+        //    string summaryPattern = @"Summary:\s*(.*?)\n\n";
+
+        //    var titleMatch = Regex.Match(input, titlePattern, RegexOptions.Singleline);
+        //    var summaryMatch = Regex.Match(input, summaryPattern, RegexOptions.Singleline);
+
+        //    if (!titleMatch.Success || !summaryMatch.Success) {
+        //        throw new Exception("Title or Summary not found");
+        //    }
+
+        //    string title = titleMatch.Groups[1].Value.Trim();
+        //    string summary = summaryMatch.Groups[1].Value.Trim();
+        //    var combinedJsonObject = new JObject {
+        //        ["title"] = title,
+        //        ["summary"] = summary,
+        //        ["questions"] = JArray.Parse(jsonArray)
+        //    };
+
+        //    return combinedJsonObject.ToString();
+        //}
         private bool IsValidJson(string json) {
             try {
                 JToken.Parse(json);
@@ -349,7 +381,32 @@ namespace YoMentor.ChatGPT {
             return skillTestId;
         }
 
+        public List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate) {
+
+            var response = _skillTestRepository.GetDailyAttemptCounts(userId, startDate, endDate);
+
+
+            List<DailyAttemptCountV2> resultList = new List<DailyAttemptCountV2>();
+
+ 
+            foreach (var item in response) {
+                DailyAttemptCountV2 obj = new DailyAttemptCountV2 {
+                 Label = item.Date.ToString("dd MMM yyyy"),
+                    Value = item.AttemptedCount  
+                };
+
+
+                resultList.Add(obj);
+            }
+
+
+            return resultList;
+        }
+
     }
+
+
+
 
 
 }

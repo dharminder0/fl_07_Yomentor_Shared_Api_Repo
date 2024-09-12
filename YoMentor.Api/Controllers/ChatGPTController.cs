@@ -41,6 +41,16 @@ namespace YoMentor.Api.Controllers
             var questions = await _aIQuestionAnswer.GenerateQuestions(request);
             return JsonExt(questions);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="skillTestRequest"></param>
+        /// <returns></returns>
+        [HttpPost("SkillTest-attempts/dailyCount")]
+        public IActionResult GetAttemptCount(SkillTestRequestV2 skillTestRequest) {
+            var questions =  _aIQuestionAnswer.GetAttemptCountV2(skillTestRequest.UserId,skillTestRequest.Startdate,skillTestRequest.EndDate);
+            return JsonExt(questions);
+        }
     }
 }
 

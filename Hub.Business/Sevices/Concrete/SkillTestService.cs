@@ -57,6 +57,42 @@ namespace Core.Business.Sevices.Concrete {
             }
             return skills;
         }
+        public async Task<List<SkillTestResponse>> GetSkillTestListByUser(SkillTestRequest skillTest) {
+            if (skillTest == null) throw new ArgumentNullException(nameof(skillTest));
+            List<SkillTestResponse> skills = new List<SkillTestResponse>();
+            var response = await _skillTestRepository.GetSkillTestListByUser(skillTest);
+            foreach (var item in response) {
+                SkillTestResponse skillTestResponse = new SkillTestResponse();
+                skillTestResponse.Id = item.Id;
+                skillTestResponse.SubjectId = item.SubjectId;
+                skillTestResponse.Title = item.Title;
+                skillTestResponse.Description = item.Description;
+                skillTestResponse.UpdateDate = item.UpdateDate;
+                skillTestResponse.IsDeleted = item.IsDeleted;
+                skillTestResponse.GradeId = item.GradeId;
+                string gradeName = _gradeRepository.GetGradeName(skillTestResponse.GradeId);
+                if (!string.IsNullOrWhiteSpace(gradeName)) {
+                    skillTestResponse.GradeName = gradeName;
+                }
+                string subjectName = _subjectRepository.GetSubjectName(skillTestResponse.SubjectId);
+                if (!string.IsNullOrWhiteSpace(subjectName)) {
+                    skillTestResponse.SubjectName = subjectName;
+                }
+                try {
+                    var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
+                    int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
+                    skillTestResponse.AverageMarks = averageCount;
+                    skillTestResponse.AttemptCount = userCount;
+
+                } catch (Exception) {
+
+
+                }
+
+                skills.Add(skillTestResponse);
+            }
+            return skills;
+        }
         public SkillTestResponse GetSkillTest(int id,int userId) {
             if (id > null) throw new ArgumentNullException(nameof(id));
             List<AttemptHistory> obj = new List<AttemptHistory>();

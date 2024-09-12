@@ -14,5 +14,6 @@ namespace Core.Business.Sevices.Abstract {
         ActionMessageResponse UpsertAttempt(Attempt attempt);
         Task<List<AttemptSkillTestResponse>> GetQuizQuestionsWithAnswers(int skillTestId, int attemptId);
         ActionMessageResponse AttemptDetailBulkInsert(SkillTestAttemptRequest request);
+        Task<List<SkillTestResponse>> GetSkillTestListByUser(SkillTestRequest skillTest);
     }
 }

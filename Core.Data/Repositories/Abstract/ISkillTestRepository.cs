@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using Core.Business.Entities.ChatGPT;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
 using Core.Common.Contracts;
@@ -29,5 +30,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<bool> InsertAnswerOption(AnswerOption answerOption);
         Task<int> InsertSkillTest(SkillTest skillTest);
        Prompt GetPrompt(string prompt_type);
+       Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest);
+        IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate);
     }
 }
