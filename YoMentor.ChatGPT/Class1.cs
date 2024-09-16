@@ -17,6 +17,7 @@ using Core.Business.Entities.ResponseModels;
 using Core.Data.Repositories.Abstract;
 using Core.Data.Repositories.Concrete;
 using static Core.Business.Entities.DTOs.Enum;
+using System.Collections.Generic;
 
 namespace YoMentor.ChatGPT {
     public interface IAIQuestionAnswerService {
@@ -24,6 +25,8 @@ namespace YoMentor.ChatGPT {
         Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject);
 
         Task<int> GenerateQuestions(QuestionRequest request);
+     
+        List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate);
     }
 
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService {
@@ -261,16 +264,14 @@ namespace YoMentor.ChatGPT {
 
         public static string ExtractJsonPart(string input) {
             try {
-                // First, try to parse the entire input as a valid JSON object
+       
                 var parsedJson = JObject.Parse(input);
 
-                // If parsing succeeds, return the valid JSON as is
+        
                 return parsedJson.ToString();
             } catch (JsonReaderException) {
-                // If input is not valid JSON, proceed with extraction logic
             }
 
-            // If input is not valid JSON, try to extract JSON from embedded text
             string jsonPattern = @"```json\s*(\{.*?\})\s*```";
             var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
 
@@ -310,7 +311,11 @@ namespace YoMentor.ChatGPT {
             return combinedJsonObject.ToString();
         }
 
+
         //public static string ExtractJsonPartV2(string input) {
+
+        //public static string ExtractJsonPart(string input) {
+
 
         //    string jsonPattern = @"```json\s*(\[.*?\])\s*```";
         //    var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
@@ -400,7 +405,32 @@ namespace YoMentor.ChatGPT {
             return skillTestId;
         }
 
+        public List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate) {
+
+            var response = _skillTestRepository.GetDailyAttemptCounts(userId, startDate, endDate);
+
+
+            List<DailyAttemptCountV2> resultList = new List<DailyAttemptCountV2>();
+
+ 
+            foreach (var item in response) {
+                DailyAttemptCountV2 obj = new DailyAttemptCountV2 {
+                 Label = item.Date.ToString("dd MMM yyyy"),
+                    Value = item.AttemptedCount  
+                };
+
+
+                resultList.Add(obj);
+            }
+
+
+            return resultList;
+        }
+
     }
+
+
+
 
 
 }

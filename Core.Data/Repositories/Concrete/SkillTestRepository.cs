@@ -1,4 +1,5 @@
-﻿using Core.Business.Entities.DataModels;
+﻿using Core.Business.Entities.ChatGPT;
+using Core.Business.Entities.DataModels;
 using Core.Business.Entities.RequestModels;
 using Core.Business.Entities.ResponseModels;
 using Core.Common.Data;
@@ -10,16 +11,55 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Data.Repositories.Concrete {
     public class SkillTestRepository : DataRepository<SkillTest>, ISkillTestRepository {
+
+
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest where 1=1 ";
+            var sql = @" select * from skilltest  WHERE 1=1 ";
+            if (skillTest.SubjectId > 0) {
+                sql += @" and subjectId=@SubjectId  ";
+            }
+
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
+
+            if (skillTest.UserId == 0) {
+                sql += " and CreatedBy is null or CreatedBy=0 ";
+            }
+                if (skillTest.UserId > 0) {
+                sql += @" and CreatedBy=@userId ";
+            }
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
+
+            if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
+                sql += $@"
+        AND (title LIKE '%{skillTest.SearchText}%' OR          
+             description LIKE '%{skillTest.SearchText}%')";
+            }
+            if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
+                sql += $@"
+ORDER BY id DESC
+    
+        OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+            }
+            return await QueryAsync<SkillTest>(sql, skillTest);
+        }
+        public async Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest) {
+            var sql = @" select * from skilltest  CreatedBy 1=1";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
             if (skillTest.GradeId > 0) {
                 sql += @" and gradeId=@gradeId ";
+            }
+            if (skillTest.UserId > 0) {
+                sql += @" and CreatedBy=@userId ";
             }
             if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
                 sql += $@"
@@ -261,5 +301,70 @@ GROUP BY
             var sql = @" select * from Prompt where prompt_type=@prompt_type ";
             return QueryFirst<Prompt>(sql, new { prompt_type });
         }
+        public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
+            var sql = @"
+   ;WITH DateRange AS (
+    SELECT TOP (DATEDIFF(day, @startDate, @endDate) + 1)
+        DATEADD(day, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1, @startDate) AS Date
+    FROM sys.all_objects -- This system view is used just to generate numbers
+)
+SELECT 
+    dr.Date,
+    ISNULL((
+        SELECT COUNT(*) 
+        FROM Attempt a
+        WHERE a.UserId = @userId
+        AND a.Status = 1
+        AND CAST(a.StartDate AS DATE) = dr.Date
+    ), 0) AS AttemptedCount
+FROM DateRange dr;
+;";
+
+            return Query<DailyAttemptCount>(sql, new { userId, startDate, endDate });
+        }
+
+
+
+        public async Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest) {
+            var sql = @" select * from skilltest  WHERE 1=1 ";
+            if (skillTest.SubjectId > 0) {
+                sql += @" and subjectId=@SubjectId  ";
+            }
+
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
+
+            if (skillTest.UserId == 0) {
+                sql += " and CreatedBy is null or CreatedBy=0 ";
+            }
+            if (skillTest.SkillTestId != 0) {
+                sql += " and id != @SkillTestId ";
+            }
+            if (skillTest.complexityLevel != 0) {
+                sql += $" and complexity_level={Enum.GetName(typeof(ComplexityLevel),skillTest.complexityLevel)} ";
+            }
+            if (skillTest.UserId > 0) {
+                sql += @" and CreatedBy=@userId ";
+            }
+       
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
+
+            if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
+                sql += $@"
+        AND (title LIKE '%{skillTest.SearchText}%' OR          
+             description LIKE '%{skillTest.SearchText}%')";
+            }
+            if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
+                sql += $@"
+ORDER BY id DESC
+    
+        OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+            }
+            return await QueryAsync<SkillTest>(sql, skillTest);
+        }
+
     }
 }

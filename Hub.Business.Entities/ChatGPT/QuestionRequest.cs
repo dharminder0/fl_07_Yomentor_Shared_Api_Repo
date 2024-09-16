@@ -39,4 +39,21 @@ namespace Core.Business.Entities.ChatGPT {
 
 
     }
+    public class SkillTestRequestV2 {
+        public int UserId { get; set; }
+        public DateTime Startdate { get; set; }
+        public DateTime EndDate { get; set; }
+
+
+    }
+
+    public class DailyAttemptCount {
+        public DateTime Date { get; set; }
+        public int AttemptedCount { get; set; }
+    }
+    public class DailyAttemptCountV2 {
+        public string Label { get; set; }
+        public int Value { get; set; }
+    }
+
 }
