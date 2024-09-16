@@ -18,38 +18,47 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1 ";
+            var sql = @"SELECT * FROM skilltest WHERE 1=1";
+
             if (skillTest.SubjectId > 0) {
-                sql += @" and subjectId=@SubjectId  ";
+                sql += " AND subjectId = @SubjectId";
             }
 
             if (skillTest.GradeId > 0) {
-                sql += @" and gradeId=@gradeId ";
+                sql += " AND gradeId = @GradeId";
             }
 
             if (skillTest.UserId == 0) {
-                sql += " and CreatedBy is null or CreatedBy=0 ";
+                sql += " AND (CreatedBy IS NULL OR CreatedBy = 0)";
             }
-                if (skillTest.UserId > 0) {
-                sql += @" and CreatedBy=@userId ";
-            }
-            if (skillTest.GradeId > 0) {
-                sql += @" and gradeId=@gradeId ";
+            else {
+                sql += " AND CreatedBy = @UserId";
             }
 
             if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
-                sql += $@"
-        AND (title LIKE '%{skillTest.SearchText}%' OR          
-             description LIKE '%{skillTest.SearchText}%')";
+                sql += " AND (title LIKE @SearchPattern OR description LIKE @SearchPattern)";
             }
+
             if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
-                sql += $@"
+                sql += @"
 ORDER BY id DESC
-    
-        OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
             }
-            return await QueryAsync<SkillTest>(sql, skillTest);
+
+
+            var parameters = new {
+                skillTest.SubjectId,
+                skillTest.GradeId,
+                skillTest.UserId,
+                SearchPattern = $"%{skillTest.SearchText}%",
+                PageSize = skillTest.PageSize,
+                Offset = (skillTest.PageIndex - 1) * skillTest.PageSize
+            };
+
+            return await QueryAsync<SkillTest>(sql, parameters);
         }
+
+
         public async Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest) {
             var sql = @" select * from skilltest  CreatedBy 1=1";
             if (skillTest.SubjectId > 0) {
@@ -301,12 +310,13 @@ GROUP BY
             var sql = @" select * from Prompt where prompt_type=@prompt_type ";
             return QueryFirst<Prompt>(sql, new { prompt_type });
         }
+
         public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
             var sql = @"
    ;WITH DateRange AS (
     SELECT TOP (DATEDIFF(day, @startDate, @endDate) + 1)
         DATEADD(day, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1, @startDate) AS Date
-    FROM sys.all_objects -- This system view is used just to generate numbers
+    FROM sys.all_objects
 )
 SELECT 
     dr.Date,
@@ -315,13 +325,15 @@ SELECT
         FROM Attempt a
         WHERE a.UserId = @userId
         AND a.Status = 1
-        AND CAST(a.StartDate AS DATE) = dr.Date
+        AND a.StartDate >= dr.Date
+        AND a.StartDate < DATEADD(day, 1, dr.Date)
     ), 0) AS AttemptedCount
 FROM DateRange dr;
-;";
+";
 
             return Query<DailyAttemptCount>(sql, new { userId, startDate, endDate });
         }
+
 
 
 
@@ -342,12 +354,12 @@ FROM DateRange dr;
                 sql += " and id != @SkillTestId ";
             }
             if (skillTest.complexityLevel != 0) {
-                sql += $" and complexity_level={Enum.GetName(typeof(ComplexityLevel),skillTest.complexityLevel)} ";
+                sql += $" and complexity_level={Enum.GetName(typeof(ComplexityLevel), skillTest.complexityLevel)} ";
             }
             if (skillTest.UserId > 0) {
                 sql += @" and CreatedBy=@userId ";
             }
-       
+
             if (skillTest.GradeId > 0) {
                 sql += @" and gradeId=@gradeId ";
             }
