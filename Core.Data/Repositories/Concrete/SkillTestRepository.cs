@@ -45,7 +45,7 @@ ORDER BY id DESC
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
             }
 
-        
+
             var parameters = new {
                 skillTest.SubjectId,
                 skillTest.GradeId,
@@ -354,12 +354,12 @@ FROM DateRange dr;
                 sql += " and id != @SkillTestId ";
             }
             if (skillTest.complexityLevel != 0) {
-                sql += $" and complexity_level={Enum.GetName(typeof(ComplexityLevel),skillTest.complexityLevel)} ";
+                sql += $" and complexity_level={Enum.GetName(typeof(ComplexityLevel), skillTest.complexityLevel)} ";
             }
             if (skillTest.UserId > 0) {
                 sql += @" and CreatedBy=@userId ";
             }
-       
+
             if (skillTest.GradeId > 0) {
                 sql += @" and gradeId=@gradeId ";
             }
