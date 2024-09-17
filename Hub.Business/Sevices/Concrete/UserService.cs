@@ -228,6 +228,8 @@ namespace Core.Business.Services.Concrete {
             if (files != null && files.Any()) {
                 user.Image = files.First().BlobLink;
             }
+            int category = _gradeRepository.GetCategory(dbUser.GradeId);
+
             user.Id = dbUser.Id;
             user.FirstName = dbUser.FirstName;
             user.LastName = dbUser.LastName;
@@ -242,8 +244,8 @@ namespace Core.Business.Services.Concrete {
             user.Email = dbUser.Email;  
             user.DateOfBirth = dbUser.DateOfBirth;  
             user.Rank = dbUser.Rank;    
-            user.IsDeleted = dbUser.IsDeleted;  
-           
+            user.IsDeleted = dbUser.IsDeleted; 
+            user.Category= category >0 ? category : 0;  
 
             return user;
         }
