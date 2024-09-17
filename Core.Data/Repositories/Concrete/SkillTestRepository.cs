@@ -286,7 +286,11 @@ GROUP BY
         Complexity_Level,
         NumberOf_Questions,
         CreatedBy,
-        language
+        language,
+        TimerValue,
+        isEnableTimer
+
+        
     )
     VALUES
     (
@@ -303,7 +307,10 @@ GROUP BY
         @Complexity_Level,
         @NumberOf_Questions,
         @CreatedBy,
-        @language
+        @language,
+        @TimerValue,
+        @isEnableTimer
+        
     );
             SELECT SCOPE_IDENTITY(); ";
             return await ExecuteScalarAsync<int>(sql, skillTest);

@@ -10,7 +10,7 @@ namespace Core.Business.Services.Abstract {
     public interface IUserService
     {
 
-        ActionMessageResponse AuthenticateUser(string userName, string password);
+      
         Task<ActionMessageResponse> Userlogin(string userName, string password);
        Task<ActionMessageResponse> RegisterNewUser(UserRequest obj);
        

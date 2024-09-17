@@ -24,5 +24,6 @@ namespace Core.Business.Entities.DataModels {
      
         public int Rank { get; set; }
         public int GradeId { get; set; }
+        public int Category { get; set; }
     }
 }

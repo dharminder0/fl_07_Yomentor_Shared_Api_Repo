@@ -325,7 +325,8 @@ u.id
             CreateDate,
             IsDeleted,
             Rank,
-            GradeId
+            GradeId,
+            Category
         )
         VALUES
         (
@@ -343,7 +344,8 @@ u.id
             GETDATE(),
             0,
             @Rank,
-            @GradeId
+            @GradeId,
+            @Category
         );
 
         SELECT SCOPE_IDENTITY();
@@ -364,6 +366,7 @@ u.id
                 ParentId = ob.Parentid,
                 Rank = ob.Rank,
                 GradeId=ob.GradeId,
+                Category=ob.Category,   
             });
         }
         public int UpdateUser(UserRequest ob) {
@@ -390,7 +393,8 @@ u.id
             Rank = @Rank,
             CreateDate = GETDATE(),
             IsDeleted = 0,
-            GradeId=@GradeId
+            GradeId=@GradeId,
+            category=@Category
         WHERE id = @Id;
 
         SELECT Id FROM Users WHERE Phone = @Phone;
@@ -410,7 +414,8 @@ u.id
              
                 Rank = ob.Rank,
                 GradeId=ob.GradeId,
-                Id=ob.Id    
+                Category=ob.Category,   
+                Id =ob.Id    
             });
         }
 

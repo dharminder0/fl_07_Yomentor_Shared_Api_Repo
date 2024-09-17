@@ -195,27 +195,27 @@ namespace Core.Business.Services.Concrete {
 
 
 
-        public ActionMessageResponse AuthenticateUser(string phone, string password) {
-            var user = new UserAuthenticationDto();
-            if (!string.IsNullOrWhiteSpace(phone) && !string.IsNullOrEmpty(password)) {
-                var dbUser = _userRepository.GetUsersInfoByUserName(phone).FirstOrDefault();
-                if (dbUser != null && dbUser.PasswordSalt != null) {
-                    var saltBytes = dbUser.PasswordSalt;
-                    // decryption password
-                    var hashedPassword = Hasher.HashPassword(saltBytes, password);
-                    if (hashedPassword == dbUser.Password) {
-                        user = MapUserToUserBasicDto(dbUser);
-                        return new ActionMessageResponse { Content = user };
-                    }
-                }
-                else {
-                    if (dbUser == null)
-                        user.AuthenticationStatus = false;
-                    return new ActionMessageResponse { Content = user };
-                }
-            }
-            return new ActionMessageResponse { Success = false, Message = "required username and password", Content = 0 };
-        }
+        //public ActionMessageResponse AuthenticateUser(string phone, string password) {
+        //    var user = new UserAuthenticationDto();
+        //    if (!string.IsNullOrWhiteSpace(phone) && !string.IsNullOrEmpty(password)) {
+        //        var dbUser = _userRepository.GetUsersInfoByUserName(phone).FirstOrDefault();
+        //        if (dbUser != null && dbUser.PasswordSalt != null) {
+        //            var saltBytes = dbUser.PasswordSalt;
+        //            decryption password
+        //            var hashedPassword = Hasher.HashPassword(saltBytes, password);
+        //            if (hashedPassword == dbUser.Password) {
+        //                user = MapUserToUserBasicDto(dbUser);
+        //                return new ActionMessageResponse { Content = user };
+        //            }
+        //        }
+        //        else {
+        //            if (dbUser == null)
+        //                user.AuthenticationStatus = false;
+        //            return new ActionMessageResponse { Content = user };
+        //        }
+        //    }
+        //    return new ActionMessageResponse { Success = false, Message = "required username and password", Content = 0 };
+        //}
 
         private UserAuthenticationDto MapUserToUserBasicDto(Users dbUser) {
             if (dbUser.Id == 0) {
@@ -228,7 +228,7 @@ namespace Core.Business.Services.Concrete {
             if (files != null && files.Any()) {
                 user.Image = files.First().BlobLink;
             }
-            int category = _gradeRepository.GetCategory(dbUser.GradeId);
+            int category = dbUser.Category;
 
             user.Id = dbUser.Id;
             user.FirstName = dbUser.FirstName;
