@@ -111,6 +111,8 @@ namespace Core.Business.Sevices.Concrete {
             skillTestResponse.NumberOfQuestions=item.NumberOf_Questions;
             skillTestResponse.Category = item.Prompt_Type;
             skillTestResponse.Language = item.Language;
+            skillTestResponse.isEnableTimer = item.isEnableTimer;
+            skillTestResponse.TimerValue = item.TimerValue;
             string gradeName = _gradeRepository.GetGradeName(skillTestResponse.GradeId);
             if (!string.IsNullOrWhiteSpace(gradeName)) {
                 skillTestResponse.GradeName = gradeName;

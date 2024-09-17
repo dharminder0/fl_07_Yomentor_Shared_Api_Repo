@@ -21,5 +21,7 @@ namespace Core.Business.Entities.DataModels {
         public int NumberOf_Questions { get; set; }
         public int CreatedBy { get; set; }
         public int Language{ get; set; }
+        public int TimerValue { get; set; }
+        public bool isEnableTimer { get; set; }
     }
 }

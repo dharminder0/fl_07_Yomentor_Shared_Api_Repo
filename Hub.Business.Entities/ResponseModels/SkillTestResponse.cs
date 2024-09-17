@@ -22,6 +22,8 @@ namespace Core.Business.Entities.ResponseModels {
         public int  Complexity { get; set; }
         public int NumberOfQuestions { get; set; }
         public int Language { get; set; }
+        public int TimerValue { get; set; }
+        public bool isEnableTimer { get; set; }
         public List<AttemptHistory> AttemptHistory { get; set; }  
     }
     public class AttemptHistory {

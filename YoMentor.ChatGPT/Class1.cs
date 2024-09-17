@@ -377,7 +377,10 @@ namespace YoMentor.ChatGPT {
                 NumberOf_Questions = request.NumberOfQuestions,
                 Prompt_Type = request.Category,
                 CreatedBy = request.UserId,
-                Language = request.Language
+                Language = request.Language,
+                isEnableTimer=request.isEnableTimer,
+                TimerValue=request.TimerValue,  
+
                 
             };
 
