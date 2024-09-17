@@ -36,6 +36,7 @@ namespace Core.Business.Entities.Dto {
             public Address UserAddress { get; set; }
             public int StudentGradeId { get; set; }
             public int Rank { get; set; }
+            public int Category { get; set; }
 
 
 

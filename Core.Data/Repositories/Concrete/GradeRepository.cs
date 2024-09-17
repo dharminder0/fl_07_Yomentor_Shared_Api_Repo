@@ -29,5 +29,10 @@ namespace Core.Data.Repositories.Concrete {
             var res = Query<int>(sql, new { gradeName });
             return res.FirstOrDefault();
         }
+        public int GetCategory(int gradeId) {
+            var sql = "SELECT type FROM Grade WHERE id=@gradeId ";
+            var res = Query<int>(sql, new { gradeId });
+            return res.FirstOrDefault();
+        }
     }
 }
