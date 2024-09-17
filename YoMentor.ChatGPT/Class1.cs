@@ -353,7 +353,7 @@ namespace YoMentor.ChatGPT {
                 NumberOf_Questions = request.NumberOfQuestions,
                 Prompt_Type = request.Category,
                 CreatedBy = request.UserId,
-                LanguageId = request.Language
+                Language = request.Language
                 
             };
 

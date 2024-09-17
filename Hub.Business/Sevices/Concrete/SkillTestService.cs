@@ -110,7 +110,7 @@ namespace Core.Business.Sevices.Concrete {
             skillTestResponse.Complexity = item.Complexity_Level;
             skillTestResponse.NumberOfQuestions=item.NumberOf_Questions;
             skillTestResponse.Category = item.Prompt_Type;
-            skillTestResponse.Language = item.LanguageId;
+            skillTestResponse.Language = item.Language;
             string gradeName = _gradeRepository.GetGradeName(skillTestResponse.GradeId);
             if (!string.IsNullOrWhiteSpace(gradeName)) {
                 skillTestResponse.GradeName = gradeName;
