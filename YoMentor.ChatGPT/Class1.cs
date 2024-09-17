@@ -352,7 +352,9 @@ namespace YoMentor.ChatGPT {
                 Complexity_Level = request.ComplexityLevel,
                 NumberOf_Questions = request.NumberOfQuestions,
                 Prompt_Type = request.Category,
-                CreatedBy = request.UserId
+                CreatedBy = request.UserId,
+                LanguageId = request.Language
+                
             };
 
             int skillTestId = await _skillTestRepository.InsertSkillTest(skillTest);
