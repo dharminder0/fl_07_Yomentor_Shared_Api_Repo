@@ -303,7 +303,7 @@ GROUP BY
         @Complexity_Level,
         @NumberOf_Questions,
         @CreatedBy,
-        @LanguageId
+        @language
     );
             SELECT SCOPE_IDENTITY(); ";
             return await ExecuteScalarAsync<int>(sql, skillTest);
