@@ -155,7 +155,7 @@ ON A.QuestionId = Q.id where A.questionId=@questionId ";
 
         public IEnumerable<Attempt> GetAttemptHistory(int userId, int skilltestId) {
             var sql = @"
- select * from Attempt where userid=@userId  and skilltestid=@skilltestId and status=1  
+ select * from Attempt where userid=@userId  and skilltestid=@skilltestId and status=1   order by 1 desc 
 
  ";
             return Query<Attempt>(sql, new { userId, skilltestId });
@@ -285,7 +285,8 @@ GROUP BY
         Prompt_Type,
         Complexity_Level,
         NumberOf_Questions,
-        CreatedBy
+        CreatedBy,
+        language
     )
     VALUES
     (
@@ -301,7 +302,8 @@ GROUP BY
         @Prompt_Type,
         @Complexity_Level,
         @NumberOf_Questions,
-        @CreatedBy
+        @CreatedBy,
+        @LanguageId
     );
             SELECT SCOPE_IDENTITY(); ";
             return await ExecuteScalarAsync<int>(sql, skillTest);

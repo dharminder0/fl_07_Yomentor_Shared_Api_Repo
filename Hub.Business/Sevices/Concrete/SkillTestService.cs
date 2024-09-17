@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Sevices.Concrete {
     public class SkillTestService : ISkillTestService {
@@ -106,6 +107,10 @@ namespace Core.Business.Sevices.Concrete {
             skillTestResponse.UpdateDate = item.UpdateDate;
             skillTestResponse.IsDeleted = item.IsDeleted;
             skillTestResponse.GradeId = item.GradeId;
+            skillTestResponse.Complexity = item.Complexity_Level;
+            skillTestResponse.NumberOfQuestions=item.NumberOf_Questions;
+            skillTestResponse.Category = item.Prompt_Type;
+            skillTestResponse.Language = item.LanguageId;
             string gradeName = _gradeRepository.GetGradeName(skillTestResponse.GradeId);
             if (!string.IsNullOrWhiteSpace(gradeName)) {
                 skillTestResponse.GradeName = gradeName;
