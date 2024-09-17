@@ -1,4 +1,5 @@
-﻿using Core.Business.Entites.DataModels;
+﻿using Azure;
+using Core.Business.Entites.DataModels;
 using Core.Business.Entites.RequestModels;
 using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
@@ -245,7 +246,8 @@ namespace Core.Business.Services.Concrete {
             user.DateOfBirth = dbUser.DateOfBirth;  
             user.Rank = dbUser.Rank;    
             user.IsDeleted = dbUser.IsDeleted; 
-            user.Category= category >0 ? category : 0;  
+            user.Category= category >0 ? category : 0;
+            user.CategoryName = Enum.GetName(typeof(Category), dbUser.Category);
 
             return user;
         }
@@ -490,6 +492,8 @@ namespace Core.Business.Services.Concrete {
                 userDto.Type = response.Type;
                 userDto.Rank=response.Rank;
                 userDto.Gender = response.Gender;
+                userDto.Category = response.Category;
+                userDto.CategoryName = Enum.GetName(typeof(Category), response.Category);
  
                 userDto.StudentGradeId = response.GradeId;
            
