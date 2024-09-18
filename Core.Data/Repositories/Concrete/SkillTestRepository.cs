@@ -342,6 +342,59 @@ FROM DateRange dr;
 
             return Query<DailyAttemptCount>(sql, new { userId, startDate, endDate });
         }
+        public IEnumerable<AttemptCount> GetAttemptCounts(int userId, SkillTestAttemptRange range) {
+            DateTime endDate = DateTime.Now;
+            DateTime startDate = range switch {
+                SkillTestAttemptRange.Weekly => endDate.AddDays(-7),
+                SkillTestAttemptRange.Monthly => endDate.AddMonths(-1),
+                SkillTestAttemptRange.SixMonthly => endDate.AddMonths(-6),
+                SkillTestAttemptRange.Yearly => endDate.AddYears(-1),
+                _ => throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}")
+            };
+
+            // Define the grouping logic based on the range
+            string groupBySelect = range switch {
+                SkillTestAttemptRange.Weekly => "CAST(dr.Date AS DATE)", // Group by individual days
+                SkillTestAttemptRange.Monthly => "FORMAT(dr.Date, 'yyyy-MM')", // Group by year and month
+                SkillTestAttemptRange.SixMonthly => "FORMAT(dr.Date, 'yyyy-MM')", // Group by year and month
+                SkillTestAttemptRange.Yearly => "FORMAT(dr.Date, 'yyyy-MM')", // Group by year and month
+                _ => "CAST(dr.Date AS DATE)"  // Default group by day
+            };
+
+            // Updated SQL query
+            var sql = $@"
+    ;WITH DateRange AS (
+        SELECT TOP (DATEDIFF(day, @startDate, @endDate) + 1)
+            CAST(DATEADD(day, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1, @startDate) AS DATE) AS Date
+        FROM sys.all_objects
+    )
+    SELECT 
+        {groupBySelect} AS GroupedDate,
+        COUNT(DISTINCT a.Id) AS AttemptedCount  -- Use DISTINCT to avoid counting duplicate attempts
+    FROM DateRange dr
+    LEFT JOIN Attempt a
+        ON a.UserId = @userId
+        AND a.Status = 1
+        AND a.StartDate >= dr.Date
+        AND a.StartDate < CASE 
+            WHEN '{range}' = 'Weekly' THEN DATEADD(day, 1, dr.Date)
+            WHEN '{range}' = 'Monthly' THEN DATEADD(week, 1, dr.Date)
+            WHEN '{range}' = 'SixMonthly' THEN DATEADD(month, 1, dr.Date)
+            WHEN '{range}' = 'Yearly' THEN DATEADD(month, 1, dr.Date)
+            ELSE DATEADD(day, 1, dr.Date)
+        END
+    GROUP BY {groupBySelect}
+    ORDER BY GroupedDate;
+    ";
+
+            return Query<AttemptCount>(sql, new { userId, startDate, endDate });
+        }
+
+
+
+  
+
+
 
 
 

@@ -8,9 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Data.Repositories.Abstract {
-    public interface ISkillTestRepository  : IDataRepository<SkillTest>{
+    public interface ISkillTestRepository : IDataRepository<SkillTest> {
         Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest);
         SkillTest GetSkillTest(int Id);
         int GetSkillTestSumScore(int Id);
@@ -26,12 +27,14 @@ namespace Core.Data.Repositories.Abstract {
         int UpdateScore(int attemptId, double score);
         int GetAnswerId(int attemptId, int questionId);
         IEnumerable<AnswerOption> GetAnswerList(int questionId);
-         Task<int> InsertQuestion(Question question);
+        Task<int> InsertQuestion(Question question);
         Task<bool> InsertAnswerOption(AnswerOption answerOption);
         Task<int> InsertSkillTest(SkillTest skillTest);
-       Prompt GetPrompt(string prompt_type);
-       Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest);
+        Prompt GetPrompt(string prompt_type);
+        Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest);
         IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate);
         Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest);
+   
+        IEnumerable<AttemptCount> GetAttemptCounts(int userId, SkillTestAttemptRange range);
     }
 }

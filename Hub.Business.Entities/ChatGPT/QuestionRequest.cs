@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Entities.ChatGPT {
     public class QuestionRequest {
@@ -43,8 +44,8 @@ namespace Core.Business.Entities.ChatGPT {
     }
     public class SkillTestRequestV2 {
         public int UserId { get; set; }
-        public DateTime Startdate { get; set; }
-        public DateTime EndDate { get; set; }
+        public SkillTestAttemptRange AttemptRange { get; set; }
+
 
 
     }
@@ -56,6 +57,10 @@ namespace Core.Business.Entities.ChatGPT {
     public class DailyAttemptCountV2 {
         public string Label { get; set; }
         public int Value { get; set; }
+    }
+    public class AttemptCount {
+        public DateTime GroupedDate { get; set; } 
+        public int AttemptedCount { get; set; }  
     }
 
 }
