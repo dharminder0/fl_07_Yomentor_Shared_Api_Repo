@@ -363,7 +363,7 @@ FROM DateRange dr;
                 sql += " and id != @SkillTestId ";
             }
             if (skillTest.complexityLevel != 0) {
-                sql += $" and complexity_level={Enum.GetName(typeof(ComplexityLevel), skillTest.complexityLevel)} ";
+                sql += $" and complexity_level=@complexityLevel ";
             }
             if (skillTest.UserId > 0) {
                 sql += @" and CreatedBy=@userId ";
