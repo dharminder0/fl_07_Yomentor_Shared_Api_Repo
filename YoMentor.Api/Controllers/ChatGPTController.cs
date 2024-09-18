@@ -38,6 +38,7 @@ namespace YoMentor.Api.Controllers
         }
         [HttpPost("createPrompt")]
         public async Task<IActionResult> CreatePrompt([FromBody] QuestionRequest request) {
+
             var questions = await _aIQuestionAnswer.GenerateQuestions(request);
             return JsonExt(questions);
         }

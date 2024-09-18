@@ -11,44 +11,54 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Data.Repositories.Concrete {
     public class SkillTestRepository : DataRepository<SkillTest>, ISkillTestRepository {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1 ";
+            var sql = @"SELECT * FROM skilltest WHERE 1=1";
+
             if (skillTest.SubjectId > 0) {
-                sql += @" and subjectId=@SubjectId  ";
+                sql += " AND subjectId = @SubjectId";
             }
 
             if (skillTest.GradeId > 0) {
-                sql += @" and gradeId=@gradeId ";
+                sql += " AND gradeId = @GradeId";
             }
 
             if (skillTest.UserId == 0) {
-                sql += " and CreatedBy is null or CreatedBy=0 ";
+                sql += " AND (CreatedBy IS NULL OR CreatedBy = 0)";
             }
-                if (skillTest.UserId > 0) {
-                sql += @" and CreatedBy=@userId ";
-            }
-            if (skillTest.GradeId > 0) {
-                sql += @" and gradeId=@gradeId ";
+            else {
+                sql += " AND CreatedBy = @UserId";
             }
 
             if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
-                sql += $@"
-        AND (title LIKE '%{skillTest.SearchText}%' OR          
-             description LIKE '%{skillTest.SearchText}%')";
+                sql += " AND (title LIKE @SearchPattern OR description LIKE @SearchPattern)";
             }
+
             if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
-                sql += $@"
+                sql += @"
 ORDER BY id DESC
-    
-        OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
             }
-            return await QueryAsync<SkillTest>(sql, skillTest);
+
+
+            var parameters = new {
+                skillTest.SubjectId,
+                skillTest.GradeId,
+                skillTest.UserId,
+                SearchPattern = $"%{skillTest.SearchText}%",
+                PageSize = skillTest.PageSize,
+                Offset = (skillTest.PageIndex - 1) * skillTest.PageSize
+            };
+
+            return await QueryAsync<SkillTest>(sql, parameters);
         }
+
+
         public async Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest) {
             var sql = @" select * from skilltest  CreatedBy 1=1";
             if (skillTest.SubjectId > 0) {
@@ -145,7 +155,7 @@ ON A.QuestionId = Q.id where A.questionId=@questionId ";
 
         public IEnumerable<Attempt> GetAttemptHistory(int userId, int skilltestId) {
             var sql = @"
- select * from Attempt where userid=@userId  and skilltestid=@skilltestId and status=1  
+ select * from Attempt where userid=@userId  and skilltestid=@skilltestId and status=1   order by 1 desc 
 
  ";
             return Query<Attempt>(sql, new { userId, skilltestId });
@@ -275,7 +285,12 @@ GROUP BY
         Prompt_Type,
         Complexity_Level,
         NumberOf_Questions,
-        CreatedBy
+        CreatedBy,
+        language,
+        TimerValue,
+        isEnableTimer
+
+        
     )
     VALUES
     (
@@ -291,7 +306,11 @@ GROUP BY
         @Prompt_Type,
         @Complexity_Level,
         @NumberOf_Questions,
-        @CreatedBy
+        @CreatedBy,
+        @language,
+        @TimerValue,
+        @isEnableTimer
+        
     );
             SELECT SCOPE_IDENTITY(); ";
             return await ExecuteScalarAsync<int>(sql, skillTest);
@@ -300,12 +319,13 @@ GROUP BY
             var sql = @" select * from Prompt where prompt_type=@prompt_type ";
             return QueryFirst<Prompt>(sql, new { prompt_type });
         }
+
         public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
             var sql = @"
    ;WITH DateRange AS (
     SELECT TOP (DATEDIFF(day, @startDate, @endDate) + 1)
         DATEADD(day, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1, @startDate) AS Date
-    FROM sys.all_objects -- This system view is used just to generate numbers
+    FROM sys.all_objects
 )
 SELECT 
     dr.Date,
@@ -314,10 +334,11 @@ SELECT
         FROM Attempt a
         WHERE a.UserId = @userId
         AND a.Status = 1
-        AND CAST(a.StartDate AS DATE) = dr.Date
+        AND a.StartDate >= dr.Date
+        AND a.StartDate < DATEADD(day, 1, dr.Date)
     ), 0) AS AttemptedCount
 FROM DateRange dr;
-;";
+";
 
             return Query<DailyAttemptCount>(sql, new { userId, startDate, endDate });
         }
@@ -325,6 +346,46 @@ FROM DateRange dr;
 
 
 
+        public async Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest) {
+            var sql = @" select * from skilltest  WHERE 1=1 ";
+            if (skillTest.SubjectId > 0) {
+                sql += @" and subjectId=@SubjectId  ";
+            }
+
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
+
+            if (skillTest.UserId == 0) {
+                sql += " and CreatedBy is null or CreatedBy=0 ";
+            }
+            if (skillTest.SkillTestId != 0) {
+                sql += " and id != @SkillTestId ";
+            }
+            if (skillTest.complexityLevel != 0) {
+                sql += $" and complexity_level=@complexityLevel ";
+            }
+            if (skillTest.UserId > 0) {
+                sql += @" and CreatedBy=@userId ";
+            }
+
+            if (skillTest.GradeId > 0) {
+                sql += @" and gradeId=@gradeId ";
+            }
+
+            if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
+                sql += $@"
+        AND (title LIKE '%{skillTest.SearchText}%' OR          
+             description LIKE '%{skillTest.SearchText}%')";
+            }
+            if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
+                sql += $@"
+ORDER BY id DESC
+    
+        OFFSET (@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY;";
+            }
+            return await QueryAsync<SkillTest>(sql, skillTest);
+        }
 
     }
 }

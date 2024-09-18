@@ -1,4 +1,5 @@
-﻿using Core.Business.Entites.DataModels;
+﻿using Azure;
+using Core.Business.Entites.DataModels;
 using Core.Business.Entites.RequestModels;
 using Core.Business.Entities.DataModels;
 using Core.Business.Entities.Dto;
@@ -195,27 +196,27 @@ namespace Core.Business.Services.Concrete {
 
 
 
-        public ActionMessageResponse AuthenticateUser(string phone, string password) {
-            var user = new UserAuthenticationDto();
-            if (!string.IsNullOrWhiteSpace(phone) && !string.IsNullOrEmpty(password)) {
-                var dbUser = _userRepository.GetUsersInfoByUserName(phone).FirstOrDefault();
-                if (dbUser != null && dbUser.PasswordSalt != null) {
-                    var saltBytes = dbUser.PasswordSalt;
-                    // decryption password
-                    var hashedPassword = Hasher.HashPassword(saltBytes, password);
-                    if (hashedPassword == dbUser.Password) {
-                        user = MapUserToUserBasicDto(dbUser);
-                        return new ActionMessageResponse { Content = user };
-                    }
-                }
-                else {
-                    if (dbUser == null)
-                        user.AuthenticationStatus = false;
-                    return new ActionMessageResponse { Content = user };
-                }
-            }
-            return new ActionMessageResponse { Success = false, Message = "required username and password", Content = 0 };
-        }
+        //public ActionMessageResponse AuthenticateUser(string phone, string password) {
+        //    var user = new UserAuthenticationDto();
+        //    if (!string.IsNullOrWhiteSpace(phone) && !string.IsNullOrEmpty(password)) {
+        //        var dbUser = _userRepository.GetUsersInfoByUserName(phone).FirstOrDefault();
+        //        if (dbUser != null && dbUser.PasswordSalt != null) {
+        //            var saltBytes = dbUser.PasswordSalt;
+        //            decryption password
+        //            var hashedPassword = Hasher.HashPassword(saltBytes, password);
+        //            if (hashedPassword == dbUser.Password) {
+        //                user = MapUserToUserBasicDto(dbUser);
+        //                return new ActionMessageResponse { Content = user };
+        //            }
+        //        }
+        //        else {
+        //            if (dbUser == null)
+        //                user.AuthenticationStatus = false;
+        //            return new ActionMessageResponse { Content = user };
+        //        }
+        //    }
+        //    return new ActionMessageResponse { Success = false, Message = "required username and password", Content = 0 };
+        //}
 
         private UserAuthenticationDto MapUserToUserBasicDto(Users dbUser) {
             if (dbUser.Id == 0) {
@@ -228,6 +229,8 @@ namespace Core.Business.Services.Concrete {
             if (files != null && files.Any()) {
                 user.Image = files.First().BlobLink;
             }
+            int category = dbUser.Category;
+
             user.Id = dbUser.Id;
             user.FirstName = dbUser.FirstName;
             user.LastName = dbUser.LastName;
@@ -242,8 +245,9 @@ namespace Core.Business.Services.Concrete {
             user.Email = dbUser.Email;  
             user.DateOfBirth = dbUser.DateOfBirth;  
             user.Rank = dbUser.Rank;    
-            user.IsDeleted = dbUser.IsDeleted;  
-           
+            user.IsDeleted = dbUser.IsDeleted; 
+            user.Category= category >0 ? category : 0;
+            user.CategoryName = Enum.GetName(typeof(Category), dbUser.Category);
 
             return user;
         }
@@ -488,6 +492,8 @@ namespace Core.Business.Services.Concrete {
                 userDto.Type = response.Type;
                 userDto.Rank=response.Rank;
                 userDto.Gender = response.Gender;
+                userDto.Category = response.Category;
+                userDto.CategoryName = Enum.GetName(typeof(Category), response.Category);
  
                 userDto.StudentGradeId = response.GradeId;
            

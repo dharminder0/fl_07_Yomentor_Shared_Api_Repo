@@ -18,6 +18,12 @@ namespace Core.Business.Entities.ResponseModels {
         public bool IsDeleted { get; set; }
         public int AverageMarks { get; set; }
         public int AttemptCount { get; set; }
+        public int  Category { get; set; }
+        public int  Complexity { get; set; }
+        public int NumberOfQuestions { get; set; }
+        public int Language { get; set; }
+        public int TimerValue { get; set; }
+        public bool isEnableTimer { get; set; }
         public List<AttemptHistory> AttemptHistory { get; set; }  
     }
     public class AttemptHistory {

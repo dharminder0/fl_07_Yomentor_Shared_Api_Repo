@@ -23,8 +23,9 @@ namespace Core.Business.Entities.RequestModels {
         public string ? Password { get; set; }
         public int ? Rank { get; set; }
         public int ? GradeId { get; set; }
+        public int? Category { get; set; }
 
-       
+
     }
     public class AuthenticationRequest {
         public string Phone { get; set; }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Business.Entities.DTOs.Enum;
 
 namespace Core.Business.Sevices.Concrete {
     public class SkillTestService : ISkillTestService {
@@ -106,6 +107,12 @@ namespace Core.Business.Sevices.Concrete {
             skillTestResponse.UpdateDate = item.UpdateDate;
             skillTestResponse.IsDeleted = item.IsDeleted;
             skillTestResponse.GradeId = item.GradeId;
+            skillTestResponse.Complexity = item.Complexity_Level;
+            skillTestResponse.NumberOfQuestions=item.NumberOf_Questions;
+            skillTestResponse.Category = item.Prompt_Type;
+            skillTestResponse.Language = item.Language;
+            skillTestResponse.isEnableTimer = item.isEnableTimer;
+            skillTestResponse.TimerValue = item.TimerValue;
             string gradeName = _gradeRepository.GetGradeName(skillTestResponse.GradeId);
             if (!string.IsNullOrWhiteSpace(gradeName)) {
                 skillTestResponse.GradeName = gradeName;
@@ -213,7 +220,42 @@ namespace Core.Business.Sevices.Concrete {
             return new ActionMessageResponse { Success = true,Content= percentage,Message="Insertion_Successfully" };
 
         }
+        public async Task<List<SkillTestResponse>> GetSimilerSkillTestList(SkillTestRequest skillTest) {
+            if (skillTest == null) throw new ArgumentNullException(nameof(skillTest));
+            List<SkillTestResponse> skills = new List<SkillTestResponse>();
+            var response = await _skillTestRepository.GetSimilerSkillTestList(skillTest);
+            foreach (var item in response) {
+                SkillTestResponse skillTestResponse = new SkillTestResponse();
+                skillTestResponse.Id = item.Id;
+                skillTestResponse.SubjectId = item.SubjectId;
+                skillTestResponse.Title = item.Title;
+                skillTestResponse.Description = item.Description;
+                skillTestResponse.UpdateDate = item.UpdateDate;
+                skillTestResponse.IsDeleted = item.IsDeleted;
+                skillTestResponse.GradeId = item.GradeId;
+                string gradeName = _gradeRepository.GetGradeName(skillTestResponse.GradeId);
+                if (!string.IsNullOrWhiteSpace(gradeName)) {
+                    skillTestResponse.GradeName = gradeName;
+                }
+                string subjectName = _subjectRepository.GetSubjectName(skillTestResponse.SubjectId);
+                if (!string.IsNullOrWhiteSpace(subjectName)) {
+                    skillTestResponse.SubjectName = subjectName;
+                }
+                try {
+                    var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
+                    int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
+                    skillTestResponse.AverageMarks = averageCount;
+                    skillTestResponse.AttemptCount = userCount;
 
+                } catch (Exception) {
+
+
+                }
+
+                skills.Add(skillTestResponse);
+            }
+            return skills;
+        }
     }
 }
 

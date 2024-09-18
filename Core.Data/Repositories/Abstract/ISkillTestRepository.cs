@@ -32,5 +32,6 @@ namespace Core.Data.Repositories.Abstract {
        Prompt GetPrompt(string prompt_type);
        Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest);
         IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate);
+        Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest);
     }
 }

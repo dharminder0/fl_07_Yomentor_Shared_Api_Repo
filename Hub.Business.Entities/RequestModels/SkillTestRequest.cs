@@ -12,5 +12,7 @@ namespace Core.Business.Entities.RequestModels {
         public int PageSize { get; set; }
         public int PageIndex { get; set; }
         public int UserId { get; set; }
+        public int SkillTestId { get; set; }
+        public int complexityLevel { get; set; }
     }
 }

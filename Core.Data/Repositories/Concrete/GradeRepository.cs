@@ -29,5 +29,6 @@ namespace Core.Data.Repositories.Concrete {
             var res = Query<int>(sql, new { gradeName });
             return res.FirstOrDefault();
         }
+
     }
 }

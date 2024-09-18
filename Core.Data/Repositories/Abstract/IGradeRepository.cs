@@ -7,5 +7,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<IEnumerable<Grade>> GetAllGrades(int type);
         string GetGradeName(int id);
         int GetGradeId(string gradeName);
+  
     }
 }
