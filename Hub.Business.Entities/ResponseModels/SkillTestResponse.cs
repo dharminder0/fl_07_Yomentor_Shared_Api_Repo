@@ -24,6 +24,7 @@ namespace Core.Business.Entities.ResponseModels {
         public int Language { get; set; }
         public int TimerValue { get; set; }
         public bool isEnableTimer { get; set; }
+        public string Icon { get; set; }
         public List<AttemptHistory> AttemptHistory { get; set; }  
     }
     public class AttemptHistory {
