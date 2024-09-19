@@ -43,6 +43,10 @@ namespace Core.Business.Sevices.Concrete {
                 if (!string.IsNullOrWhiteSpace(subjectName)) {
                     skillTestResponse.SubjectName = subjectName;
                 }
+                string subjectIcon = _subjectRepository.GetIcon(skillTestResponse.SubjectId);
+                if (!string.IsNullOrWhiteSpace(subjectIcon)) {
+                    skillTestResponse.Icon = subjectIcon;
+                }
                 try {
                     var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                     int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
@@ -120,6 +124,10 @@ namespace Core.Business.Sevices.Concrete {
             string subjectName = _subjectRepository.GetSubjectName(skillTestResponse.SubjectId);
             if (!string.IsNullOrWhiteSpace(subjectName)) {
                 skillTestResponse.SubjectName = subjectName;
+            }
+            string subjectIcon = _subjectRepository.GetIcon(skillTestResponse.SubjectId);
+            if (!string.IsNullOrWhiteSpace(subjectIcon)) {
+                skillTestResponse.Icon = subjectIcon;
             }
             try {
                 var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
@@ -237,9 +245,9 @@ namespace Core.Business.Sevices.Concrete {
                 if (!string.IsNullOrWhiteSpace(gradeName)) {
                     skillTestResponse.GradeName = gradeName;
                 }
-                string subjectName = _subjectRepository.GetSubjectName(skillTestResponse.SubjectId);
-                if (!string.IsNullOrWhiteSpace(subjectName)) {
-                    skillTestResponse.SubjectName = subjectName;
+                string subjectIcon = _subjectRepository.GetIcon(skillTestResponse.SubjectId);
+                if (!string.IsNullOrWhiteSpace(subjectIcon)) {
+                    skillTestResponse.Icon = subjectIcon;
                 }
                 try {
                     var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);

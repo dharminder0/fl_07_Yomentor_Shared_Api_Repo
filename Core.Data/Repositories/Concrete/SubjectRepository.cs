@@ -18,9 +18,9 @@ namespace Core.Data.Repositories.Concrete {
             return res;
           
         }
-        public int GetSubjectId(string subjectName) {
-            var sql = $"select Id from dbo.Subject where name=@subjectName";
-            var res = QueryFirst<int>(sql, new { subjectName });
+        public string GetIcon(int  subjectId) {
+            var sql = $"select icon from dbo.Subject where id=@subjectId";
+            var res = QueryFirst<string>(sql, new { subjectId });
             return res;
 
         }

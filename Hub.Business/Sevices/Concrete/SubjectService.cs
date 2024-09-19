@@ -23,6 +23,7 @@ namespace Core.Business.Sevices.Concrete {
                 subjectResponse.GradeId = item.GradeId; 
                 subjectResponse.Name = item.Name;   
                 subjectResponse.IsDeleted = item.IsDeleted;
+                subjectResponse.Icon=item.Icon; 
 
 
                 response.Add(subjectResponse);  
