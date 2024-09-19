@@ -390,23 +390,27 @@ namespace YoMentor.ChatGPT {
 
             var response = _skillTestRepository.GetAttemptCounts(userId, skillTest);
 
-
             List<DailyAttemptCountV2> resultList = new List<DailyAttemptCountV2>();
 
- 
             foreach (var item in response) {
                 DailyAttemptCountV2 obj = new DailyAttemptCountV2 {
-                    Label = item.GroupedDate.ToString("dd MMM yyyy"),
-                    Value = item.AttemptedCount  
-                };
+                    Label = skillTest switch {
+                        SkillTestAttemptRange.Weekly => item.GroupedDate.ToString("ddd"),
+                        SkillTestAttemptRange.Monthly => item.GroupedDate.ToString("dd"),  // Adjust to show only the first week of each month
+                        SkillTestAttemptRange.SixMonthly => item.GroupedDate.ToString("MMM"), // Display month name
+                        SkillTestAttemptRange.Yearly => item.GroupedDate.ToString("MMMM")[0].ToString(),
 
+                        _ => item.GroupedDate.ToString("dd MMM yyyy")  // Default format
+                    },
+                    Value = item.AttemptedCount
+                };
 
                 resultList.Add(obj);
             }
 
-
             return resultList;
         }
+
 
     }
 

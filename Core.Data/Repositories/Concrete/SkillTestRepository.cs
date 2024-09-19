@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -342,7 +343,7 @@ FROM DateRange dr;
 
             return Query<DailyAttemptCount>(sql, new { userId, startDate, endDate });
         }
-        public IEnumerable<AttemptCount> GetAttemptCounts(int userId, SkillTestAttemptRange range) {
+        public IEnumerable<AttemptCount> GetAttemptCountsV2(int userId, SkillTestAttemptRange range) {
             DateTime endDate = DateTime.Now;
             DateTime startDate = range switch {
                 SkillTestAttemptRange.Weekly => endDate.AddDays(-7),
@@ -352,7 +353,7 @@ FROM DateRange dr;
                 _ => throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}")
             };
 
-            // Define the grouping logic based on the range
+          
             string groupBySelect = range switch {
                 SkillTestAttemptRange.Weekly => "CAST(dr.Date AS DATE)", // Group by individual days
                 SkillTestAttemptRange.Monthly => "FORMAT(dr.Date, 'yyyy-MM')", // Group by year and month
@@ -389,10 +390,148 @@ FROM DateRange dr;
 
             return Query<AttemptCount>(sql, new { userId, startDate, endDate });
         }
+        public IEnumerable<AttemptCount> GetAttemptCountsV3(int userId, SkillTestAttemptRange range) {
+            DateTime endDate = DateTime.Now;
+            DateTime startDate = range switch {
+                SkillTestAttemptRange.Weekly => endDate.AddDays(-7),
+                SkillTestAttemptRange.Monthly => endDate.AddMonths(-1),
+                SkillTestAttemptRange.SixMonthly => endDate.AddMonths(-6),
+                SkillTestAttemptRange.Yearly => endDate.AddYears(-1),
+                _ => throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}")
+            };
+
+            // Create list of date intervals based on the selected range
+            var dateIntervals = new List<(DateTime StartDate, DateTime EndDate)>();
+
+            switch (range) {
+                case SkillTestAttemptRange.Weekly:
+                    for (var date = startDate; date <= endDate; date = date.AddDays(1)) {
+                        dateIntervals.Add((date.Date, date.Date.AddDays(1)));
+                    }
+                    break;
+
+                case SkillTestAttemptRange.Monthly:
+                case SkillTestAttemptRange.SixMonthly:
+                case SkillTestAttemptRange.Yearly:
+                    var calendar = CultureInfo.InvariantCulture.Calendar;
+                    for (var date = startDate; date <= endDate; date = date.AddDays(7)) {
+                        var weekStart = calendar.AddDays(date, -((int)date.DayOfWeek));
+                        var weekEnd = weekStart.AddDays(7); 
+                        dateIntervals.Add((weekStart, weekEnd));
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}");
+            }
+
+
+            var sql = @"
+SELECT CAST(a.StartDate AS DATE) AS StartDate, COUNT(DISTINCT a.Id) AS AttemptedCount
+FROM Attempt a
+WHERE a.UserId = @userId
+  AND a.Status = 1
+  AND CAST(a.StartDate AS DATE) >= CAST(@startDate AS DATE)
+  AND CAST(a.StartDate AS DATE) < CAST(@endDate AS DATE)
+GROUP BY CAST(a.StartDate AS DATE)
+ORDER BY StartDate;
+
+";
+
+            var attemptCounts = new List<AttemptCount>();
+
+            foreach (var interval in dateIntervals) {
+                var attempts = Query<AttemptCount>(sql, new { userId, startDate = interval.StartDate, endDate = interval.EndDate });
+                foreach (var attempt in attempts) {
+                    attemptCounts.Add(new AttemptCount {
+                        GroupedDate = interval.StartDate, 
+                        AttemptedCount = attempt.AttemptedCount
+                    });
+                }
+            }
+
+            return attemptCounts;
+        }
+        public IEnumerable<AttemptCount> GetAttemptCounts(int userId, SkillTestAttemptRange range) {
+            DateTime endDate = DateTime.Now;
+            DateTime startDate = range switch {
+                SkillTestAttemptRange.Weekly => endDate.AddDays(-6),
+                SkillTestAttemptRange.Monthly => endDate.AddMonths(-1),
+                SkillTestAttemptRange.SixMonthly => endDate.AddMonths(-5),
+                SkillTestAttemptRange.Yearly => endDate.AddYears(-1),
+                _ => throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}")
+            };
+
+
+            var dateIntervals = new List<(DateTime StartDate, DateTime EndDate)>();
+
+     
+            var calendar = CultureInfo.InvariantCulture.Calendar;
+
+            switch (range) {
+                case SkillTestAttemptRange.Weekly:
+                    for (var date = startDate; date <= endDate; date = date.AddDays(1)) {
+                        dateIntervals.Add((date.Date, date.Date.AddDays(1)));
+                    }
+                    break;
+
+                case SkillTestAttemptRange.Monthly:
+         
+                    for (var date = startDate; date <= endDate; date = date.AddDays(7)) {
+                        var weekStart = calendar.AddDays(date, -((int)date.DayOfWeek));
+                        var weekEnd = weekStart.AddDays(7);
+                        dateIntervals.Add((weekStart, weekEnd));
+                    }
+                    break;
+
+                case SkillTestAttemptRange.Yearly:
+                case SkillTestAttemptRange.SixMonthly:
+                    for (var date = startDate; date <= endDate; date = date.AddMonths(1)) {
+                        var monthStart = new DateTime(date.Year, date.Month,1);
+                        var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+                        dateIntervals.Add((monthStart, monthEnd));
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}");
+            }
+
+            var sql = @"
+SELECT CAST(a.StartDate AS DATE) AS StartDate, COUNT(DISTINCT a.Id) AS AttemptedCount
+FROM Attempt a
+WHERE a.UserId = @userId
+  AND a.Status = 1
+  AND CAST(a.StartDate AS DATE) >= CAST(@startDate AS DATE)
+  AND CAST(a.StartDate AS DATE) < CAST(@endDate AS DATE)
+GROUP BY CAST(a.StartDate AS DATE)
+ORDER BY StartDate;
+";
+
+            var attemptCounts = new List<AttemptCount>();
+
+            foreach (var interval in dateIntervals) {
+                // Query for each interval
+                var attempts = Query<AttemptCount>(sql, new { userId, startDate = interval.StartDate, endDate = interval.EndDate });
+
+          
+                attemptCounts.Add(new AttemptCount {
+                    GroupedDate = interval.StartDate,
+                    AttemptedCount = attempts.Any() ? attempts.Sum(a => a.AttemptedCount) : 0
+                });
+            }
+
+            return attemptCounts;
+        }
 
 
 
-  
+
+
+
+
+
+
 
 
 
