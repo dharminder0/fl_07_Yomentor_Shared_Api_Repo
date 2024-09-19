@@ -123,6 +123,13 @@ namespace Core.Business.Entities.DTOs {
 
         }
 
+        public enum SkillTestAttemptRange {
+
+            Weekly=1,
+            Monthly=2,
+            SixMonthly=3,
+            Yearly=4
+        }
 
     }
 }

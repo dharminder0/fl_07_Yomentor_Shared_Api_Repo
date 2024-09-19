@@ -49,7 +49,7 @@ namespace YoMentor.Api.Controllers
         /// <returns></returns>
         [HttpPost("SkillTest-attempts/dailyCount")]
         public IActionResult GetAttemptCount(SkillTestRequestV2 skillTestRequest) {
-            var questions =  _aIQuestionAnswer.GetAttemptCountV2(skillTestRequest.UserId,skillTestRequest.Startdate,skillTestRequest.EndDate);
+            var questions =  _aIQuestionAnswer.GetAttemptCountV2(skillTestRequest.UserId,skillTestRequest.AttemptRange);
             return JsonExt(questions);
         }
     }
