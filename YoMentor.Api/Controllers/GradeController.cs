@@ -22,5 +22,13 @@ namespace YoMentor.Api.Controllers {
 
 
         }
+        [HttpGet]
+        [Route("Category/list")]
+        public IActionResult GetCategory() {
+            var response =  _gradeService.GetCategory();
+            return JsonExt(response);
+
+
+        }
     }
 }
