@@ -183,22 +183,27 @@ namespace YoMentor.ChatGPT {
 
         private (bool Success, object Result) ValidateRequest(QuestionRequest request) {
 
-            if (request.Category == (int)Category.Academic) {
-                return (true, Category.Academic.ToString());
-            }
+            string categoryName = _gradeRepository.GetCategorieName(request.Category);
 
-            else if (request.Category == (int)Category.Competitive_Exams) {
-                return (true, Category.Competitive_Exams.ToString());
-            }
-            else {
+            if (string.IsNullOrEmpty(categoryName)) {
                 return (false, new { error = "Invalid category" });
             }
+
+            
+            return (true, categoryName);
         }
+
+
 
         public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
             string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
             string subjectname = _subjectRepository.GetSubjectName(request.Subject);
-            string categoryName = Enum.GetName(typeof(Category), request.Category);
+            string categoryName = _gradeRepository.GetCategorieName(request.Category);
+
+            if (string.IsNullOrEmpty(categoryName)) {
+                return (false,null);
+            }
+
             var promptData = _skillTestRepository.GetPrompt(categoryName);
             string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
             string language = Enum.GetName(typeof(Language), request.Language);

@@ -10,5 +10,6 @@ namespace Core.Business.Entities.ResponseModels {
         public string Name { get; set; }
         public int Type { get; set; }
         public bool Isdeleted { get; set; } = false;
+        public string Icon { get; set; }
     }
 }

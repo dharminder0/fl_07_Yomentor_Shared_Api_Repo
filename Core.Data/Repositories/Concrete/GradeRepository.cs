@@ -29,6 +29,16 @@ namespace Core.Data.Repositories.Concrete {
             var res = Query<int>(sql, new { gradeName });
             return res.FirstOrDefault();
         }
+        public IEnumerable<Category> GetCategories() {
 
+            var sql = @"select * from Category ";
+            return Query<Category>(sql);
+
+        }
+        public string GetCategorieName(int id) {
+            var sql = "SELECT CategoryName FROM Category WHERE Id=@id";
+            var res = QueryFirst<string>(sql, new { id });
+            return res;
+        }
     }
 }
