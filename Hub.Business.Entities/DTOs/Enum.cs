@@ -130,6 +130,11 @@ namespace Core.Business.Entities.DTOs {
             SixMonthly=3,
             Yearly=4
         }
-
+        public enum PageTypeEnum {
+            HomePage = 1,
+            AboutPage = 2,
+            ContactPage = 3
+           
+        }
     }
 }
