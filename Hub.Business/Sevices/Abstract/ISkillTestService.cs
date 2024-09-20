@@ -16,5 +16,7 @@ namespace Core.Business.Sevices.Abstract {
         ActionMessageResponse AttemptDetailBulkInsert(SkillTestAttemptRequest request);
         Task<List<SkillTestResponse>> GetSkillTestListByUser(SkillTestRequest skillTest);
         Task<List<SkillTestResponse>> GetSimilerSkillTestList(SkillTestRequest skillTest);
+
+        List<AttemptHistoryData> GetAttemptHisotory(int id);
     }
 }

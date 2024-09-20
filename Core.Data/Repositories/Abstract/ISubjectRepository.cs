@@ -11,5 +11,6 @@ namespace Core.Data.Repositories.Abstract {
         Task<IEnumerable<Subject>> GetAllSubjects(int gradeId);
         string GetSubjectName(int subjectId);
         string GetIcon(int subjectId);
+        Subject GetSubjectDetails(int subjectId);
     }
 }

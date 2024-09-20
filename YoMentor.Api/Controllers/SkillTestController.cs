@@ -88,5 +88,16 @@ namespace YoMentor.Api.Controllers {
             var response = await _skillTestService.GetSimilerSkillTestList(skillTest);
             return JsonExt(response);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AttemptHitory")]
+        public IActionResult GetAttemptHisotory(int userId) {
+            var response =  _skillTestService.GetAttemptHisotory(userId);
+            return JsonExt(response);
+        }
     }
 }
