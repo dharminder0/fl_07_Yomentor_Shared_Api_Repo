@@ -24,6 +24,12 @@ namespace Core.Data.Repositories.Concrete {
             return res;
 
         }
+        public Subject GetSubjectDetails(int subjectId) {
+            var sql = $"select *  from dbo.Subject where id=@subjectId";
+            var res = QueryFirst<Subject>(sql, new { subjectId });
+            return res;
+
+        }
 
 
     }

@@ -264,6 +264,36 @@ namespace Core.Business.Sevices.Concrete {
             }
             return skills;
         }
+        public List<AttemptHistoryData> GetAttemptHisotory(int id) {
+            List <AttemptHistoryData> obj = new List<AttemptHistoryData>(); 
+            var attemptHistory= _skillTestRepository.GetAttemptHisotory(id).ToList();
+            foreach (var attempt in attemptHistory) {
+                AttemptHistoryData attemptHistoryData=new AttemptHistoryData();
+                attemptHistoryData.AttemptCode = attempt.AttemptCode;
+                attemptHistoryData.UserId = attempt.UserId;
+                attemptHistoryData.SkillTestId = attempt.SkillTestId;
+                attemptHistoryData.StartDate = attempt.StartDate;
+                attemptHistoryData.CompleteDate = attempt.CompleteDate;
+                attemptHistoryData.Status = attempt.Status;
+                attemptHistoryData.Score = attempt.Score;
+                attemptHistoryData.Id = attempt.Id; 
+              var skillTestInfo=  _skillTestRepository.GetSkillTest(attemptHistoryData.SkillTestId);
+                attemptHistoryData.SkillTestTitle =!string.IsNullOrWhiteSpace(skillTestInfo.Title) ?skillTestInfo.Title :string.Empty;  
+                string gradename=_gradeRepository.GetGradeName(skillTestInfo.GradeId); 
+                attemptHistoryData.GradeName = !string.IsNullOrWhiteSpace(gradename) ? gradename:string.Empty;  
+                var subjectdetails=_subjectRepository.GetSubjectDetails(skillTestInfo.SubjectId);  
+                if(subjectdetails != null) {
+                    attemptHistoryData.SubjectName=subjectdetails.Name;
+                    attemptHistoryData.SubjectIconUrl = subjectdetails.Icon;
+
+                }
+                obj.Add(attemptHistoryData);    
+
+
+
+            }
+            return obj; 
+        }
     }
 }
 

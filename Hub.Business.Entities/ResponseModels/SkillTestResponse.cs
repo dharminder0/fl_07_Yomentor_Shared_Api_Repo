@@ -84,10 +84,20 @@ namespace Core.Business.Entities.ResponseModels {
         public string Content { get; set; }
     }
 
-    public class Usage {
-        public int PromptTokens { get; set; }
-        public int CompletionTokens { get; set; }
-        public int TotalTokens { get; set; }
+    public class AttemptHistoryData {
+        public int Id { get; set; }
+        public string AttemptCode { get; set; }
+        public int UserId { get; set; }
+        public int SkillTestId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? CompleteDate { get; set; }
+        public int Status { get; set; }
+        public int Score { get; set; }
+        public string SkillTestTitle { get; set; }
+        public string  SubjectName { get; set; }
+        public string GradeName { get; set; }
+        public string SubjectIconUrl { get; set; }
+
     }
 
 
