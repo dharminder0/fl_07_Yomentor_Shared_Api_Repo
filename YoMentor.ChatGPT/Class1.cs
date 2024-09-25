@@ -196,13 +196,13 @@ namespace YoMentor.ChatGPT {
         public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
             string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
             string subjectname = _subjectRepository.GetSubjectName(request.Subject);
-            string categoryName = _gradeRepository.GetCategorieName(request.Category);
+            var category = _gradeRepository.GetCategorie(request.Category);
 
-            if (string.IsNullOrEmpty(categoryName)) {
+            if (string.IsNullOrEmpty(category.CategoryName)) {
                 return (false,null);
             }
 
-            var promptData = _skillTestRepository.GetPrompt(categoryName);
+            var promptData = _skillTestRepository.GetPrompt(category.Id);
             string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
             string language = Enum.GetName(typeof(Language), request.Language);
 
@@ -218,7 +218,7 @@ namespace YoMentor.ChatGPT {
                 Prompt resultPrompt = new Prompt {
                     Prompt_Id = promptData.Prompt_Id,
                     Prompt_Text = userPrompt,
-                    Prompt_Type = promptData.Prompt_Type,
+                    category_id = promptData.category_id,
                     Temperature = promptData.Temperature,
                     Max_tokens = promptData.Max_tokens,
                     Top_p = promptData.Top_p,
@@ -378,7 +378,7 @@ namespace YoMentor.ChatGPT {
                 Topic = request.Topic,
                 Complexity_Level = request.ComplexityLevel,
                 NumberOf_Questions = request.NumberOfQuestions,
-                Prompt_Type = request.Category,
+                category_id = request.Category,
                 CreatedBy = request.UserId,
                 Language = request.Language,
                 isEnableTimer=request.isEnableTimer,

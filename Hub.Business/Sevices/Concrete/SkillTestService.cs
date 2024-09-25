@@ -113,7 +113,7 @@ namespace Core.Business.Sevices.Concrete {
             skillTestResponse.GradeId = item.GradeId;
             skillTestResponse.Complexity = item.Complexity_Level;
             skillTestResponse.NumberOfQuestions=item.NumberOf_Questions;
-            skillTestResponse.Category = item.Prompt_Type;
+            skillTestResponse.Category = item.category_id;
             skillTestResponse.Language = item.Language;
             skillTestResponse.isEnableTimer = item.isEnableTimer;
             skillTestResponse.TimerValue = item.TimerValue;
