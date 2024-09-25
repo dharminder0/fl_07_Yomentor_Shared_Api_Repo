@@ -47,9 +47,76 @@ namespace YoMentor.ChatGPT {
             return $"{_baseUrl}openai/deployments/{_modelName}/chat/completions?api-version=2023-05-15";
         }
 
+
+
+
+
+        public static string ExtractJsonPart(string input) {
+            try {
      
+                var parsedJson = JObject.Parse(input);
+                return parsedJson.ToString();
+            } catch (JsonReaderException ex) {
+              
+                Console.WriteLine("Failed to parse JSON directly. Error: " + ex.Message);
+            }
+
+            string jsonPattern = @"```json\s*(\{.*?\})\s*```";
+            var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
+
+            if (!jsonMatch.Success) {
+                throw new Exception("JSON part not found");
+            }
+
+            string jsonContent = jsonMatch.Groups[1].Value;
+
+            jsonContent = SanitizeJsonContent(jsonContent);
+
+            try {
+                // Attempt parsing the sanitized JSON content
+                JObject jsonObject = JObject.Parse(jsonContent);
+
+                // Patterns to extract title and summary
+                string titlePattern = @"""title"":\s*""(.*?)"",";
+                string summaryPattern = @"""summary"":\s*""(.*?)"",";
+
+                var titleMatch = Regex.Match(jsonContent, titlePattern);
+                var summaryMatch = Regex.Match(jsonContent, summaryPattern);
+
+                // Check if title and summary are found
+                if (!titleMatch.Success || !summaryMatch.Success) {
+                    throw new Exception("Title or Summary not found");
+                }
+
+                // Extract title and summary values
+                string title = titleMatch.Groups[1].Value.Trim();
+                string summary = summaryMatch.Groups[1].Value.Trim();
+
+                // Create the final combined JSON object
+                var combinedJsonObject = new JObject {
+                    ["title"] = title,
+                    ["summary"] = summary,
+                    ["questions"] = jsonObject["questions"]
+                };
+
+                return combinedJsonObject.ToString();
+            } catch (JsonReaderException ex) {
+                // Log the error and provide feedback on what went wrong
+                Console.WriteLine("Failed to parse the JSON after extracting it. Error: " + ex.Message);
+                throw new Exception("Failed to process JSON content: " + ex.Message);
+            }
+        }
+
+        // Method to sanitize invalid escape sequences in JSON content
+        private static string SanitizeJsonContent(string jsonContent) {
+            // Regex to find invalid escape sequences (e.g., \i, \x, \q, etc.)
+            string invalidEscapePattern = @"\\[^""\\/bfnrt]";
 
 
+            jsonContent = Regex.Replace(jsonContent, invalidEscapePattern, "");
+
+            return jsonContent;
+        }
 
 
 
@@ -65,33 +132,53 @@ namespace YoMentor.ChatGPT {
                 return null;
             }
         }
-        public static string ExtractJsonPart(string input) {
+        public static string ExtractJsonPartV2(string input) {
+            try {
+
+                var parsedJson = JObject.Parse(input);
+
+
+                return parsedJson.ToString();
+            } catch (JsonReaderException) {
+            }
+
             string jsonPattern = @"```json\s*(\{.*?\})\s*```";
             var jsonMatch = Regex.Match(input, jsonPattern, RegexOptions.Singleline);
 
+            // Check if the JSON part is found
             if (!jsonMatch.Success) {
                 throw new Exception("JSON part not found");
             }
 
-            string jsonObject = jsonMatch.Groups[1].Value;
+            string jsonContent = jsonMatch.Groups[1].Value;
 
-            JObject parsedJson = JObject.Parse(jsonObject);
+            // Patterns to extract title and summary
+            string titlePattern = @"""title"":\s*""(.*?)"",";
+            string summaryPattern = @"""summary"":\s*""(.*?)"",";
 
-            string title = parsedJson["title"]?.ToString().Trim();
-            string summary = parsedJson["summary"]?.ToString().Trim();
+            var titleMatch = Regex.Match(jsonContent, titlePattern);
+            var summaryMatch = Regex.Match(jsonContent, summaryPattern);
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(summary)) {
-                throw new Exception("Title or Summary not found in the JSON object");
+            // Check if title and summary are found
+            if (!titleMatch.Success || !summaryMatch.Success) {
+                throw new Exception("Title or Summary not found");
             }
 
-            // Create a new combined JSON object with title, summary, and questions
+            // Extract title and summary values
+            string title = titleMatch.Groups[1].Value.Trim();
+            string summary = summaryMatch.Groups[1].Value.Trim();
+
+            // Parse the entire JSON object
+            JObject jsonObject = JObject.Parse(jsonContent);
+
+            // Create the final combined JSON object
             var combinedJsonObject = new JObject {
                 ["title"] = title,
                 ["summary"] = summary,
-                ["questions"] = parsedJson["questions"]
+                ["questions"] = jsonObject["questions"]
             };
 
-            return combinedJsonObject.ToString(Newtonsoft.Json.Formatting.Indented);
+            return combinedJsonObject.ToString();
         }
         public async Task<int> GenerateQuestions(QuestionRequest request) {
             try {
