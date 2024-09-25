@@ -9,6 +9,7 @@ namespace Core.Data.Repositories.Abstract {
         int GetGradeId(string gradeName);
         IEnumerable<Category> GetCategories();
         string GetCategorieName(int id);
+        Category GetCategorie(int id);
 
 
     }

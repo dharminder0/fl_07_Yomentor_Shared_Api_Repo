@@ -40,5 +40,10 @@ namespace Core.Data.Repositories.Concrete {
             var res = QueryFirst<string>(sql, new { id });
             return res;
         }
+        public Category GetCategorie(int id) {
+            var sql = "SELECT * FROM Category WHERE Id=@id";
+            var res = QueryFirst<Category>(sql, new { id });
+            return res;
+        }
     }
 }

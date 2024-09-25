@@ -30,7 +30,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<int> InsertQuestion(Question question);
         Task<bool> InsertAnswerOption(AnswerOption answerOption);
         Task<int> InsertSkillTest(SkillTest skillTest);
-        Prompt GetPrompt(string prompt_type);
+        Prompt GetPrompt(int  categoryId);
         Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest);
         IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate);
         Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest);

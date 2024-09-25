@@ -284,7 +284,7 @@ GROUP BY
         UpdateDate,
         IsDeleted,
         Topic,
-        Prompt_Type,
+        category_id,
         Complexity_Level,
         NumberOf_Questions,
         CreatedBy,
@@ -305,7 +305,7 @@ GROUP BY
         @UpdateDate,
         @IsDeleted,
         @Topic,
-        @Prompt_Type,
+        @category_id,
         @Complexity_Level,
         @NumberOf_Questions,
         @CreatedBy,
@@ -317,9 +317,9 @@ GROUP BY
             SELECT SCOPE_IDENTITY(); ";
             return await ExecuteScalarAsync<int>(sql, skillTest);
         }
-        public Prompt GetPrompt(string prompt_type) {
-            var sql = @" select * from Prompt where prompt_type=@prompt_type ";
-            return QueryFirst<Prompt>(sql, new { prompt_type });
+        public Prompt GetPrompt(int  categoryId) {
+            var sql = @" select * from Prompt where category_id=@categoryId ";
+            return QueryFirst<Prompt>(sql, new { categoryId });
         }
 
         public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
