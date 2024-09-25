@@ -136,5 +136,9 @@ namespace Core.Business.Entities.DTOs {
             ContactPage = 3
            
         }
+        public enum AIApiType {
+            ChatGPT,
+            AzureAI
+        }
     }
 }
