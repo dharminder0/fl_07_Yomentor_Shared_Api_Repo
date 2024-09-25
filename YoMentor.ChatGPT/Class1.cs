@@ -23,9 +23,12 @@ namespace YoMentor.ChatGPT {
     public interface IAIQuestionAnswerService {
         Task<object> GenerateQuestionsOld(QuestionRequest request);
         Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject);
-
-        Task<int> GenerateQuestions(QuestionRequest request);
      
+        Task<int> GenerateQuestions(QuestionRequest request);
+        
+
+
+
         List<DailyAttemptCountV2> GetAttemptCountV2(int userId, SkillTestAttemptRange skillTest);
     }
 
@@ -34,10 +37,12 @@ namespace YoMentor.ChatGPT {
         private readonly ISkillTestRepository _skillTestRepository;
         private readonly IGradeRepository _gradeRepository;
         private readonly ISubjectRepository _subjectRepository;
+
         public AIQuestionAnswerService(ISkillTestRepository skillTestRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) : base("https://api.openai.com", GlobalSettings.ChatGPTKey) {
             _skillTestRepository = skillTestRepository;
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
+            
         }
 
 
@@ -172,14 +177,7 @@ namespace YoMentor.ChatGPT {
             }
         }
 
-        public static string RemoveJsonDelimiters(string input) {
-            // Remove ```json and ``` from the input string
-            string pattern = @"^```json\s*|\s*```$";
-            string result = Regex.Replace(input, pattern, string.Empty, RegexOptions.Multiline).Trim();
-
-            return result;
-        }
-
+  
 
         private (bool Success, object Result) ValidateRequest(QuestionRequest request) {
 
