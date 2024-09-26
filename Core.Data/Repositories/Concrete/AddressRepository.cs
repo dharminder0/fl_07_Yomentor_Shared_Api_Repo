@@ -79,7 +79,7 @@ namespace Core.Data.Repositories.Concrete {
         }
 
        public Address GetUserAddress(int userId) {
-            var sql = @" select * from Address  where userId=@userId and IsDeleted=0 ";
+            var sql = @" select * from Address  where userId=@userId and IsDeleted=0  or  IsDeleted is null ";
             return  QueryFirst<Address>(sql, new { userId });
         }
         public IEnumerable<State> GetStateList() {

@@ -10,7 +10,7 @@ namespace Core.Data.Repositories.Concrete {
     public class UserRepository : DataRepository<Users>, IUserRepository {
 
         public async Task UpdateLastlogin(long id) {
-            var sql = $@"update Users  set  LastLoginDate = GETDATE()  where Id = @id and isdeleted=0 ";
+            var sql = $@"update Users  set  LastLoginDate = GETDATE()  where Id = @id and IsDeleted=0  or  IsDeleted is null";
             await ExecuteAsync(sql, new { id });
         }
         public Users GetUsersDetailsByToken(string accessToken) {
@@ -132,7 +132,7 @@ namespace Core.Data.Repositories.Concrete {
 
         public IEnumerable<Users> GetUsersInfoByUserName(string phone) {
             var sql = $@"
-            select * from Users  where  phone=@phone  and isdeleted=0 ";
+            select * from Users  where  phone=@phone  and IsDeleted=0  or  IsDeleted is null";
             return Query<Users>(sql, new { phone });
         }
 
@@ -147,20 +147,20 @@ namespace Core.Data.Repositories.Concrete {
         
 
         public async Task<IEnumerable<Users>> UserInfoVerification(string phone, string userToken) {
-            var sql = $@"select  * from  Users    where phone = @phone and Token = @userToken  and isdeleted=0 ";
+            var sql = $@"select  * from  Users    where phone = @phone and Token = @userToken  and IsDeleted=0  or  IsDeleted is null";
             return await QueryAsync<Users>(sql, new { phone, userToken });
         }
         public IEnumerable<Users> GetStudentUser(List<int> studentId)
         {
-            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds   and isdeleted=0 AND type = '3' ";
+            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds   and IsDeleted=0  or  IsDeleted is nullAND type = '3' ";
             return Query<Users>(sql, new { StudentIds = studentId });
         }
         public async Task<Users> GetUser(int Id) {
-            var sql = @" select * from users where id=@Id  and isdeleted=0 ";
+            var sql = @" select * from users where id=@Id  and IsDeleted=0  or  IsDeleted is null";
             return await QueryFirstAsync<Users>(sql, new { Id });
         }
         public Users GetUserInfo(int Id) {
-            var sql = @" select * from users where id=@Id  and isdeleted=0 ";
+            var sql = @" select * from users where id=@Id  and IsDeleted=0  or  IsDeleted is null";
             return  QueryFirst<Users>(sql, new { Id });
         }
 
@@ -203,7 +203,7 @@ u.id
             }
 
             sql += @"
-        WHERE 1 = 1  and isdeleted=0 ";
+        WHERE 1 = 1  and IsDeleted=0  or  IsDeleted is null";
 
             if (!string.IsNullOrWhiteSpace(listRequest.SearchText)) {
                 sql += $@"
@@ -251,7 +251,7 @@ u.id
 
 
         public async Task<Users> GetUserInfo(int Id, int type) {
-            var sql = @" select * from users   where id=@Id  and isdeleted=0 ";
+            var sql = @" select * from users   where id=@Id  and IsDeleted=0  or  IsDeleted is null";
             if(type > 0) {
                 sql += " and type=@type";
             }
