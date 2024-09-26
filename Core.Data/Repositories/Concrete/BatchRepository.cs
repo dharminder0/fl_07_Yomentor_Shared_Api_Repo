@@ -34,16 +34,16 @@ namespace Core.Data.Repositories.Concrete
 
                 if (request.IsFavourite) {
                     sql += @"
-                WHERE fb.userId = @userId AND IsFavourite = 1 and isdeleted=0 ";
+                WHERE fb.userId = @userId AND IsFavourite = 1 and IsDeleted=0  or  IsDeleted is null";
                 }
                
             }
             else if (request.UserType == 1) {
                 sql += @"
-            WHERE B.teacherId = @userId and isdeleted=0 ";
+            WHERE B.teacherId = @userId and IsDeleted=0  or  IsDeleted is null";
             }
             if (request.UserType == 3 && !request.IsFavourite) {
-                sql += " LEFT JOIN batch_students BS ON B.id = BS.batchid  WHERE BS.studentId = @userId  and BS.enrollmentstatus<>0  and isdeleted=0 ";
+                sql += " LEFT JOIN batch_students BS ON B.id = BS.batchid  WHERE BS.studentId = @userId  and BS.enrollmentstatus<>0  and IsDeleted=0  or  IsDeleted is null";
 
             }
             if (request.StatusId != null) {
@@ -65,7 +65,7 @@ namespace Core.Data.Repositories.Concrete
 
         public IEnumerable<int> CounterStudent(int batchId)
         {
-            var sql = $"select Count(studentid) from batch_students where batchId=@batchId and enrollmentstatus !=0 and isdeleted=0 ";
+            var sql = $"select Count(studentid) from batch_students where batchId=@batchId and enrollmentstatus !=0 and IsDeleted=0  or  IsDeleted is null";
             var res = Query<int>(sql, new {batchId});   
             return (IEnumerable<int>)res;
         }
@@ -77,7 +77,7 @@ namespace Core.Data.Repositories.Concrete
         }
         public IEnumerable<Batch> GetBatchDetailsbybatchId(int batchId)
         {
-            var sql = $"Select * from dbo.Batch where Id=@batchId and isdeleted=0 ";
+            var sql = $"Select * from dbo.Batch where Id=@batchId and IsDeleted=0  or  IsDeleted is null";
             return Query<Batch>(sql, new { batchId });
         }
         public IEnumerable<string> GetBatchNamebybatchId(int batchId)
@@ -190,7 +190,7 @@ END ;";
    
                 if (request.teacherId >0) {
                     sql += @"
-WHERE B.teacherId = @teacherId and isdeleted=0 ";
+WHERE B.teacherId = @teacherId and IsDeleted=0  or  IsDeleted is null";
                     parameters.Add("teacherId", request.teacherId);
                 }
 

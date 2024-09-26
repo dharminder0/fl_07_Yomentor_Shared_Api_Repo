@@ -81,13 +81,13 @@ namespace Core.Data.Repositories.Concrete {
 
         public  async Task<Assignments> GetAssignments(int id)
         {
-            var sql = $@"Select * from Assignments where Id=@id and Isdeleted=0 ";
+            var sql = $@"Select * from Assignments where Id=@id and IsDeleted=0  or  IsDeleted is null";
             return QueryFirst<Assignments>(sql, new { id });
         }
 
         public async Task<List<Assignments>> GetAllAssignments(StudentProgressRequestV2 request) {
 
-            var sql = $@"Select * from Assignments where  teacherid=@TeacherId and Isdeleted=0 ";
+            var sql = $@"Select * from Assignments where  teacherid=@TeacherId and IsDeleted=0  or  IsDeleted is null";
             if (request.GradeId > 0)
             {
                 sql += $@" and GradeId=@GradeId";
@@ -111,7 +111,7 @@ FROM (
     SELECT DISTINCT SA.AssignmentId, cast(SA.AssignedDate as date) as AssignedDate
     FROM Assignments A
     JOIN student_assignments SA ON A.id = SA.assignmentid
-    WHERE SA.batchid =@batchId and Isdeleted=0  ";
+    WHERE SA.batchid =@batchId and IsDeleted=0  or  IsDeleted is null ";
             if (request.StudentId>0)
             { sql += $@" and SA.StudentId = @StudentId"; }
                   sql+=$@" ) AS DistinctAssignments
