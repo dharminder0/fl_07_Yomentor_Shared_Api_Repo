@@ -97,6 +97,7 @@ namespace Core.Business.Entities.ResponseModels {
         public string  SubjectName { get; set; }
         public string GradeName { get; set; }
         public string SubjectIconUrl { get; set; }
+        public string Description { get; set; }
 
     }
 

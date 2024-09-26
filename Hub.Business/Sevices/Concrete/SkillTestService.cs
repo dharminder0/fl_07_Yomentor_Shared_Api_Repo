@@ -278,7 +278,8 @@ namespace Core.Business.Sevices.Concrete {
                 attemptHistoryData.Score = attempt.Score;
                 attemptHistoryData.Id = attempt.Id; 
               var skillTestInfo=  _skillTestRepository.GetSkillTest(attemptHistoryData.SkillTestId);
-                attemptHistoryData.SkillTestTitle =!string.IsNullOrWhiteSpace(skillTestInfo.Title) ?skillTestInfo.Title :string.Empty;  
+                attemptHistoryData.SkillTestTitle =!string.IsNullOrWhiteSpace(skillTestInfo.Title) ?skillTestInfo.Title :string.Empty;
+                attemptHistoryData.Description = !string.IsNullOrWhiteSpace(skillTestInfo.Description) ? skillTestInfo.Description : string.Empty;
                 string gradename=_gradeRepository.GetGradeName(skillTestInfo.GradeId); 
                 attemptHistoryData.GradeName = !string.IsNullOrWhiteSpace(gradename) ? gradename:string.Empty;  
                 var subjectdetails=_subjectRepository.GetSubjectDetails(skillTestInfo.SubjectId);  
