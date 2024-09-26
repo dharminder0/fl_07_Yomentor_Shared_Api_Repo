@@ -152,7 +152,7 @@ namespace Core.Data.Repositories.Concrete {
         }
         public IEnumerable<Users> GetStudentUser(List<int> studentId)
         {
-            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds   and IsDeleted=0  or  IsDeleted is nullAND type = '3' ";
+            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds   and IsDeleted=0  or  IsDeleted is null AND type = '3' ";
             return Query<Users>(sql, new { StudentIds = studentId });
         }
         public async Task<Users> GetUser(int Id) {

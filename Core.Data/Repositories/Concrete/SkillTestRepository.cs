@@ -151,7 +151,7 @@ ORDER BY id DESC
             var sql = @"SELECT A.*, Q.Explanations 
 FROM answer_option A 
 JOIN Question Q 
-ON A.QuestionId = Q.id where A.questionId=@questionId and   A.IsDeleted=0  or  IsDeleted is null";
+ON A.QuestionId = Q.id where A.questionId=@questionId and   A.IsDeleted=0  or  A.IsDeleted is null";
             return await QueryAsync<AnswerOption>(sql, new { questionId });
         }
 
