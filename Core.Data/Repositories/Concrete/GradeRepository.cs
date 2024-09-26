@@ -31,7 +31,7 @@ namespace Core.Data.Repositories.Concrete {
         }
         public IEnumerable<Category> GetCategories() {
 
-            var sql = @"select * from Category  and IsDeleted=0 ";
+            var sql = @"select * from Category  where  IsDeleted=0 ";
             return Query<Category>(sql);
 
         }
