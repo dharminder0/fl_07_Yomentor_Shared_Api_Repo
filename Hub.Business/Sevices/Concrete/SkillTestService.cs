@@ -43,6 +43,10 @@ namespace Core.Business.Sevices.Concrete {
                 if (!string.IsNullOrWhiteSpace(subjectName)) {
                     skillTestResponse.SubjectName = subjectName;
                 }
+                string subjectIcon = _subjectRepository.GetIcon(skillTestResponse.SubjectId);
+                if (!string.IsNullOrWhiteSpace(subjectIcon)) {
+                    skillTestResponse.Icon = subjectIcon;
+                }
                 try {
                     var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
                     int userCount = _skillTestRepository.GetSkillTestUser(skillTestResponse.Id);
@@ -109,7 +113,7 @@ namespace Core.Business.Sevices.Concrete {
             skillTestResponse.GradeId = item.GradeId;
             skillTestResponse.Complexity = item.Complexity_Level;
             skillTestResponse.NumberOfQuestions=item.NumberOf_Questions;
-            skillTestResponse.Category = item.Prompt_Type;
+            skillTestResponse.Category = item.category_id;
             skillTestResponse.Language = item.Language;
             skillTestResponse.isEnableTimer = item.isEnableTimer;
             skillTestResponse.TimerValue = item.TimerValue;
@@ -120,6 +124,10 @@ namespace Core.Business.Sevices.Concrete {
             string subjectName = _subjectRepository.GetSubjectName(skillTestResponse.SubjectId);
             if (!string.IsNullOrWhiteSpace(subjectName)) {
                 skillTestResponse.SubjectName = subjectName;
+            }
+            string subjectIcon = _subjectRepository.GetIcon(skillTestResponse.SubjectId);
+            if (!string.IsNullOrWhiteSpace(subjectIcon)) {
+                skillTestResponse.Icon = subjectIcon;
             }
             try {
                 var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
@@ -237,9 +245,9 @@ namespace Core.Business.Sevices.Concrete {
                 if (!string.IsNullOrWhiteSpace(gradeName)) {
                     skillTestResponse.GradeName = gradeName;
                 }
-                string subjectName = _subjectRepository.GetSubjectName(skillTestResponse.SubjectId);
-                if (!string.IsNullOrWhiteSpace(subjectName)) {
-                    skillTestResponse.SubjectName = subjectName;
+                string subjectIcon = _subjectRepository.GetIcon(skillTestResponse.SubjectId);
+                if (!string.IsNullOrWhiteSpace(subjectIcon)) {
+                    skillTestResponse.Icon = subjectIcon;
                 }
                 try {
                     var averageCount = _skillTestRepository.GetSkillTestSumScore(skillTestResponse.Id);
@@ -255,6 +263,37 @@ namespace Core.Business.Sevices.Concrete {
                 skills.Add(skillTestResponse);
             }
             return skills;
+        }
+        public List<AttemptHistoryData> GetAttemptHisotory(SkillTestRequest request) {
+            List <AttemptHistoryData> obj = new List<AttemptHistoryData>();
+            var attemptHistory =  _skillTestRepository.GetAttemptHistory(request);
+            foreach (var attempt in attemptHistory) {
+                AttemptHistoryData attemptHistoryData=new AttemptHistoryData();
+                attemptHistoryData.AttemptCode = attempt.AttemptCode;
+                attemptHistoryData.UserId = attempt.UserId;
+                attemptHistoryData.SkillTestId = attempt.SkillTestId;
+                attemptHistoryData.StartDate = attempt.StartDate;
+                attemptHistoryData.CompleteDate = attempt.CompleteDate;
+                attemptHistoryData.Status = attempt.Status;
+                attemptHistoryData.Score = attempt.Score;
+                attemptHistoryData.Id = attempt.Id; 
+              var skillTestInfo=  _skillTestRepository.GetSkillTest(attemptHistoryData.SkillTestId);
+                attemptHistoryData.SkillTestTitle =!string.IsNullOrWhiteSpace(skillTestInfo.Title) ?skillTestInfo.Title :string.Empty;
+                attemptHistoryData.Description = !string.IsNullOrWhiteSpace(skillTestInfo.Description) ? skillTestInfo.Description : string.Empty;
+                string gradename=_gradeRepository.GetGradeName(skillTestInfo.GradeId); 
+                attemptHistoryData.GradeName = !string.IsNullOrWhiteSpace(gradename) ? gradename:string.Empty;  
+                var subjectdetails=_subjectRepository.GetSubjectDetails(skillTestInfo.SubjectId);  
+                if(subjectdetails != null) {
+                    attemptHistoryData.SubjectName=subjectdetails.Name;
+                    attemptHistoryData.SubjectIconUrl = subjectdetails.Icon;
+
+                }
+                obj.Add(attemptHistoryData);    
+
+
+
+            }
+            return obj; 
         }
     }
 }

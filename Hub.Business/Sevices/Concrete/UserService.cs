@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Azure.Core;
 using Core.Business.Entites.DataModels;
 using Core.Business.Entites.RequestModels;
 using Core.Business.Entities.DataModels;
@@ -247,7 +248,8 @@ namespace Core.Business.Services.Concrete {
             user.Rank = dbUser.Rank;    
             user.IsDeleted = dbUser.IsDeleted; 
             user.Category= category >0 ? category : 0;
-            user.CategoryName = Enum.GetName(typeof(Category), dbUser.Category);
+            string categoryName = _gradeRepository.GetCategorieName(dbUser.Category);
+            user.CategoryName =!string.IsNullOrEmpty(categoryName) ? categoryName : string.Empty;
 
             return user;
         }
@@ -493,7 +495,9 @@ namespace Core.Business.Services.Concrete {
                 userDto.Rank=response.Rank;
                 userDto.Gender = response.Gender;
                 userDto.Category = response.Category;
-                userDto.CategoryName = Enum.GetName(typeof(Category), response.Category);
+                string categoryName = _gradeRepository.GetCategorieName(response.Category);
+                userDto.CategoryName = !string.IsNullOrEmpty(categoryName) ? categoryName : string.Empty;
+             
  
                 userDto.StudentGradeId = response.GradeId;
            

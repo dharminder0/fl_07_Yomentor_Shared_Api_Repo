@@ -25,6 +25,7 @@ namespace Core.Business.Sevices.Concrete {
                 response.Name = item.Name;  
                 response.Isdeleted=item.Isdeleted;  
                 response.Type = item.Type;
+                response.Icon = item.Icon;  
                 results.Add(response);
             }
           return results;
@@ -32,5 +33,9 @@ namespace Core.Business.Sevices.Concrete {
       
 
         }
+        public  List<Category> GetCategory() {
+            return _gradeRepository.GetCategories().ToList();    
+        }
+       
     }
 }

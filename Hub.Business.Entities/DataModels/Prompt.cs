@@ -8,7 +8,7 @@ namespace Core.Business.Entities.DataModels {
     public class Prompt {
         public int Prompt_Id { get; set; }
         public string Prompt_Text { get; set; }
-        public string Prompt_Type { get; set; }
+        public int  category_id { get; set; }
         public float Temperature { get; set; }
         public int Max_tokens { get; set; }
         public float Top_p { get; set; }

@@ -9,5 +9,6 @@ namespace Core.Business.Entities.DataModels {
         public string Name { get; set; }
         public int Type { get; set; }
         public bool Isdeleted { get; set; }
+        public string Icon { get; set; }
     }
 }

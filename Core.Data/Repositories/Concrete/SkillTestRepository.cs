@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @"SELECT * FROM skilltest WHERE 1=1";
+            var sql = @"SELECT * FROM skilltest WHERE 1=1  and isdeleted=0 ";
 
             if (skillTest.SubjectId > 0) {
                 sql += " AND subjectId = @SubjectId";
@@ -60,7 +61,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  CreatedBy 1=1";
+            var sql = @" select * from skilltest  where  1=1  and isdeleted=0";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
@@ -145,11 +146,12 @@ ORDER BY id DESC
             var sql = @"select * from Question where skilltestid=@skillTestId";
             return await QueryAsync<Question>(sql, new { skillTestId });
         }
+
         public async Task<IEnumerable<AnswerOption>> GetAnswerOptionsForQuestion(int questionId) {
             var sql = @"SELECT A.*, Q.Explanations 
 FROM answer_option A 
 JOIN Question Q 
-ON A.QuestionId = Q.id where A.questionId=@questionId ";
+ON A.QuestionId = Q.id where A.questionId=@questionId and   A.isdeleted=0 ";
             return await QueryAsync<AnswerOption>(sql, new { questionId });
         }
 
@@ -191,7 +193,7 @@ ON A.QuestionId = Q.id where A.questionId=@questionId ";
             return ExecuteScalar<bool>(sql, new { attemptId });
         }
         public int GetCorrectAnswer(int questionId) {
-            var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1";
+            var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1 and isdeleted=0 ";
             return ExecuteScalar<int>(sql, new { questionId });
 
         }
@@ -217,12 +219,12 @@ GROUP BY
             return ExecuteScalar<int>(sql, new { attemptId, score });
         }
         public int GetAnswerId(int attemptId, int questionId) {
-            var sql = @" select answerId from attempt_detail where attemptid=@attemptId and questionId=@questionId ";
+            var sql = @" select answerId from attempt_detail where attemptid=@attemptId and questionId=@questionId  ";
             return ExecuteScalar<int>(sql, new { attemptId, questionId });
 
         }
         public IEnumerable<AnswerOption> GetAnswerList(int questionId) {
-            var sql = @"select * from answer_option where questionId=@questionId ";
+            var sql = @"select * from answer_option where questionId=@questionId  	 and isdeleted=0 ";
             return Query<AnswerOption>(sql, new { questionId });
 
         }
@@ -282,7 +284,7 @@ GROUP BY
         UpdateDate,
         IsDeleted,
         Topic,
-        Prompt_Type,
+        category_id,
         Complexity_Level,
         NumberOf_Questions,
         CreatedBy,
@@ -303,7 +305,7 @@ GROUP BY
         @UpdateDate,
         @IsDeleted,
         @Topic,
-        @Prompt_Type,
+        @category_id,
         @Complexity_Level,
         @NumberOf_Questions,
         @CreatedBy,
@@ -315,9 +317,9 @@ GROUP BY
             SELECT SCOPE_IDENTITY(); ";
             return await ExecuteScalarAsync<int>(sql, skillTest);
         }
-        public Prompt GetPrompt(string prompt_type) {
-            var sql = @" select * from Prompt where prompt_type=@prompt_type ";
-            return QueryFirst<Prompt>(sql, new { prompt_type });
+        public Prompt GetPrompt(int  categoryId) {
+            var sql = @" select * from Prompt where category_id=@categoryId ";
+            return QueryFirst<Prompt>(sql, new { categoryId });
         }
 
         public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
@@ -342,12 +344,137 @@ FROM DateRange dr;
 
             return Query<DailyAttemptCount>(sql, new { userId, startDate, endDate });
         }
+  
+    
+        public IEnumerable<AttemptCount> GetAttemptCounts(int userId, SkillTestAttemptRange range) {
+            DateTime endDate = DateTime.Now;
+            DateTime startDate = range switch {
+                SkillTestAttemptRange.Weekly => endDate.AddDays(-6),
+                SkillTestAttemptRange.Monthly => endDate.AddMonths(-1),
+                SkillTestAttemptRange.SixMonthly => endDate.AddMonths(-5),
+                SkillTestAttemptRange.Yearly => endDate.AddYears(-1),
+                _ => throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}")
+            };
+
+
+            var dateIntervals = new List<(DateTime StartDate, DateTime EndDate)>();
+
+     
+            var calendar = CultureInfo.InvariantCulture.Calendar;
+
+            switch (range) {
+                case SkillTestAttemptRange.Weekly:
+                    for (var date = startDate; date <= endDate; date = date.AddDays(1)) {
+                        dateIntervals.Add((date.Date, date.Date.AddDays(1)));
+                    }
+                    break;
+
+                case SkillTestAttemptRange.Monthly:
+         
+                    for (var date = startDate; date <= endDate; date = date.AddDays(7)) {
+                        var weekStart = calendar.AddDays(date, -((int)date.DayOfWeek));
+                        var weekEnd = weekStart.AddDays(7);
+                        dateIntervals.Add((weekStart, weekEnd));
+                    }
+                    break;
+
+                case SkillTestAttemptRange.Yearly:
+                case SkillTestAttemptRange.SixMonthly:
+                    for (var date = startDate; date <= endDate; date = date.AddMonths(1)) {
+                        var monthStart = new DateTime(date.Year, date.Month,1);
+                        var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+                        dateIntervals.Add((monthStart, monthEnd));
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(range), $"Unsupported range: {range}");
+            }
+
+            var sql = @"
+SELECT CAST(a.StartDate AS DATE) AS StartDate, COUNT(DISTINCT a.Id) AS AttemptedCount
+FROM Attempt a
+WHERE a.UserId = @userId
+  AND a.Status = 1
+  AND CAST(a.StartDate AS DATE) >= CAST(@startDate AS DATE)
+  AND CAST(a.StartDate AS DATE) < CAST(@endDate AS DATE)
+GROUP BY CAST(a.StartDate AS DATE)
+ORDER BY StartDate;
+";
+
+            var attemptCounts = new List<AttemptCount>();
+
+            foreach (var interval in dateIntervals) {
+                // Query for each interval
+                var attempts = Query<AttemptCount>(sql, new { userId, startDate = interval.StartDate, endDate = interval.EndDate });
+
+          
+                attemptCounts.Add(new AttemptCount {
+                    GroupedDate = interval.StartDate,
+                    AttemptedCount = attempts.Any() ? attempts.Sum(a => a.AttemptedCount) : 0
+                });
+            }
+
+            return attemptCounts;
+        }
+
+
+        public IEnumerable<Attempt> GetAttemptHistory(SkillTestRequest skillTest) {
+            var sql = @"
+        SELECT a.* 
+        FROM attempt a
+        INNER JOIN skillTest st ON a.skilltestid = st.id
+        WHERE a.status = 1  and st.isdeleted=0 ";
+
+       
+            if (skillTest.UserId > 0) {
+                sql += " AND a.userid = @UserId";
+            }
+
+            if (skillTest.GradeId > 0) {
+                sql += " AND st.gradeid = @GradeId";
+            }
+
+            if (skillTest.SubjectId > 0) {
+                sql += " AND st.subjectid = @SubjectId";
+            }
+
+            if (skillTest.complexityLevel > 0) {
+                sql += " AND st.complexity_level = @complexityLevel";
+            }
+
+            if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
+                sql += $@"
+            AND (st.title LIKE '%{skillTest.SearchText}%' OR          
+                 st.description LIKE '%{skillTest.SearchText}%')";
+            }
+
+            if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
+                sql += $@"
+            ORDER BY a.startdate DESC
+            OFFSET @PageSize * (@PageIndex - 1) ROWS 
+            FETCH NEXT @PageSize ROWS ONLY;";
+            }
+
+
+            return  Query<Attempt>(sql, skillTest);
+
+
+        }
+
+
+
+
+
+
+
+
 
 
 
 
         public async Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1 ";
+            var sql = @" select * from skilltest  WHERE 1=1   and isdeleted=0 ";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }

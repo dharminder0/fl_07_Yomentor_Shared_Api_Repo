@@ -23,10 +23,13 @@ namespace YoMentor.ChatGPT {
     public interface IAIQuestionAnswerService {
         Task<object> GenerateQuestionsOld(QuestionRequest request);
         Task<object> GenerateQuestions(QuestionRequest request, bool isOnlyobject);
-
-        Task<int> GenerateQuestions(QuestionRequest request);
      
-        List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate);
+        Task<int> GenerateQuestions(QuestionRequest request);
+        
+
+
+
+        List<DailyAttemptCountV2> GetAttemptCountV2(int userId, SkillTestAttemptRange skillTest);
     }
 
     public class AIQuestionAnswerService : ExternalServiceBase, IAIQuestionAnswerService {
@@ -34,10 +37,12 @@ namespace YoMentor.ChatGPT {
         private readonly ISkillTestRepository _skillTestRepository;
         private readonly IGradeRepository _gradeRepository;
         private readonly ISubjectRepository _subjectRepository;
+
         public AIQuestionAnswerService(ISkillTestRepository skillTestRepository, IGradeRepository gradeRepository, ISubjectRepository subjectRepository) : base("https://api.openai.com", GlobalSettings.ChatGPTKey) {
             _skillTestRepository = skillTestRepository;
             _gradeRepository = gradeRepository;
             _subjectRepository = subjectRepository;
+            
         }
 
 
@@ -172,34 +177,32 @@ namespace YoMentor.ChatGPT {
             }
         }
 
-        public static string RemoveJsonDelimiters(string input) {
-            // Remove ```json and ``` from the input string
-            string pattern = @"^```json\s*|\s*```$";
-            string result = Regex.Replace(input, pattern, string.Empty, RegexOptions.Multiline).Trim();
-
-            return result;
-        }
-
+  
 
         private (bool Success, object Result) ValidateRequest(QuestionRequest request) {
 
-            if (request.Category == (int)Category.Academic) {
-                return (true, Category.Academic.ToString());
-            }
+            string categoryName = _gradeRepository.GetCategorieName(request.Category);
 
-            else if (request.Category == (int)Category.Competitive_Exams) {
-                return (true, Category.Competitive_Exams.ToString());
-            }
-            else {
+            if (string.IsNullOrEmpty(categoryName)) {
                 return (false, new { error = "Invalid category" });
             }
+
+            
+            return (true, categoryName);
         }
+
+
 
         public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
             string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
             string subjectname = _subjectRepository.GetSubjectName(request.Subject);
-            string categoryName = Enum.GetName(typeof(Category), request.Category);
-            var promptData = _skillTestRepository.GetPrompt(categoryName);
+            var category = _gradeRepository.GetCategorie(request.Category);
+
+            if (string.IsNullOrEmpty(category.CategoryName)) {
+                return (false,null);
+            }
+
+            var promptData = _skillTestRepository.GetPrompt(category.Id);
             string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
             string language = Enum.GetName(typeof(Language), request.Language);
 
@@ -215,7 +218,7 @@ namespace YoMentor.ChatGPT {
                 Prompt resultPrompt = new Prompt {
                     Prompt_Id = promptData.Prompt_Id,
                     Prompt_Text = userPrompt,
-                    Prompt_Type = promptData.Prompt_Type,
+                    category_id = promptData.category_id,
                     Temperature = promptData.Temperature,
                     Max_tokens = promptData.Max_tokens,
                     Top_p = promptData.Top_p,
@@ -375,7 +378,7 @@ namespace YoMentor.ChatGPT {
                 Topic = request.Topic,
                 Complexity_Level = request.ComplexityLevel,
                 NumberOf_Questions = request.NumberOfQuestions,
-                Prompt_Type = request.Category,
+                category_id = request.Category,
                 CreatedBy = request.UserId,
                 Language = request.Language,
                 isEnableTimer=request.isEnableTimer,
@@ -410,27 +413,31 @@ namespace YoMentor.ChatGPT {
             return skillTestId;
         }
 
-        public List<DailyAttemptCountV2> GetAttemptCountV2(int userId, DateTime startDate, DateTime endDate) {
+        public List<DailyAttemptCountV2> GetAttemptCountV2(int userId, SkillTestAttemptRange skillTest) {
 
-            var response = _skillTestRepository.GetDailyAttemptCounts(userId, startDate, endDate);
-
+            var response = _skillTestRepository.GetAttemptCounts(userId, skillTest);
 
             List<DailyAttemptCountV2> resultList = new List<DailyAttemptCountV2>();
 
- 
             foreach (var item in response) {
                 DailyAttemptCountV2 obj = new DailyAttemptCountV2 {
-                 Label = item.Date.ToString("dd MMM yyyy"),
-                    Value = item.AttemptedCount  
-                };
+                    Label = skillTest switch {
+                        SkillTestAttemptRange.Weekly => item.GroupedDate.ToString("ddd"),
+                        SkillTestAttemptRange.Monthly => item.GroupedDate.ToString("dd"),  // Adjust to show only the first week of each month
+                        SkillTestAttemptRange.SixMonthly => item.GroupedDate.ToString("MMM"), // Display month name
+                        SkillTestAttemptRange.Yearly => item.GroupedDate.ToString("MMMM")[0].ToString(),
 
+                        _ => item.GroupedDate.ToString("dd MMM yyyy")  // Default format
+                    },
+                    Value = item.AttemptedCount
+                };
 
                 resultList.Add(obj);
             }
 
-
             return resultList;
         }
+
 
     }
 

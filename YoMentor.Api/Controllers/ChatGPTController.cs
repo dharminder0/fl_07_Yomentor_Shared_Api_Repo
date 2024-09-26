@@ -14,9 +14,11 @@ namespace YoMentor.Api.Controllers
     [ApiController]
     public class ChatGPTController : BaseApiController {
         private readonly IAIQuestionAnswerService _aIQuestionAnswer;
+        private readonly IAzureOpenAIService _azureOpenAIService;
 
-        public ChatGPTController(IAIQuestionAnswerService aIQuestionAnswer) {
+        public ChatGPTController(IAIQuestionAnswerService aIQuestionAnswer, IAzureOpenAIService azureOpenAIService) {
             _aIQuestionAnswer = aIQuestionAnswer;
+            _azureOpenAIService = azureOpenAIService;
         }
 
 
@@ -39,7 +41,9 @@ namespace YoMentor.Api.Controllers
         [HttpPost("createPrompt")]
         public async Task<IActionResult> CreatePrompt([FromBody] QuestionRequest request) {
 
-            var questions = await _aIQuestionAnswer.GenerateQuestions(request);
+            var questions = await _azureOpenAIService.GenerateQuestions(request);
+
+
             return JsonExt(questions);
         }
         /// <summary>
@@ -49,7 +53,7 @@ namespace YoMentor.Api.Controllers
         /// <returns></returns>
         [HttpPost("SkillTest-attempts/dailyCount")]
         public IActionResult GetAttemptCount(SkillTestRequestV2 skillTestRequest) {
-            var questions =  _aIQuestionAnswer.GetAttemptCountV2(skillTestRequest.UserId,skillTestRequest.Startdate,skillTestRequest.EndDate);
+            var questions =  _aIQuestionAnswer.GetAttemptCountV2(skillTestRequest.UserId,skillTestRequest.AttemptRange);
             return JsonExt(questions);
         }
     }

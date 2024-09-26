@@ -65,7 +65,7 @@ namespace Core.Data.Repositories.Concrete
 
         public IEnumerable<int> CounterStudent(int batchId)
         {
-            var sql = $"select Count(studentid) from batch_students where batchId=@batchId and enrollmentstatus !=0 ";
+            var sql = $"select Count(studentid) from batch_students where batchId=@batchId and enrollmentstatus !=0 and isdeleted=0 ";
             var res = Query<int>(sql, new {batchId});   
             return (IEnumerable<int>)res;
         }
