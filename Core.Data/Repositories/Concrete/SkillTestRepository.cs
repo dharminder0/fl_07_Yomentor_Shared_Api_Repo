@@ -19,7 +19,7 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @"SELECT * FROM skilltest WHERE 1=1";
+            var sql = @"SELECT * FROM skilltest WHERE 1=1  and isdeleted=0 ";
 
             if (skillTest.SubjectId > 0) {
                 sql += " AND subjectId = @SubjectId";
@@ -61,7 +61,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  CreatedBy 1=1";
+            var sql = @" select * from skilltest  where  1=1  and isdeleted=0";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
@@ -151,7 +151,7 @@ ORDER BY id DESC
             var sql = @"SELECT A.*, Q.Explanations 
 FROM answer_option A 
 JOIN Question Q 
-ON A.QuestionId = Q.id where A.questionId=@questionId ";
+ON A.QuestionId = Q.id where A.questionId=@questionId and  and A.isdeleted=0 ";
             return await QueryAsync<AnswerOption>(sql, new { questionId });
         }
 
@@ -193,7 +193,7 @@ ON A.QuestionId = Q.id where A.questionId=@questionId ";
             return ExecuteScalar<bool>(sql, new { attemptId });
         }
         public int GetCorrectAnswer(int questionId) {
-            var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1";
+            var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1 and isdeleted=0 ";
             return ExecuteScalar<int>(sql, new { questionId });
 
         }
@@ -219,12 +219,12 @@ GROUP BY
             return ExecuteScalar<int>(sql, new { attemptId, score });
         }
         public int GetAnswerId(int attemptId, int questionId) {
-            var sql = @" select answerId from attempt_detail where attemptid=@attemptId and questionId=@questionId ";
+            var sql = @" select answerId from attempt_detail where attemptid=@attemptId and questionId=@questionId  ";
             return ExecuteScalar<int>(sql, new { attemptId, questionId });
 
         }
         public IEnumerable<AnswerOption> GetAnswerList(int questionId) {
-            var sql = @"select * from answer_option where questionId=@questionId ";
+            var sql = @"select * from answer_option where questionId=@questionId  	 and isdeleted=0 ";
             return Query<AnswerOption>(sql, new { questionId });
 
         }
@@ -424,7 +424,7 @@ ORDER BY StartDate;
         SELECT a.* 
         FROM attempt a
         INNER JOIN skillTest st ON a.skilltestid = st.id
-        WHERE a.status = 1";
+        WHERE a.status = 1  and st.isdeleted=0 ";
 
        
             if (skillTest.UserId > 0) {
@@ -474,7 +474,7 @@ ORDER BY StartDate;
 
 
         public async Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1 ";
+            var sql = @" select * from skilltest  WHERE 1=1   and isdeleted=0 ";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }

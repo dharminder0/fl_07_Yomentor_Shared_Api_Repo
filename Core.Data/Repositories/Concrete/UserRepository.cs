@@ -10,11 +10,11 @@ namespace Core.Data.Repositories.Concrete {
     public class UserRepository : DataRepository<Users>, IUserRepository {
 
         public async Task UpdateLastlogin(long id) {
-            var sql = $@"update Users  set  LastLoginDate = GETDATE()  where Id = @id";
+            var sql = $@"update Users  set  LastLoginDate = GETDATE()  where Id = @id and isdeleted=0 ";
             await ExecuteAsync(sql, new { id });
         }
         public Users GetUsersDetailsByToken(string accessToken) {
-            var sql = $@"SELECT * FROM Users WHERE Token = @accessToken";
+            var sql = $@"SELECT * FROM Users WHERE Token = @accessToken  and isdeleted=0";
             return QueryFirst<Users>(sql, new { accessToken });
         }
 
@@ -30,7 +30,7 @@ namespace Core.Data.Repositories.Concrete {
         public int VerifyUserByUsername(string phone) {
             var sql = $@"IF  EXISTS(SELECT 1 from Users where phone = @phone)
         begin
-        SELECT Id from Users where phone = @phone;
+        SELECT Id from Users where phone = @phone  and isdeleted=0;
         end";
             var id = ExecuteScalar<int>(sql, new { phone });
             return id;
@@ -132,7 +132,7 @@ namespace Core.Data.Repositories.Concrete {
 
         public IEnumerable<Users> GetUsersInfoByUserName(string phone) {
             var sql = $@"
-            select * from Users  where  phone=@phone  ";
+            select * from Users  where  phone=@phone  and isdeleted=0 ";
             return Query<Users>(sql, new { phone });
         }
 
@@ -147,20 +147,20 @@ namespace Core.Data.Repositories.Concrete {
         
 
         public async Task<IEnumerable<Users>> UserInfoVerification(string phone, string userToken) {
-            var sql = $@"select  * from  Users    where phone = @phone and Token = @userToken  ";
+            var sql = $@"select  * from  Users    where phone = @phone and Token = @userToken  and isdeleted=0 ";
             return await QueryAsync<Users>(sql, new { phone, userToken });
         }
         public IEnumerable<Users> GetStudentUser(List<int> studentId)
         {
-            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds AND type = '3'";
+            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds   and isdeleted=0 AND type = '3' ";
             return Query<Users>(sql, new { StudentIds = studentId });
         }
         public async Task<Users> GetUser(int Id) {
-            var sql = @" select * from users where id=@Id";
+            var sql = @" select * from users where id=@Id  and isdeleted=0 ";
             return await QueryFirstAsync<Users>(sql, new { Id });
         }
         public Users GetUserInfo(int Id) {
-            var sql = @" select * from users where id=@Id";
+            var sql = @" select * from users where id=@Id  and isdeleted=0 ";
             return  QueryFirst<Users>(sql, new { Id });
         }
 
@@ -203,7 +203,7 @@ u.id
             }
 
             sql += @"
-        WHERE 1 = 1";
+        WHERE 1 = 1  and isdeleted=0 ";
 
             if (!string.IsNullOrWhiteSpace(listRequest.SearchText)) {
                 sql += $@"
@@ -251,14 +251,14 @@ u.id
 
 
         public async Task<Users> GetUserInfo(int Id, int type) {
-            var sql = @" select * from users   where id=@Id";
+            var sql = @" select * from users   where id=@Id  and isdeleted=0 ";
             if(type > 0) {
                 sql += " and type=@type";
             }
             return await QueryFirstAsync<Users>(sql, new { Id,type });
         }
         public async Task<TeacherProfile> GetTeacherProfile(int userId) {
-            var sql = @" select * from Teacher_Profile where teacherid=@userId ";
+            var sql = @" select * from Teacher_Profile where teacherid=@userId  ";
             return await QueryFirstAsync<TeacherProfile>(sql, new { userId });
         }
         public async Task<int> UpsertTeacherProfile(TeacherProfile teacherProfile) {
