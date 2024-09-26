@@ -13,7 +13,7 @@ namespace Core.Data.Repositories.Concrete {
       public  async Task<IEnumerable<Grade>> GetAllGrades(int type) {
             var sql = @"select * from Grade where 1=1  and IsDeleted=0  or  IsDeleted is null";
             if(type > 0) {
-                sql += @"and  type=@type";
+                sql += @" and  type=@type";
             }
             return  await  QueryAsync<Grade>(sql,new {type}); 
         }
