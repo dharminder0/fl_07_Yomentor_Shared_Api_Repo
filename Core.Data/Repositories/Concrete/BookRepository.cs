@@ -136,7 +136,7 @@ namespace Core.Data.Repositories.Concrete {
             return await ExecuteScalarAsync<int>(sql, exchange);
         }
        public Books GetBooksList(int bookId) {
-            var sql = @"select * from books where    IsDeleted=0 and id=@bookid ";
+            var sql = @"select * from books where    IsDeleted=0  or  IsDeleted is null and id=@bookid ";
             return   QueryFirst<Books>(sql,new { bookId });
         }
         public  bool  UpdateStatus(int id, int status, int receiverId) {

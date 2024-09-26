@@ -19,7 +19,7 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @"SELECT * FROM skilltest WHERE 1=1  and isdeleted=0 ";
+            var sql = @"SELECT * FROM skilltest WHERE 1=1  and IsDeleted=0  or  IsDeleted is null";
 
             if (skillTest.SubjectId > 0) {
                 sql += " AND subjectId = @SubjectId";
@@ -85,7 +85,7 @@ ORDER BY id DESC
             return await QueryAsync<SkillTest>(sql, skillTest);
         }
         public SkillTest GetSkillTest(int Id) {
-            var sql = @" select * from skillTest where id=@Id and IsDeleted=0 ";
+            var sql = @" select * from skillTest where id=@Id and IsDeleted=0  or  IsDeleted is null";
             return QueryFirst<SkillTest>(sql, new { Id });
         }
         public int GetSkillTestSumScore(int Id) {
@@ -151,7 +151,7 @@ ORDER BY id DESC
             var sql = @"SELECT A.*, Q.Explanations 
 FROM answer_option A 
 JOIN Question Q 
-ON A.QuestionId = Q.id where A.questionId=@questionId and   A.isdeleted=0 ";
+ON A.QuestionId = Q.id where A.questionId=@questionId and   A.IsDeleted=0  or  A.IsDeleted is null";
             return await QueryAsync<AnswerOption>(sql, new { questionId });
         }
 
@@ -193,7 +193,7 @@ ON A.QuestionId = Q.id where A.questionId=@questionId and   A.isdeleted=0 ";
             return ExecuteScalar<bool>(sql, new { attemptId });
         }
         public int GetCorrectAnswer(int questionId) {
-            var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1 and isdeleted=0 ";
+            var sql = @"select id from answer_option where questionId=@questionId and iscorrect=1 and IsDeleted=0  or  IsDeleted is null";
             return ExecuteScalar<int>(sql, new { questionId });
 
         }
@@ -224,7 +224,7 @@ GROUP BY
 
         }
         public IEnumerable<AnswerOption> GetAnswerList(int questionId) {
-            var sql = @"select * from answer_option where questionId=@questionId  	 and isdeleted=0 ";
+            var sql = @"select * from answer_option where questionId=@questionId  	 and IsDeleted=0  or  IsDeleted is null";
             return Query<AnswerOption>(sql, new { questionId });
 
         }
@@ -424,7 +424,7 @@ ORDER BY StartDate;
         SELECT a.* 
         FROM attempt a
         INNER JOIN skillTest st ON a.skilltestid = st.id
-        WHERE a.status = 1  and st.isdeleted=0 ";
+        WHERE a.status = 1  and st.IsDeleted=0  or  IsDeleted is null";
 
        
             if (skillTest.UserId > 0) {
@@ -474,7 +474,7 @@ ORDER BY StartDate;
 
 
         public async Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1   and isdeleted=0 ";
+            var sql = @" select * from skilltest  WHERE 1=1   and IsDeleted=0  or  IsDeleted is null";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
