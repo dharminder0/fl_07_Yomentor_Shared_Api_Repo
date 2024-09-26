@@ -34,7 +34,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<IEnumerable<SkillTest>> GetSkillTestListByUser(SkillTestRequest skillTest);
         IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate);
         Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest);
-        IEnumerable<Attempt> GetAttemptHisotory(int userId);
+       IEnumerable<Attempt> GetAttemptHistory(SkillTestRequest skillTest);
         IEnumerable<AttemptCount> GetAttemptCounts(int userId, SkillTestAttemptRange range);
     }
 }

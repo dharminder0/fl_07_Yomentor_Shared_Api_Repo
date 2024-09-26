@@ -419,9 +419,47 @@ ORDER BY StartDate;
         }
 
 
-        public IEnumerable<Attempt> GetAttemptHisotory(int userId) {
-            var sql = @"select * from attempt where userId=@userId and status=1";
-            return Query<Attempt>(sql, new { userId }); 
+        public IEnumerable<Attempt> GetAttemptHistory(SkillTestRequest skillTest) {
+            var sql = @"
+        SELECT a.* 
+        FROM attempt a
+        INNER JOIN skillTest st ON a.skilltestid = st.id
+        WHERE a.status = 1";
+
+       
+            if (skillTest.UserId > 0) {
+                sql += " AND a.userid = @UserId";
+            }
+
+            if (skillTest.GradeId > 0) {
+                sql += " AND st.gradeid = @GradeId";
+            }
+
+            if (skillTest.SubjectId > 0) {
+                sql += " AND st.subjectid = @SubjectId";
+            }
+
+            if (skillTest.complexityLevel > 0) {
+                sql += " AND st.complexity_level = @complexityLevel";
+            }
+
+            if (!string.IsNullOrWhiteSpace(skillTest.SearchText)) {
+                sql += $@"
+            AND (st.title LIKE '%{skillTest.SearchText}%' OR          
+                 st.description LIKE '%{skillTest.SearchText}%')";
+            }
+
+            if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
+                sql += $@"
+            ORDER BY a.startdate DESC
+            OFFSET @PageSize * (@PageIndex - 1) ROWS 
+            FETCH NEXT @PageSize ROWS ONLY;";
+            }
+
+
+            return  Query<Attempt>(sql, skillTest);
+
+
         }
 
 

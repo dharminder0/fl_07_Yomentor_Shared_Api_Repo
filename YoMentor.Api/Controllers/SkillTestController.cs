@@ -95,8 +95,8 @@ namespace YoMentor.Api.Controllers {
         /// <returns></returns>
         [HttpPost]
         [Route("AttemptHitory")]
-        public IActionResult GetAttemptHisotory(int userId) {
-            var response =  _skillTestService.GetAttemptHisotory(userId);
+        public IActionResult GetAttemptHisotory(SkillTestRequest request) {
+            var response =  _skillTestService.GetAttemptHisotory(request);
             return JsonExt(response);
         }
     }

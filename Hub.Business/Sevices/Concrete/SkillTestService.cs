@@ -264,9 +264,9 @@ namespace Core.Business.Sevices.Concrete {
             }
             return skills;
         }
-        public List<AttemptHistoryData> GetAttemptHisotory(int id) {
-            List <AttemptHistoryData> obj = new List<AttemptHistoryData>(); 
-            var attemptHistory= _skillTestRepository.GetAttemptHisotory(id).ToList();
+        public List<AttemptHistoryData> GetAttemptHisotory(SkillTestRequest request) {
+            List <AttemptHistoryData> obj = new List<AttemptHistoryData>();
+            var attemptHistory =  _skillTestRepository.GetAttemptHistory(request);
             foreach (var attempt in attemptHistory) {
                 AttemptHistoryData attemptHistoryData=new AttemptHistoryData();
                 attemptHistoryData.AttemptCode = attempt.AttemptCode;
