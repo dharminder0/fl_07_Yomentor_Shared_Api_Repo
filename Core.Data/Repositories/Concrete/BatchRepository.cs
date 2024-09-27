@@ -190,7 +190,7 @@ END ;";
    
                 if (request.teacherId >0) {
                     sql += @"
-and  B.teacherId = @teacherId l";
+and  B.teacherId = @teacherId ";
                     parameters.Add("teacherId", request.teacherId);
                 }
 
