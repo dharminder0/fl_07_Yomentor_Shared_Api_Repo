@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 namespace Core.Data.Repositories.Concrete {
     public class GradeRepository : DataRepository<Grade>, IGradeRepository {
       public  async Task<IEnumerable<Grade>> GetAllGrades(int type) {
-            var sql = @"select * from Grade where 1=1  and IsDeleted=0  or  IsDeleted is null";
+            var sql = @"select * from Grade where 1=1  ";
             if(type > 0) {
                 sql += @" and  type=@type";
             }
+            sql += " and IsDeleted=0  or  IsDeleted is null ";
             return  await  QueryAsync<Grade>(sql,new {type}); 
         }
 
