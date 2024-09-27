@@ -90,7 +90,7 @@ namespace Core.Data.Repositories.Concrete {
      
         public async Task<List<Assessments>> GetAssessmentsAllList(StudentProgressRequestV2 request  )
         {
-            var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid and IsDeleted=0  or  IsDeleted is null";
+            var sql = @"select * from [dbo].[assessments] WHERE teacherid=@teacherid ";
             if (request.GradeId > 0)
             {
                 sql += $@" and GradeId=@GradeId";
@@ -99,6 +99,7 @@ namespace Core.Data.Repositories.Concrete {
             {
                 sql += $@" and SubjectId=@SubjectId";
             }
+            sql += " and IsDeleted=0  or  IsDeleted is null  ";
             if (request.PageIndex > 0 && request.PageIndex > 0) {
                 sql += $@" ORDER BY Id DESC
                  OFFSET(@PageSize * (@PageIndex - 1)) ROWS FETCH NEXT @PageSize ROWS ONLY; ";
