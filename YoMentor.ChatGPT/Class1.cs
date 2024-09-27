@@ -202,6 +202,7 @@ namespace YoMentor.ChatGPT {
                 return (false,null);
             }
 
+
             var promptData = _skillTestRepository.GetPrompt(category.Id);
             string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
             string language = Enum.GetName(typeof(Language), request.Language);

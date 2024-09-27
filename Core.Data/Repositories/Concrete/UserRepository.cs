@@ -152,7 +152,7 @@ namespace Core.Data.Repositories.Concrete {
         }
         public IEnumerable<Users> GetStudentUser(List<int> studentId)
         {
-            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds   and IsDeleted=0  or  IsDeleted is null AND type = '3' ";
+            var sql = "SELECT * FROM Users WHERE Id IN @StudentIds   AND type = '3'  and IsDeleted=0  or  IsDeleted is null ";
             return Query<Users>(sql, new { StudentIds = studentId });
         }
         public async Task<Users> GetUser(int Id) {
@@ -203,7 +203,7 @@ u.id
             }
 
             sql += @"
-        WHERE 1 = 1  and IsDeleted=0  or  IsDeleted is null";
+        WHERE 1 = 1  ";
 
             if (!string.IsNullOrWhiteSpace(listRequest.SearchText)) {
                 sql += $@"
@@ -240,6 +240,7 @@ u.id
             else {
                 sqlString = " ORDER BY u.id DESC";
             }
+            sql += " and IsDeleted=0  or  IsDeleted is null  ";
             if (listRequest.pageIndex > 0 && listRequest.PageSize >0) {
                 sql += $@"
        {sqlString}
@@ -251,10 +252,12 @@ u.id
 
 
         public async Task<Users> GetUserInfo(int Id, int type) {
-            var sql = @" select * from users   where id=@Id  and IsDeleted=0  or  IsDeleted is null";
+            var sql = @" select * from users   where id=@Id  ";
             if(type > 0) {
                 sql += " and type=@type";
             }
+            sql += " and IsDeleted=0  or  IsDeleted is null  ";
+
             return await QueryFirstAsync<Users>(sql, new { Id,type });
         }
         public async Task<TeacherProfile> GetTeacherProfile(int userId) {

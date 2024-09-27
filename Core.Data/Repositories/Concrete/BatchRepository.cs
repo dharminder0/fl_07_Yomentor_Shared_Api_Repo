@@ -183,14 +183,14 @@ END ;";
         }
 
         public async Task<IEnumerable<Batch>> GetBatchDetailsbyId(BatchRequestV2 request) {
-            var sql = @"SELECT DISTINCT B.* FROM Batch B";
+            var sql = @"SELECT DISTINCT B.* FROM Batch B where 1=1 ";
 
             var parameters = new DynamicParameters();
 
    
                 if (request.teacherId >0) {
                     sql += @"
-WHERE B.teacherId = @teacherId and IsDeleted=0  or  IsDeleted is null";
+and  B.teacherId = @teacherId ";
                     parameters.Add("teacherId", request.teacherId);
                 }
 
@@ -201,7 +201,7 @@ WHERE B.teacherId = @teacherId and IsDeleted=0  or  IsDeleted is null";
 AND B.status IN @statusIds"; 
                 parameters.Add("statusIds", request.StatusId);
             }
-
+            sql += " and IsDeleted=0  or  IsDeleted is null  ";
             if (request.PageSize > 0 && request.PageIndex > 0) {
                 sql += @"
 ORDER BY B.status DESC

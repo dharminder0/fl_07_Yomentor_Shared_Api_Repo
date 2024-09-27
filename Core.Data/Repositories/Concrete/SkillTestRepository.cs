@@ -19,7 +19,7 @@ namespace Core.Data.Repositories.Concrete {
 
 
         public async Task<IEnumerable<SkillTest>> GetSkillTestList(SkillTestRequest skillTest) {
-            var sql = @"SELECT * FROM skilltest WHERE 1=1  and IsDeleted=0  or  IsDeleted is null";
+            var sql = @"SELECT * FROM skilltest WHERE 1=1  ";
 
             if (skillTest.SubjectId > 0) {
                 sql += " AND subjectId = @SubjectId";
@@ -40,6 +40,7 @@ namespace Core.Data.Repositories.Concrete {
                 sql += " AND (title LIKE @SearchPattern OR description LIKE @SearchPattern)";
             }
 
+            sql += " and IsDeleted=0  or  IsDeleted is null ";
             if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
                 sql += @"
 ORDER BY id DESC
@@ -424,7 +425,7 @@ ORDER BY StartDate;
         SELECT a.* 
         FROM attempt a
         INNER JOIN skillTest st ON a.skilltestid = st.id
-        WHERE a.status = 1  and st.IsDeleted=0  or  IsDeleted is null";
+        WHERE a.status = 1  ";
 
        
             if (skillTest.UserId > 0) {
@@ -448,7 +449,7 @@ ORDER BY StartDate;
             AND (st.title LIKE '%{skillTest.SearchText}%' OR          
                  st.description LIKE '%{skillTest.SearchText}%')";
             }
-
+            sql += " and IsDeleted=0  or  IsDeleted is null  ";
             if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
                 sql += $@"
             ORDER BY a.startdate DESC
@@ -474,7 +475,7 @@ ORDER BY StartDate;
 
 
         public async Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest) {
-            var sql = @" select * from skilltest  WHERE 1=1   and IsDeleted=0  or  IsDeleted is null";
+            var sql = @" select * from skilltest  WHERE 1=1 ";
             if (skillTest.SubjectId > 0) {
                 sql += @" and subjectId=@SubjectId  ";
             }
@@ -505,6 +506,7 @@ ORDER BY StartDate;
         AND (title LIKE '%{skillTest.SearchText}%' OR          
              description LIKE '%{skillTest.SearchText}%')";
             }
+            sql += " and IsDeleted=0  or  IsDeleted is null  ";
             if (skillTest.PageIndex > 0 && skillTest.PageSize > 0) {
                 sql += $@"
 ORDER BY id DESC
