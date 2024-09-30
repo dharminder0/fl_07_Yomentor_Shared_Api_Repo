@@ -245,27 +245,34 @@ namespace YoMentor.ChatGPT {
                 }
 
 
-                return skillTestId;
+                 return skillTestId;
             } catch (Exception ex) {
                 return 0;
             }
         }
 
         private (bool Success, object Result) ValidateRequest(QuestionRequest request) {
+            if (request.AcademicClass == 0) {
 
-            string categoryName = _gradeRepository.GetCategorieName(request.Category);
 
-            if (string.IsNullOrEmpty(categoryName)) {
-                return (false, new { error = "Invalid category" });
+
+                string categoryName = _gradeRepository.GetCategorieName(request.Category);
+
+                if (string.IsNullOrEmpty(categoryName)) {
+                    return (false, new { error = "Invalid category" });
+                }
+
+
+
+                return (true, categoryName);
             }
 
-
-            return (true, categoryName);
+            return (true, null);
         }
 
 
 
-        public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
+        public (bool Success, Prompt Result) BuildUserPromptV2(QuestionRequest request) {
             string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
             string subjectname = _subjectRepository.GetSubjectName(request.Subject);
             var category = _gradeRepository.GetCategorie(request.Category);
@@ -307,6 +314,52 @@ namespace YoMentor.ChatGPT {
         }
 
 
+        public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
+            string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
+            string subjectName = _subjectRepository.GetSubjectName(request.Subject);
+            var category = _gradeRepository.GetCategorie(request.Category);
+
+            Prompt promptData = null;
+
+            if (request.AcademicClass >0) {
+                promptData = _skillTestRepository.GetPromptByAcademicClass(request.AcademicClass); 
+            }
+
+            if (promptData == null) {
+             
+                promptData = _skillTestRepository.GetPrompt(category.Id);
+            }
+
+            if (promptData != null) {
+                string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
+                string language = Enum.GetName(typeof(Language), request.Language);
+
+                string userPrompt = promptData.Prompt_Text;
+                userPrompt = userPrompt.Replace("{request.NumberOfQuestions}", request.NumberOfQuestions.ToString());
+                userPrompt = userPrompt.Replace("{request.AcademicClass}", gradeName);
+                userPrompt = userPrompt.Replace("{request.Subject}", subjectName);
+                userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
+                userPrompt = userPrompt.Replace("{request.ComplexityLevel}", complexityLevel);
+                userPrompt = userPrompt.Replace("{request.language}", language);
+
+                Prompt resultPrompt = new Prompt {
+                    Prompt_Id = promptData.Prompt_Id,
+                    Prompt_Text = userPrompt,
+                    category_id = promptData.category_id,
+                    Temperature = promptData.Temperature,
+                    Max_tokens = promptData.Max_tokens,
+                    Top_p = promptData.Top_p,
+                    Sop_Sequence = promptData.Sop_Sequence,
+                    Model = promptData.Model,
+                    System_Role = promptData.System_Role,
+                };
+
+                return (true, resultPrompt);
+            }
+            else {
+                return (false, null);
+            }
+        }
 
 
         private object BuildOpenAiRequest(Prompt userPrompt) {
