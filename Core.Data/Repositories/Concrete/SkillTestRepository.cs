@@ -322,7 +322,10 @@ GROUP BY
             var sql = @" select * from Prompt where category_id=@categoryId ";
             return QueryFirst<Prompt>(sql, new { categoryId });
         }
-
+        public Prompt GetPromptByAcademicClass(int gradeid) {
+            var sql = @" select * from Prompt where grade_id=@gradeid ";
+            return QueryFirst<Prompt>(sql, new { gradeid });
+        }
         public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
             var sql = @"
    ;WITH DateRange AS (
