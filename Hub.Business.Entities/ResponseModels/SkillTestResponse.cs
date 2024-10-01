@@ -51,6 +51,7 @@ namespace Core.Business.Entities.ResponseModels {
         public string Description { get; set; }
         public int SkillTestId { get; set; }
         public string CorrectOption { get; set; }
+        public string Explanation { get; set; }
         public List<AnswerInfo> AnswerOptions { get; set; }
     }
 

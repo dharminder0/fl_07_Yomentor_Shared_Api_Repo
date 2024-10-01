@@ -319,12 +319,25 @@ GROUP BY
             return await ExecuteScalarAsync<int>(sql, skillTest);
         }
         public Prompt GetPrompt(int  categoryId) {
-            var sql = @" select * from Prompt where category_id=@categoryId ";
-            return QueryFirst<Prompt>(sql, new { categoryId });
+            try {
+                var sql = @" select * from Prompt where category_id=@categoryId ";
+                return QueryFirst<Prompt>(sql, new { categoryId });
+
+            } catch (Exception) {
+
+                throw;
+            }
+    
         }
         public Prompt GetPromptByAcademicClass(int gradeid) {
-            var sql = @" select * from Prompt where grade_id=@gradeid ";
-            return QueryFirst<Prompt>(sql, new { gradeid });
+            try {
+                var sql = @" select * from Prompt where grade_id=@gradeid ";
+                return QueryFirst<Prompt>(sql, new { gradeid });
+            } catch (Exception) {
+
+                throw;
+            }
+           
         }
         public IEnumerable<DailyAttemptCount> GetDailyAttemptCounts(int userId, DateTime startDate, DateTime endDate) {
             var sql = @"
@@ -518,6 +531,27 @@ ORDER BY id DESC
             }
             return await QueryAsync<SkillTest>(sql, skillTest);
         }
+        public async Task PromptLogs(string transactionId, string logLevel, string message, string stackTrace = null, string requestPayload = null, string responsePayload = null) {
+            try {
+                string query = @"INSERT INTO prompt_logs (TransactionId, Log_Level, Log_Message, Stack_Trace, RequestPayload, ResponsePayload) 
+                          VALUES (@TransactionId, @LogLevel, @LogMessage, @StackTrace, @RequestPayload, @ResponsePayload)";
+                var parameters = new {
+                    TransactionId = transactionId,
+                    LogLevel = logLevel,
+                    LogMessage = message,
+                    StackTrace = stackTrace,
+                    requestPayload = requestPayload,    
+                    responsePayload = responsePayload   
+
+                };
+
+                await ExecuteAsync(query, parameters);
+            } catch (Exception ex) {
+                await Console.Out.WriteLineAsync(ex.Message ); 
+            }
+        }
+
+
 
     }
 }
