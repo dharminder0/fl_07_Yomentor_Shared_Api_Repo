@@ -37,5 +37,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<IEnumerable<SkillTest>> GetSimilerSkillTestList(SkillTestRequest skillTest);
        IEnumerable<Attempt> GetAttemptHistory(SkillTestRequest skillTest);
         IEnumerable<AttemptCount> GetAttemptCounts(int userId, SkillTestAttemptRange range);
+
+        Task PromptLogs(string transactionId, string logLevel, string message, string stackTrace = null, string requestPayload = null, string responsePayload = null);
     }
 }
