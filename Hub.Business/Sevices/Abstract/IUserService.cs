@@ -25,6 +25,7 @@ namespace Core.Business.Services.Abstract {
         ActionMessageResponse RemoveUsers(string deviceToekn);
         ActionMessageResponse AddUserDevices(UserDevicesRequest deviceRefRequest);
          Task<bool> GetPushNotification();
+        ActionMessageResponse DeleteUser(int userId, bool isDeleted);
 
 
 

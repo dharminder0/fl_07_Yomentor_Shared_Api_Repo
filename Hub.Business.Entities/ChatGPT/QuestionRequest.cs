@@ -24,6 +24,7 @@ namespace Core.Business.Entities.ChatGPT {
         public string Question { get; set; }
         public string correct_answer { get; set; }
         public string Explanation { get; set; }
+        public string Description { get; set; }
         public List<string> Choices { get; set; }
 
     }

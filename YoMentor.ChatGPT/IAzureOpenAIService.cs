@@ -181,7 +181,99 @@ namespace YoMentor.ChatGPT {
 
             return combinedJsonObject.ToString();
         }
+
         public async Task<int> GenerateQuestions(QuestionRequest request) {
+            int skillTestId = 0;
+            var transactionId = Guid.NewGuid().ToString(); 
+            var requestPayload = JsonConvert.SerializeObject(request); 
+            string responsePayload = null;
+
+            try {
+           
+                await _skillTestRepository.PromptLogs(transactionId, "Info", "GenerateQuestions started.", null, requestPayload);
+
+                var validationResult = ValidateRequest(request);
+                if (!validationResult.Success) {
+                    await _skillTestRepository.PromptLogs(transactionId, "Warning", "Request validation failed.", null, requestPayload);
+                    return 0;
+                }
+
+                var userPromptResult = BuildUserPrompt(request);
+                if (!userPromptResult.Success) {
+                    await _skillTestRepository.PromptLogs(transactionId, "Warning", "Failed to build user prompt.", null, requestPayload);
+                    return 0;
+                }
+
+                var openAiRequest = BuildOpenAiRequest(userPromptResult.Result);
+                var apiUrl = $"openai/deployments/{_modelName}/chat/completions?api-version=2023-05-15";
+
+                _httpService.AddHeader("api-key", $"{_apiKey}");
+
+                var response = await _httpService.PostAsync<object>(apiUrl, openAiRequest);
+
+              
+                responsePayload = JsonConvert.SerializeObject(response); 
+
+                await _skillTestRepository.PromptLogs(transactionId, "Info", "OpenAI request completed.", null, requestPayload, responsePayload);
+
+                var processedResponse = await ProcessOpenAiResponse(response);
+                List<QuestionInfo> questionInfos = new List<QuestionInfo>();
+
+                try {
+                    foreach (var item in processedResponse.Questions) {
+                        Questions questions = new Questions {
+                            CorrectAnswer = item.correct_answer,
+                            Explanation = item.Explanation,
+                            QuestionText = item.Question,
+                            Choices = (item.Choices)
+                        };
+
+                        QuestionInfo questionInfo = new QuestionInfo {
+                            Title = questions.QuestionText,
+                            Explanation = questions.Explanation,
+                            SkillTestId = 0,
+                            CorrectOption = questions.CorrectAnswer,Description= item.Description, 
+                            
+                        };
+
+                        List<AnswerInfo> answerInfos = new List<AnswerInfo>();
+                        for (int i = 0; i < item.Choices.Count; i++) {
+                            AnswerInfo answerInfo = new AnswerInfo {
+                                Title = item.Choices[i],
+                                IsCorrect = (questions.Choices[i] == questions.CorrectAnswer)
+                            };
+                            answerInfos.Add(answerInfo);
+                        }
+
+                        questionInfo.AnswerOptions = answerInfos;
+                        questionInfos.Add(questionInfo);
+                    }
+
+                    ProcessedResponse processedResponse1 = new ProcessedResponse {
+                        Questions = questionInfos,
+                        Summary = processedResponse.Summary,
+                        Title = processedResponse.Title
+                    };
+
+                    skillTestId = await InsertSkillTestWithQuestionsAndAnswerOptions(processedResponse1, request);
+                    processedResponse.SkillTestId = skillTestId;
+
+                    responsePayload = JsonConvert.SerializeObject(processedResponse1); 
+
+                    await _skillTestRepository.PromptLogs(transactionId, "Info", $"Skill test {skillTestId} created successfully.", null, requestPayload, responsePayload);
+                } catch (Exception ex) {
+                    await _skillTestRepository.PromptLogs(transactionId, "Error", "Error while processing questions.", ex.StackTrace, requestPayload, responsePayload);
+                }
+
+                return skillTestId;
+            } catch (Exception ex) {
+                await _skillTestRepository.PromptLogs(transactionId, "Error", "Exception in GenerateQuestions.", ex.Message, requestPayload, responsePayload);
+                return 0;
+            }
+        }
+
+
+        public async Task<int> GenerateQuestionsV2(QuestionRequest request) {
             try {
                 int skillTestId = 0;
                 var validationResult = ValidateRequest(request);
@@ -315,50 +407,57 @@ namespace YoMentor.ChatGPT {
 
 
         public (bool Success, Prompt Result) BuildUserPrompt(QuestionRequest request) {
-            string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
-            string subjectName = _subjectRepository.GetSubjectName(request.Subject);
-            var category = _gradeRepository.GetCategorie(request.Category);
+            try {
+                string gradeName = _gradeRepository.GetGradeName(request.AcademicClass);
+                string subjectName = _subjectRepository.GetSubjectName(request.Subject);
+                var category = _gradeRepository.GetCategorie(request.Category);
 
-            Prompt promptData = null;
+                Prompt promptData = null;
 
-            if (request.AcademicClass >0) {
-                promptData = _skillTestRepository.GetPromptByAcademicClass(request.AcademicClass); 
+                if (request.AcademicClass > 0) {
+                    promptData = _skillTestRepository.GetPromptByAcademicClass(request.AcademicClass);
+                }
+
+                if (promptData == null) {
+
+                    promptData = _skillTestRepository.GetPrompt(category.Id);
+                }
+
+                if (promptData != null) {
+                    string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
+                    string language = Enum.GetName(typeof(Language), request.Language);
+
+                    string userPrompt = promptData.Prompt_Text;
+                    userPrompt = userPrompt.Replace("{request.NumberOfQuestions}", request.NumberOfQuestions.ToString());
+                    userPrompt = userPrompt.Replace("{request.AcademicClass}", gradeName);
+                    userPrompt = userPrompt.Replace("{request.Subject}", subjectName);
+                    userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
+                    userPrompt = userPrompt.Replace("{request.ComplexityLevel}", complexityLevel);
+                    userPrompt = userPrompt.Replace("{request.language}", language);
+
+                    Prompt resultPrompt = new Prompt {
+                        Prompt_Id = promptData.Prompt_Id,
+                        Prompt_Text = userPrompt,
+                        category_id = promptData.category_id,
+                        Temperature = promptData.Temperature,
+                        Max_tokens = promptData.Max_tokens,
+                        Top_p = promptData.Top_p,
+                        Sop_Sequence = promptData.Sop_Sequence,
+                        Model = promptData.Model,
+                        System_Role = promptData.System_Role,
+                    };
+
+                    return (true, resultPrompt);
+                }
+                else {
+                    return (false, null);
+                }
+
+            } catch (Exception ex) {
+
+                throw ex;
             }
-
-            if (promptData == null) {
-             
-                promptData = _skillTestRepository.GetPrompt(category.Id);
-            }
-
-            if (promptData != null) {
-                string complexityLevel = Enum.GetName(typeof(ComplexityLevel), request.ComplexityLevel);
-                string language = Enum.GetName(typeof(Language), request.Language);
-
-                string userPrompt = promptData.Prompt_Text;
-                userPrompt = userPrompt.Replace("{request.NumberOfQuestions}", request.NumberOfQuestions.ToString());
-                userPrompt = userPrompt.Replace("{request.AcademicClass}", gradeName);
-                userPrompt = userPrompt.Replace("{request.Subject}", subjectName);
-                userPrompt = userPrompt.Replace("{request.Topic}", request.Topic);
-                userPrompt = userPrompt.Replace("{request.ComplexityLevel}", complexityLevel);
-                userPrompt = userPrompt.Replace("{request.language}", language);
-
-                Prompt resultPrompt = new Prompt {
-                    Prompt_Id = promptData.Prompt_Id,
-                    Prompt_Text = userPrompt,
-                    category_id = promptData.category_id,
-                    Temperature = promptData.Temperature,
-                    Max_tokens = promptData.Max_tokens,
-                    Top_p = promptData.Top_p,
-                    Sop_Sequence = promptData.Sop_Sequence,
-                    Model = promptData.Model,
-                    System_Role = promptData.System_Role,
-                };
-
-                return (true, resultPrompt);
-            }
-            else {
-                return (false, null);
-            }
+       
         }
 
 
@@ -406,8 +505,9 @@ namespace YoMentor.ChatGPT {
 
                 int questionId = await _skillTestRepository.InsertQuestion(new Question {
                     Title = question.Title,
-                    Explanations = question.Description,
+                    Explanations = question.Explanation,
                     SkillTestId = skillTestId,
+                    Description = question.Description,
                     //CorrectOption =  int.Parse(question.CorrectOption),
                     CreateDate = DateTime.UtcNow
                 });
