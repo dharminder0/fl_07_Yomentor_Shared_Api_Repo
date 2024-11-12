@@ -33,6 +33,7 @@ namespace Core.Data.Repositories.Abstract {
         Task<bool> UpdateStatus(int id, Status status, int notificationType);
         Task<bool> UpdateNotificationStatus(int id, NotificationStatus status);
         Task<IEnumerable<PushNotifications>> GetPushNotifications();
+        bool DeleteUser(int userId, bool isDeleted);
 
 
 

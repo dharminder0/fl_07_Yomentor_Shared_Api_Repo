@@ -209,7 +209,23 @@ namespace Core.Web.API.Controllers {
             return JsonExt(response);
 
         }
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="isDeleted"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/User/DeleteUser")]
+
+        public IActionResult DeleteUser(int userId, bool isDeleted) {
+
+            var response = _userService.DeleteUser(userId, isDeleted);
+            return JsonExt(response);
+
+        }
     }
+}
 
 }
   

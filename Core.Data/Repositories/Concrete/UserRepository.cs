@@ -23,8 +23,11 @@ namespace Core.Data.Repositories.Concrete {
             return Query<Users>(sql, new { uniqueCode });
         }
 
+        public bool DeleteUser(int userId, bool isDeleted) {
+            var sql = @"update  users  set isdeleted=@isDeleted where id=@userid  ";
+            return ExecuteScalar<bool>(sql, new { userId, isDeleted });
+        }
 
-        
 
 
         public int VerifyUserByUsername(string phone) {

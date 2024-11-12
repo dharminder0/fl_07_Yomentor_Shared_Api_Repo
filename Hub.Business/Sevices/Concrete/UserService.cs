@@ -119,7 +119,12 @@ namespace Core.Business.Services.Concrete {
             return new ActionMessageResponse { Success = false, Message = "User_already_exsist" };
         }
 
-   
+        public ActionMessageResponse DeleteUser(int userId, bool isDeleted) {
+
+            var res = _userRepository.DeleteUser(userId, isDeleted);
+            return new ActionMessageResponse { Success = true, Message = "successfully deleted" };
+
+        }
 
         public async Task<ActionMessageResponse> ChangePassword(ChangePasswordRequest model) {
             try {
