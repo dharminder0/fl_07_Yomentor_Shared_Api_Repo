@@ -29,10 +29,24 @@ namespace Core.Common.Data {
             _connectionName = GlobalSettings.DefaultConnectionName;
         }
 
-        protected SqlConnection GetConnection(string connectionName = null) {
-            return new SqlConnection(ConfigurationManager.ConnectionStrings[connectionName ?? _connectionName].ConnectionString);
-        }
+        //protected SqlConnection GetConnection(string connectionName = null) {
+        //    return new SqlConnection(ConfigurationManager.ConnectionStrings[connectionName ?? _connectionName].ConnectionString);
+        //}
+        protected SqlConnection GetConnection(string connectionName = null)
+        {
+            connectionName = connectionName ?? _connectionName;
+            var filePath = GlobalSettings.FilePath;
+            var connectionString =  File.Exists(filePath)
+                                       ? JObject.Parse(File.ReadAllText(filePath))["ConnectionStrings"]?[connectionName]?.ToString()
+                                       : null;
 
+            if (connectionString == null)
+            {
+                throw new KeyNotFoundException($"The given key '{connectionName}' was not present in the configuration or JSON file.");
+            }
+
+            return new SqlConnection(connectionString);
+        }
         //public QueryFactory GetDbInstance(string connectionName = null) {
         //    var connection = GetConnection(connectionName);
         //    var qFactory = new QueryFactory(connection, _sqlServerCompiler);
