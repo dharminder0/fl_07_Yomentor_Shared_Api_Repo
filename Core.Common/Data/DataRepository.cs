@@ -29,10 +29,14 @@ namespace Core.Common.Data {
             _connectionName = GlobalSettings.DefaultConnectionName;
         }
 
-        //protected SqlConnection GetConnection(string connectionName = null) {
-        //    return new SqlConnection(ConfigurationManager.ConnectionStrings[connectionName ?? _connectionName].ConnectionString);
-        //}
-        protected SqlConnection GetConnection(string connectionName = null)
+        protected SqlConnection GetConnection(string connectionName = null) {
+            try { return new SqlConnection(ConfigurationManager.ConnectionStrings[connectionName ?? _connectionName].ConnectionString); }
+          catch(Exception ex)
+            {
+             return  GetConnectionv2(connectionName);
+            }
+        }
+        protected SqlConnection GetConnectionv2(string connectionName = null)
         {
             connectionName = connectionName ?? _connectionName;
             var filePath = GlobalSettings.FilePath;
